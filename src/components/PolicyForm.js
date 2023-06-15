@@ -31,14 +31,6 @@ class PolicyForm extends Component {
     confirmProduct: false,
   };
 
-  state = {
-    lockNew: false,
-    reset: 0,
-    policy: {},
-    newInsuree: true,
-    renew: false,
-  }
-
   async initialFamilyFetch() {
     await this.props.fetchFamily(
       this.props.modulesManager,
@@ -221,24 +213,6 @@ class PolicyForm extends Component {
     )
   }
 }
-
-const mapStateToProps = (state) => ({
-  rights:
-    !!state.core && !!state.core.user && !!state.core.user.i_user
-      ? state.core.user.i_user.rights
-      : [],
-  fetchingPolicy: state.policy.fetchingPolicy,
-  errorPolicy: state.policy.errorPolicy,
-  fetchedPolicy: state.policy.fetchedPolicy,
-  policy: state.policy.policy,
-  fetchingPolicyValues: state.policy.fetchingPolicyValues,
-  fetchedPolicyValues: state.policy.fetchedPolicyValues,
-  errorPolicyValues: state.policy.errorPolicyValues,
-  policyValues: state.policy.policyValues,
-  family: state.insuree.family,
-  submittingMutation: state.policy.submittingMutation,
-  mutation: state.policy.mutation,
-});
 
 const mapStateToProps = state => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
