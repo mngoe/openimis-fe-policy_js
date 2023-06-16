@@ -14,6 +14,7 @@ import {
 import PolicyMasterPanel from "./PolicyMasterPanel";
 import { fetchPolicyFull, fetchPolicyValues, fetchFamily } from "../actions";
 import { policyLabel } from "../utils/utils";
+import { POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STATUS_IDLE, RIGHT_POLICY, RIGHT_POLICY_EDIT } from "../constants";
 
 const styles = theme => ({
   page: theme.page,
