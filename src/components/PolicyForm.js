@@ -153,6 +153,14 @@ class PolicyForm extends Component {
   canSave = () => {
     if (!this.state.policy.family) return false;
     if (!this.state.policy.product) return false;
+
+    //check if vih insuree have vih policy
+    if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
+      if (this.state.policy.product.program.nameProgram != "VIH") return false;
+    } else {
+      if (this.state.policy.product.program.nameProgram == "VIH") return false;
+    }
+    
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
     if (!this.state.policy.expiryDate) return false;
@@ -230,5 +238,5 @@ const mapStateToProps = state => ({
   mutation: state.policy.mutation,
 })
 
-export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, journalize, coreAlert,fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
+export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
 
