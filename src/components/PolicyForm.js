@@ -160,6 +160,11 @@ class PolicyForm extends Component {
     } else {
       if (this.state.policy.product.program.nameProgram == "VIH") return false;
     }
+
+    //check policy number if is cs product
+    if(this.state.policy.product.program.nameProgram == "Cheque santé"){
+      if (!this.state.policy.policyNumber) return false;
+    }
     
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;

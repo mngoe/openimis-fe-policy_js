@@ -121,5 +121,6 @@
   "policy.policyValues.alert.title": "Policy Value Warning:",
   "policy.policyValues.alert.message": "The family has more Insurees than the maximum number of members allowed in the selected product. However, the policy can still be created. Do you want to continue?",
   "policy.dialogActions.continue": "Continue",
-  "policy.dialogActions.goBack": "Go back"
+  "policy.dialogActions.goBack": "Go back",
+  "insuree.policy.PolicyNumber": "Cheque number"
 }
