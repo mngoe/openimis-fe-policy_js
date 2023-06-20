@@ -159,8 +159,6 @@ class PolicyMasterPanel extends FormPanel {
       title = "Policy.details.title",
     } = this.props;
 
-    console.log(edited.family?.location?.id);
-
     let actions = [];
     if (this.canRenew(edited)) {
       actions.push({
