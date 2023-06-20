@@ -60,11 +60,11 @@ class PolicyMasterPanel extends FormPanel {
   _onProductChange = (product) => {
     !product
       ? this.updateAttributes({
-          product: null,
-          startDate: null,
-          expiryDate: null,
-          value: null,
-        })
+        product: null,
+        startDate: null,
+        expiryDate: null,
+        value: null,
+      })
       : this.updateAttribute("product", product);
   };
 
@@ -298,6 +298,22 @@ class PolicyMasterPanel extends FormPanel {
                   required={true}
                 />
               </Grid>
+              {!!edited.product && edited.product?.program?.nameProgram == "Cheque santé" &&
+                (
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="insuree.InsureeNumberInput"
+                      module="policy"
+                      label="policy.PolicyNumber"
+                      required={true}
+                      readOnly={readOnly}
+                      value={edited?.policyNumber}
+                      new_insuree={!edited?.family?.headInsuree?.id}
+                      onChange={(v) => this.updateAttribute("policyNumber", v)}
+                    />
+                  </Grid>
+                )
+              }
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyOfficerPicker"

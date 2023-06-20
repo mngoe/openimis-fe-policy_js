@@ -11,6 +11,7 @@ import InsureeEligibilitySummary from "./components/InsureeEligibilitySummary";
 import InsureeEligibilityEnquiry from "./components/InsureeEligibilityEnquiry";
 import InsureePolicyEligibilitySummary from "./components/InsureePolicyEligibilitySummary";
 import messages_en from "./translations/en.json";
+import messages_fr from "./translations/fr.json";
 import { FormattedMessage } from "@openimis/fe-core";
 import { reducer } from "./reducer";
 import { RIGHT_POLICY } from "./constants";
@@ -19,7 +20,10 @@ const ROUTE_POLICY_POLICIES = "policy/policies";
 const ROUTE_POLICY_POLICY = "policy/policy";
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: 'en', messages: messages_en }],
+  "translations": [
+    { key: 'en', messages: messages_en },
+    { key: 'fr', messages: messages_fr }
+  ],
   "reducers": [{ key: 'policy', reducer }],
   "refs": [
     { key: "policy.PolicyOfficerPicker", ref: PolicyOfficerPicker },
@@ -51,7 +55,7 @@ const DEFAULT_CONFIG = {
     },
   ],
   "insuree.EnquiryDialog": [FamilyOrInsureePoliciesSummary, InsureeEligibilityEnquiry, InsureeEligibilitySummary],
-  "insuree.FamilyOverview.panels": [FamilyOrInsureePoliciesSummary],  
+  "insuree.FamilyOverview.panels": [FamilyOrInsureePoliciesSummary],
   "insuree.FamilyOverview.mutations": [policyMutation]
 }
 
