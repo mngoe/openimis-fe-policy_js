@@ -41,8 +41,8 @@ const PolicyOfficerPicker = (props) => {
   }
 
   const { isLoading, data, error } = useGraphqlQuery(
-    `query PolicyOfficerPicker ($searchString: String, $first: Int, $district: String, $region: String) {
-      policyOfficers(search: $searchString, first: $first, district: $district, region: $region) {
+    `query PolicyOfficerPicker ($searchString: String, $first: Int) {
+      policyOfficers(search: $searchString, first: $first) {
         edges {
           node {
             id
