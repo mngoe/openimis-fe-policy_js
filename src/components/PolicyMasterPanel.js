@@ -58,6 +58,7 @@ class PolicyMasterPanel extends FormPanel {
   }
 
   _onProductChange = (product) => {
+    console.log(product)
     !product
       ? this.updateAttributes({
           product: null,

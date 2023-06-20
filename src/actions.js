@@ -9,7 +9,6 @@ import {
 import _ from "lodash";
 import { decodeId } from "@openimis/fe-core";
 
-
 const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "policyUuid",
   "productCode",
