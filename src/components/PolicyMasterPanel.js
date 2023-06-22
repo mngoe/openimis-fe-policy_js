@@ -298,7 +298,7 @@ class PolicyMasterPanel extends FormPanel {
                   required={true}
                 />
               </Grid>
-              {!!edited.product && edited.product?.program?.nameProgram == "Cheque santé" &&
+              {!!edited.product && (edited.product?.program?.nameProgram).toLowerCase() == "cheque santé" &&
                 (
                   <Grid item xs={3} className={classes.item}>
                     <PublishedComponent
