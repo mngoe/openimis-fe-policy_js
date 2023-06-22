@@ -302,7 +302,7 @@ class PolicyMasterPanel extends FormPanel {
                 (
                   <Grid item xs={3} className={classes.item}>
                     <PublishedComponent
-                      pubRef="insuree.InsureeNumberInput"
+                      pubRef="policy.PolicyNumberInput"
                       module="policy"
                       label="policy.PolicyNumber"
                       required={true}

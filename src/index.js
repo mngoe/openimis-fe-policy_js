@@ -5,6 +5,7 @@ import PolicyStagePicker from "./pickers/PolicyStagePicker";
 import PolicyStatusPicker from "./pickers/PolicyStatusPicker";
 import PoliciesPage from "./pages/PoliciesPage";
 import PolicyPage from "./pages/PolicyPage";
+import PolicyNumberInput from "./pickers/PolicyNumberInput";
 import PolicyValuesPanel from "./components/PolicyValuesPanel";
 import FamilyOrInsureePoliciesSummary from "./components/FamilyOrInsureePoliciesSummary";
 import InsureeEligibilitySummary from "./components/InsureeEligibilitySummary";
@@ -40,6 +41,7 @@ const DEFAULT_CONFIG = {
     { key: "policy.InsureePolicyEligibilitySummary", ref: InsureePolicyEligibilitySummary },
     { key: "policy.route.policies", ref: ROUTE_POLICY_POLICIES },
     { key: "policy.route.policy", ref: ROUTE_POLICY_POLICY },
+    { key: "policy.PolicyNumberInput", ref: PolicyNumberInput },
   ],
   "core.Router": [
     { path: ROUTE_POLICY_POLICIES, component: PoliciesPage },

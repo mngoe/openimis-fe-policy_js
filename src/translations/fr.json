@@ -1,3 +1,4 @@
 {
-    "insuree.policy.PolicyNumber": "Numéro de chèque"
+    "policy.policy.PolicyNumber": "Numéro de chèque",
+    "policy.PolicyNumberInput.error": "Numéro de chèque invalide"
 }
