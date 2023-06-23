@@ -298,7 +298,7 @@ class PolicyMasterPanel extends FormPanel {
                   required={true}
                 />
               </Grid>
-              {!!edited.product && (edited.product?.program?.nameProgram).toLowerCase() == "cheque santé" &&
+              {!!edited.product && (edited.product?.program?.nameProgram) == "Cheque Santé" &&
                 (
                   <Grid item xs={3} className={classes.item}>
                     <PublishedComponent
@@ -306,9 +306,9 @@ class PolicyMasterPanel extends FormPanel {
                       module="policy"
                       label="policy.PolicyNumber"
                       required={true}
-                      readOnly={readOnly}
-                      value={edited?.policyNumber}
-                      new_insuree={!edited?.family?.headInsuree?.id}
+                      readOnly={!!edited}
+                      value={!!edited && edited.policyNumber}
+                      new_policy={!edited?.family?.headInsuree?.id}
                       onChange={(v) => this.updateAttribute("policyNumber", v)}
                     />
                   </Grid>
