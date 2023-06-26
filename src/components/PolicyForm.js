@@ -21,6 +21,7 @@ const styles = theme => ({
 });
 
 const POLICY_HEAD_PANEL_CONTRIBUTION_KEY = "policy.Policy.headPanel";
+const POLICY_VIH_HEAD_PANEL_CONTRIBUTION_KEY = "policy.Policy.hivheadPanel"
 
 class PolicyForm extends Component {
   state = {
@@ -30,6 +31,7 @@ class PolicyForm extends Component {
     newInsuree: true,
     renew: false,
     confirmProduct: false,
+    email: "",
   };
 
   async initialFamilyFetch() {
@@ -39,6 +41,7 @@ class PolicyForm extends Component {
     );
     this.setState(() => ({
       policy: this._newPolicy(),
+      email: this.props.family.headInsuree.email,
     }));
   }
 
@@ -70,17 +73,20 @@ class PolicyForm extends Component {
       this.initialFamilyFetch();
     if (!!this.props.policy_uuid && this.props.policy_uuid !== "_NEW") {
       this.setState(
-        (state, props) => ({ policy_uuid: props.policy_uuid, renew: this.props.renew }),
+        (state, props) => ({
+          policy_uuid: props.policy_uuid,
+          renew: this.props.renew
+        }),
         e => this.props.fetchPolicyFull(
           this.props.modulesManager,
           this.props.policy_uuid
-        )
+        ),
       )
     } else if (!!this.props.renew) {
       this.setState(
         (state, props) => ({
           renew: this.props.renew,
-          policy: this._renewPolicy(state.policy)
+          policy: this._renewPolicy(state.policy),
         })
       )
     }
@@ -162,10 +168,10 @@ class PolicyForm extends Component {
     }
 
     //check policy number if is cs product
-    if((this.state.policy.product.program.nameProgram) == "Cheque Santé"){
+    if ((this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
     }
-    
+
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
     if (!this.state.policy.expiryDate) return false;
@@ -185,9 +191,11 @@ class PolicyForm extends Component {
       policy_uuid,
       fetchingPolicy, fetchedPolicy, errorPolicy,
       readOnly, renew,
+      family
     } = this.props;
     const { policy, lockNew } = this.state;
     if (!rights.includes(RIGHT_POLICY)) return null;
+
 
     let ro = policy.clientMutationId ||
       lockNew ||
@@ -216,7 +224,15 @@ class PolicyForm extends Component {
               save={this._save}
               canSave={this.canSave}
               readOnly={ro}
-              headPanelContributionsKey={POLICY_HEAD_PANEL_CONTRIBUTION_KEY}
+              headPanelContributionsKey={
+                !!policy_uuid ?
+                  policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com" ?
+                    POLICY_VIH_HEAD_PANEL_CONTRIBUTION_KEY :
+                    POLICY_HEAD_PANEL_CONTRIBUTION_KEY :
+                  this.state.email == "newhivuser_XM7dw70J0M3N@gmail.com" ?
+                    POLICY_VIH_HEAD_PANEL_CONTRIBUTION_KEY :
+                    POLICY_HEAD_PANEL_CONTRIBUTION_KEY
+              }
               family_uuid={!!policy.family ? policy.family.uuid : null}
               Panels={[PolicyMasterPanel]}
               onEditedChanged={this.onEditedChanged}

@@ -25,6 +25,7 @@ const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "ded",
   "dedInPatient",
   "dedOutPatient",
+  FAMILY_HEAD_PROJECTION,
   "ceiling",
   "ceilingInPatient",
   "ceilingOutPatient",
@@ -164,6 +165,7 @@ export function fetchPolicyFull(mm, policy_uuid) {
     "claimDedRems{edges { node {dedG dedIp dedOp remG remIp remOp} } }",
     "validityFrom",
     "validityTo",
+    "policyNumber"
   ];
   const payload = formatPageQuery(
     "policies",

@@ -306,9 +306,9 @@ class PolicyMasterPanel extends FormPanel {
                       module="policy"
                       label="policy.PolicyNumber"
                       required={true}
-                      readOnly={!!edited}
+                      readOnly={!!edited_id || readOnly}
                       value={!!edited && edited.policyNumber}
-                      new_policy={!edited?.family?.headInsuree?.id}
+                      new_policy={!edited?.id}
                       onChange={(v) => this.updateAttribute("policyNumber", v)}
                     />
                   </Grid>
