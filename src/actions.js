@@ -95,6 +95,18 @@ export function fetchItemEligibility(chfid, code) {
   return graphql(payload, "POLICY_INSUREE_ITEM_ELIGIBILITY");
 }
 
+export function fetchPolicyNumber(mm, policyNumber) {
+  if (policyNumber == "") {
+    policyNumber = null;
+  }
+  const payload = formatPageQueryWithCount(
+    "chequeimportline",
+    [`chequeImportLineCode:"${policyNumber}"`],
+    ["idChequeImportLine", "chequeImportLineCode", "chequeImportLineDate", "chequeImportLineStatus"]
+  );
+  return graphql(payload, 'POLICY_CS_CHECKLIST');
+}
+
 export function itemEligibilityClear() {
   return (dispatch) => {
     dispatch({ type: `POLICY_INSUREE_ITEM_ELIGIBILITY_CLEAR` });
@@ -185,8 +197,7 @@ export function fetchPolicyValues(policy) {
 
   let params = [
     `stage: "${policy.stage}"`,
-    `enrollDate: "${
-      policy.stage == "R" ? toISODate(exp_date) : policy.enrollDate
+    `enrollDate: "${policy.stage == "R" ? toISODate(exp_date) : policy.enrollDate
     }T00:00:00"`,
     `productId: ${decodeId(policy.product.id)}`,
     `familyId: ${decodeId(policy.family.id)}`,
@@ -201,11 +212,10 @@ export function fetchPolicyValues(policy) {
 
 function formatPolicyGQL(mm, policy) {
   return `
-  ${
-    policy.uuid !== undefined && policy.uuid !== null
+  ${policy.uuid !== undefined && policy.uuid !== null
       ? `uuid: "${policy.uuid}"`
       : ""
-  }
+    }
   enrollDate: "${policy.enrollDate}"
   startDate: "${policy.startDate}"
   expiryDate: "${policy.expiryDate}"

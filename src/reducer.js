@@ -34,6 +34,9 @@ export const reducer = (
         policyValues: null,
         submittingMutation: false,
         mutation: {},
+        fetchingPolicyNumber: false,
+        errorPolicyNumber: null,
+        policyNumber: null
     },
     action) => {
     switch (action.type) {
@@ -144,13 +147,13 @@ export const reducer = (
                 errorInsureeItemEligibility: formatServerError(action.payload),
             };
         case 'POLICY_INSUREE_ITEM_ELIGIBILITY_CLEAR':
-          return {
-            ...state,
-            fetchingInsureeItemEligibility: false,
-            fetchedInsureeItemEligibility: false,
-            insureeItemEligibility: null,
-            errorInsureeItemEligibility: null,
-          };
+            return {
+                ...state,
+                fetchingInsureeItemEligibility: false,
+                fetchedInsureeItemEligibility: false,
+                insureeItemEligibility: null,
+                errorInsureeItemEligibility: null,
+            };
         case 'POLICY_INSUREE_SERVICE_ELIGIBILITY_REQ':
             return {
                 ...state,
@@ -174,13 +177,13 @@ export const reducer = (
                 errorInsureeServiceEligibility: formatServerError(action.payload),
             };
         case 'POLICY_INSUREE_SERVICE_ELIGIBILITY_CLEAR':
-          return {
-            ...state,
-            fetchingInsureeServiceEligibility: false,
-            fetchedInsureeServiceEligibility: false,
-            insureeServiceEligibility: null,
-            errorInsureeServiceEligibility: null,
-          };
+            return {
+                ...state,
+                fetchingInsureeServiceEligibility: false,
+                fetchedInsureeServiceEligibility: false,
+                insureeServiceEligibility: null,
+                errorInsureeServiceEligibility: null,
+            };
         case 'POLICY_POLICIES_REQ':
             return {
                 ...state,
@@ -249,6 +252,27 @@ export const reducer = (
                 ...state,
                 fetchingPolicyValues: false,
                 errorPolicyValues: formatServerError(action.payload),
+            }
+        case 'POLICY_CS_CHECKLIST_REQ':
+            return {
+                ...state,
+                fetchingPolicyNumber: true,
+                errorPolicyNumber: null,
+                policyNumber: null
+            }
+        case 'POLICY_CS_CHECKLIST_RESP':
+            return {
+                ...state,
+                fetchingPolicyNumber: false,
+                policyNumber: parseData(action.payload.data.chequeimportline)[0],
+                errorPolicyNumber: formatGraphQLError(action.payload)
+            }
+        case 'POLICY_CS_CHECKLIST_ERR':
+            return {
+                ...state,
+                fetchingPolicyNumber: false,
+                errorPolicyNumber: formatServerError(action.payload),
+                policyNumber: null
             }
         case 'POLICY_MUTATION_REQ':
             return dispatchMutationReq(state, action)
