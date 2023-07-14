@@ -66,7 +66,6 @@ class PolicyNumberInput extends Component {
     const { intl, readOnly, required, error, policyNumber, fetching } = this.props;
     const isInvalid = !fetching && policyNumber && policyNumber.chequeImportLineStatus === "used" || !fetching && policyNumber === undefined;
 
-    console.log(policyNumber);
     return (
       <TextInput
         readOnly={readOnly}
