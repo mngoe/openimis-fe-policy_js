@@ -223,7 +223,7 @@ function formatPolicyGQL(mm, policy) {
   productId: ${decodeId(policy.product.id)}
   familyId: ${decodeId(policy.family.id)}
   officerId: ${decodeId(policy.officer.id)}
-  ${!!policy.policyNumber ? `policyNumber: "${policy.policyNumber}"` : ""}
+  ${!!policy.policyNumber ? `policyNumber: "${policy.policyNumber.chequeImportLineCode}"` : ""}
 `;
 }
 
