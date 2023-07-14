@@ -1,83 +1,109 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import clsx from "clsx";
-import { TextInput, useDebounceCb, useModulesManager, useTranslations, useGraphqlQuery } from "@openimis/fe-core";
-import { InputAdornment, CircularProgress, Box } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { bindActionCreators } from "redux";
+import { InputAdornment, Box, CircularProgress } from "@material-ui/core";
+import { withModulesManager, TextInput, formatMessage } from "@openimis/fe-core";
 import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
+import { injectIntl } from "react-intl";
 import ErrorOutlineOutlinedIcon from "@material-ui/icons/ErrorOutlineOutlined";
 
-const useStyles = makeStyles((theme) => ({
-  validIcon: {
-    color: "green",
-  },
-  invalidIcon: {
-    color: theme.palette.error.main,
-  },
-}));
+import { fetchPolicyNumber } from "../actions";
+import _debounce from "lodash/debounce";
 
-const operation = `
-  query ($number: String!, $newPolicy: Boolean) {
-    isValid: policyNumberValidity(policyNumber: $number, newPolicy: $newPolicy)
-  }
-`;
-
-const PolicyNumberInput = (props) => {
-  const { value, new_policy, onChange, className, label = "Policy.chfId", placeholder, readOnly, required } = props;
-  const [internalValue, setInternalValue] = useState(value);
-  const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations("policy", modulesManager);
-  const classes = useStyles();
-  const {
-    isLoading,
-    data,
-    error: graphqlError,
-  } = useGraphqlQuery(operation, { number: internalValue, newPolicy: new_policy }, { skip: !internalValue });
-
-  const handleValueChange = useDebounceCb((val) => {
-    if (val) {
-      setInternalValue(val);
-    } else {
-      onChange(val);
-    }
-  }, modulesManager.getConf("fe-insuree", "debounceTime", 400));
-
-  const isValid = !isLoading && data?.isValid;
-  const isInvalid = !isLoading && data && !data.isValid;
-
-  useEffect(() => {
-    if (isValid && internalValue !== value) {
-      onChange(internalValue);
-    }
-  }, [isValid]);
-
-  return (
-    <TextInput
-      module="policy"
-      className={className}
-      disabled={readOnly}
-      required={required}
-      label={label}
-      placeholder={placeholder}
-      error={graphqlError || isInvalid ? formatMessage("PolicyNumberInput.error") : null}
-      value={value}
-      new_policy={new_policy}
-      inputProps={{ maxLength: modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 12) }}
-      endAdornment={
-        <InputAdornment position="end" className={clsx(isValid && classes.validIcon, isInvalid && classes.invalidIcon)}>
-          <>
-            {isLoading && (
-              <Box mr={1}>
-                <CircularProgress size={20} />
-              </Box>
-            )}
-            {isValid && <CheckOutlinedIcon size={20} />}
-            {isInvalid && <ErrorOutlineOutlinedIcon size={20} />}
-          </>
-        </InputAdornment>
-      }
-      onChange={handleValueChange}
-    />
-  );
+const INIT_STATE = {
+  search: null,
+  selected: null,
 };
 
-export default PolicyNumberInput;
+class PolicyNumberInput extends Component {
+  state = INIT_STATE;
+
+  constructor(props) {
+    super(props);
+    //this.chfIdMaxLength = props.modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 12);
+  }
+
+  componentDidMount() {
+    if (this.props.value) {
+      this.setState((state, props) => ({
+        search: !!props.value ? props.value : null,
+        selected: props.value,
+      }));
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.reset !== this.props.reset) {
+      this.setState((state, props) => ({
+        ...INIT_STATE,
+        search: !!props.value ? props.value : null,
+        selected: props.value,
+      }));
+    } else if (!_.isEqual(prevProps.policyNumber, this.props.policyNumber)) {
+      this.props.onChange(this.props.policyNumber);
+    } else if (!_.isEqual(prevProps.value, this.props.value)) {
+      this.setState((state, props) => ({
+        search: !!props.value ? props.value.chequeImportLineCode : null,
+        selected: props.value,
+      }));
+    }
+  }
+
+  fetch = (policyNumber) => {
+    this.setState(
+      {
+        search: policyNumber,
+        selected: null,
+      },
+      (e) => this.props.fetchPolicyNumber(this.props.modulesManager, policyNumber),
+    );
+  };
+
+  debouncedSearch = _debounce(this.fetch, this.props.modulesManager.getConf("fe-insuree", "debounceTime", 800));
+
+  render() {
+    const { intl, readOnly, required, error, policyNumber, fetching } = this.props;
+    const isInvalid = !fetching && policyNumber && policyNumber.chequeImportLineStatus === "used" || !fetching && policyNumber === undefined;
+
+    console.log(policyNumber);
+    return (
+      <TextInput
+        readOnly={readOnly}
+        autoFocus={true}
+        module="policy"
+        label="policy.PolicyNumber"
+        value={this.state.search}
+        onChange={(v) => this.debouncedSearch(v)}
+        required={required}
+        error={error || isInvalid ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : null}
+        endAdornment={
+          <InputAdornment position="end">
+            <>
+              {fetching && (
+                <Box mr={1}>
+                  <CircularProgress size={20} />
+                </Box>
+              )}
+              {!!policyNumber && policyNumber.chequeImportLineStatus === "new" && <CheckOutlinedIcon size={20} />}
+              {!!policyNumber && policyNumber.chequeImportLineStatus === "used" && <ErrorOutlineOutlinedIcon size={20} />}
+              {policyNumber === undefined && <ErrorOutlineOutlinedIcon size={20} />}
+            </>
+          </InputAdornment>
+        }
+      />
+    );
+  }
+}
+
+const mapStateToProps = (state, props) => ({
+  fetching: state.policy.fetchingPolicyNumber,
+  error: state.policy.errorPolicyNumber,
+  policyNumber: state.policy.policyNumber,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ fetchPolicyNumber }, dispatch);
+};
+
+export default withModulesManager(injectIntl(connect(mapStateToProps, mapDispatchToProps)(PolicyNumberInput)));
