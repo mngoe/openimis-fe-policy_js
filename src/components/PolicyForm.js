@@ -142,7 +142,7 @@ class PolicyForm extends Component {
         if (!this.state.policy.enrollDate) return false;
         if (!this.state.policy.startDate) return false;
         if (!this.state.policy.expiryDate) return false;
-        if (!this.state.policy.value) return false;
+        //if (!this.state.policy.value) return false;
         if (!this.state.policy.officer) return false;
         return true;
     }
