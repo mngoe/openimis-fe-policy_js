@@ -321,10 +321,12 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       return null;
     }
 
-    console.log(family);
-    
+    console.log(insuree);
+
     let actions =
-      !!readOnly || !rights.includes(RIGHT_POLICY_ADD) || family.headInsuree.score < maxInsureeScore
+      !!readOnly || !rights.includes(RIGHT_POLICY_ADD) ||
+        !!family && family.headInsuree.score < maxInsureeScore ||
+        insuree.score < maxInsureeScore
         ? []
         : [
           {
