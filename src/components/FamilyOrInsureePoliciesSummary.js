@@ -321,7 +321,6 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       return null;
     }
 
-    console.log(insuree);
 
     let actions =
       !!readOnly || !rights.includes(RIGHT_POLICY_ADD) ||
