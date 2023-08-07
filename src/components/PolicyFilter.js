@@ -11,6 +11,7 @@ import {
   PublishedComponent,
   ControlledField,
   AmountInput,
+  TextInput
 } from "@openimis/fe-core";
 
 const styles = (theme) => ({
@@ -155,6 +156,29 @@ class PolicyFilter extends Component {
                   "policy",
                   "PolicyOfficerPicker.placeholder"
                 )}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module="policy"
+          id="PolicyFilter.policyNumber"
+          field={
+            <Grid item xs={2} className={classes.item}>
+              <TextInput
+                module="policy"
+                label="policy.PolicyNumber"
+                name="policyNumber"
+                value={this._filterValue("policyNumber")}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "policyNumber",
+                      value: v,
+                      filter: `policyNumber_Icontains: "${v}"`,
+                    },
+                  ])
+                }
               />
             </Grid>
           }
