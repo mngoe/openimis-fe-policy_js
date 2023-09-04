@@ -89,6 +89,7 @@
   "policy.policySummaries.status": "Status",
   "policy.policySummaries.value": "Value",
   "policy.policySummaries.balance": "Balance",
+  "policy.policySummaries.policyNumber": "Policy Number",
   "policy.policySummaries.validityFrom": "Valid From",
   "policy.policySummaries.validityTo": "Valid To",
   "policy.policySummaries.openFamily": " ",

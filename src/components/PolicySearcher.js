@@ -130,6 +130,7 @@ class PolicySearcher extends Component {
             "policy.policySummaries.status",
             "policy.policySummaries.value",
             "policy.policySummaries.balance",
+            "policy.policySummaries.policyNumber",
             "policy.policySummaries.validityFrom",
             "policy.policySummaries.validityTo",
             "policy.policySummaries.openFamily",
@@ -157,6 +158,7 @@ class PolicySearcher extends Component {
             ['validityFrom', false],
             ['validityTo', false],
         ];
+
         return results;
     }
 
@@ -167,12 +169,18 @@ class PolicySearcher extends Component {
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.effectiveDate),
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.startDate),
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.expiryDate),
-            policy => <PublishedComponent pubRef="product.ProductPicker" value={policy.product} readOnly={true} withLabel={false} />,
+            policy => <PublishedComponent pubRef="product.ProductPicker" value={policy.product} readOnly={true} withLabel={true} />,
             policy => <PublishedComponent pubRef="policy.PolicyOfficerPicker" value={policy.officer} readOnly={true} withLabel={false} />,
             policy => <PublishedComponent pubRef="policy.PolicyStagePicker" value={policy.stage} readOnly={true} withLabel={false} />,
             policy => <PublishedComponent pubRef="policy.PolicyStatusPicker" value={policy.status} readOnly={true} withLabel={false} />,
             policy => <AmountInput value={policy.value} readOnly={true} />,
             policy => <AmountInput value={policyBalance(policy)} readOnly={true} />,
+            policy => {
+                if(!policy.policyNumber) return  null
+                return(
+                  <PublishedComponent pubRef="policy.PolicyNumberInput" value={policy.policyNumber} readOnly={true} withLabel={false} />
+                )
+            },
             policy => formatDateFromISO(
                 this.props.modulesManager,
                 this.props.intl,
