@@ -63,7 +63,7 @@ class PolicyNumberInput extends Component {
   debouncedSearch = _debounce(this.fetch, this.props.modulesManager.getConf("fe-insuree", "debounceTime", 800));
 
   render() {
-    const { intl, readOnly, required, error, policyNumber, fetching } = this.props;
+    const { intl, readOnly, required, error, policyNumber, fetching, withLabel, label} = this.props;
     const isInvalid = !fetching && policyNumber && policyNumber.chequeImportLineStatus === "used" || !fetching && policyNumber === undefined;
 
     return (
@@ -71,7 +71,7 @@ class PolicyNumberInput extends Component {
         readOnly={readOnly}
         autoFocus={true}
         module="policy"
-        label="policy.PolicyNumber"
+        label={withLabel==false ? '':  "policy.PolicyNumber"}
         value={this.state.search}
         onChange={(v) => this.debouncedSearch(v)}
         required={required}
