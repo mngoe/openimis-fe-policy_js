@@ -169,7 +169,7 @@ class PolicySearcher extends Component {
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.effectiveDate),
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.startDate),
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.expiryDate),
-            policy => <PublishedComponent pubRef="product.ProductPicker" value={policy.product} readOnly={true} withLabel={true} />,
+            policy => <PublishedComponent pubRef="product.ProductPicker" value={policy.product} readOnly={true} withLabel={false} />,
             policy => <PublishedComponent pubRef="policy.PolicyOfficerPicker" value={policy.officer} readOnly={true} withLabel={false} />,
             policy => <PublishedComponent pubRef="policy.PolicyStagePicker" value={policy.stage} readOnly={true} withLabel={false} />,
             policy => <PublishedComponent pubRef="policy.PolicyStatusPicker" value={policy.status} readOnly={true} withLabel={false} />,
