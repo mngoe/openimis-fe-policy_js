@@ -12,7 +12,7 @@ import {
   clearCurrentPaginationPage,
 } from "@openimis/fe-core";
 import PolicySearcher from "../components/PolicySearcher";
-import { print } from "../actions";
+import { print, printMembershipCard } from "../actions";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -39,6 +39,10 @@ class PoliciesPage extends Component {
     this.props.print(selection.map((i) => decodeId(i.family.headInsuree.id)));
   };
 
+  printMembershipCardSelected = (selection) => {
+    this.props.printMembershipCard(selection.map((i) => decodeId(i.family.headInsuree.id)));
+  };
+
   canPrintSelected = (selection) =>
     !!selection && selection.length;
 
@@ -48,6 +52,13 @@ class PoliciesPage extends Component {
     actions.push({
       label: "policySummaries.printSelected",
       action: this.printSelected,
+      enabled: this.canPrintSelected,
+      icon: <PrintIcon />,
+    });
+
+    actions.push({
+      label: "policySummaries.printMembershipCardSelected",
+      action: this.printMembershipCardSelected,
       enabled: this.canPrintSelected,
       icon: <PrintIcon />,
     });
@@ -76,6 +87,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       print,
+      printMembershipCard,
       clearCurrentPaginationPage
     },
     dispatch,
