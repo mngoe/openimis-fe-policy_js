@@ -154,6 +154,17 @@ export function print(selection) {
   }
 }
 
+export function printMembershipCard(selection) {
+  return async (dispatch) => {
+    /*try {
+      const response =window.open('../../api/report/beneficiary_card_mauritania/pdf/?insureeids='+selection, "_blank")
+      return response;
+    } catch (err) {
+      console.error(err);
+    }*/
+  }
+}
+
 export function fetchPolicyFull(mm, policy_uuid) {
   let projections = [
     "uuid",

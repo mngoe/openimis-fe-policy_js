@@ -120,6 +120,7 @@
   "policy.deletePolicyDialog.message": "Are you sure you want to delete policy {label}? Related contributions will be deleted (but not payments).",
   "policy.policyValues.alert.title": "Policy Value Warning:",
   "policySummaries.printSelected": "Print Selected",
+  "policySummaries.printMembershipCardSelected": "Print Membership Card",
   "policy.policyValues.alert.message": "The family has more Insurees than the maximum number of members allowed in the selected product. However, the policy can still be created. Do you want to continue?",
   "policy.dialogActions.continue": "Continue",
   "policy.dialogActions.goBack": "Go back"
