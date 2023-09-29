@@ -50,14 +50,14 @@ class PoliciesPage extends Component {
     const { classes } = this.props;
     var actions = [];
     actions.push({
-      label: "policySummaries.printSelected",
+      label: "policySummaries.printMembershipCardSelected",
       action: this.printSelected,
       enabled: this.canPrintSelected,
       icon: <PrintIcon />,
     });
 
     actions.push({
-      label: "policySummaries.printMembershipCardSelected",
+      label: "policySummaries.rightCertificate",
       action: this.printMembershipCardSelected,
       enabled: this.canPrintSelected,
       icon: <PrintIcon />,
