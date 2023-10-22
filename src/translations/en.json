@@ -124,5 +124,5 @@
   "policy.dialogActions.continue": "Continue",
   "policy.dialogActions.goBack": "Go back",
   "policy.policy.PolicyNumber": "Cheque number",
-  "policy.PolicyNumberInput.error": "Invalid Policy Number"
+  "policy.PolicyNumberInput.error": "cheque already used"
 }

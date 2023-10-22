@@ -1,5 +1,5 @@
 {
     "policy.policy.PolicyNumber": "Numéro de chèque",
     "policy.policySummaries.policyNumber": "Numero de chèque",
-    "policy.PolicyNumberInput.error": "Numéro de chèque invalide"
+    "policy.PolicyNumberInput.error": "Chèque déjà utilisé"
 }
