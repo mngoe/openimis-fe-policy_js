@@ -12,7 +12,7 @@ import {
   ProgressOrError, Form, Helmet,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily } from "../actions";
+import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchFamilyOrInsureePolicies } from "../actions";
 import { policyLabel } from "../utils/utils";
 import { POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STATUS_IDLE, RIGHT_POLICY, RIGHT_POLICY_EDIT } from "../constants";
 
@@ -32,16 +32,23 @@ class PolicyForm extends Component {
     renew: false,
     confirmProduct: false,
     email: "",
+    policies: []
   };
 
   async initialFamilyFetch() {
-    await this.props.fetchFamily(
+  await this.props.fetchFamily(
       this.props.modulesManager,
       this.props.family_uuid
     );
+  await this.props.fetchFamilyOrInsureePolicies(
+    this.props.modulesManager,
+    [`chfId: "${this.props.family.headInsuree.chfId}"`]
+  )
     this.setState(() => ({
       policy: this._newPolicy(),
       email: this.props.family.headInsuree.email,
+      family: this.props.family,
+      policies: this.props.policies
     }));
   }
 
@@ -172,6 +179,12 @@ class PolicyForm extends Component {
       if (!this.state.policy.policyNumber) return false;
       if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
     }
+    if(this.state.policies && this.state.policy.product){
+      let policies = this.state.policies
+      for(let i=0; i<policies.length; i++){
+        if(this.state?.policy.product.code == policies[i].productCode) return false
+      }
+    }
 
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
@@ -192,12 +205,11 @@ class PolicyForm extends Component {
       policy_uuid,
       fetchingPolicy, fetchedPolicy, errorPolicy,
       readOnly, renew,
-      family
+      family,
+      policies
     } = this.props;
     const { policy, lockNew } = this.state;
     if (!rights.includes(RIGHT_POLICY)) return null;
-
-
     let ro = policy.clientMutationId ||
       lockNew ||
       (!!readOnly && !renew) ||
@@ -238,6 +250,7 @@ class PolicyForm extends Component {
               Panels={[PolicyMasterPanel]}
               onEditedChanged={this.onEditedChanged}
               forcedDirty={!ro && (!!this.props.renew || !policy_uuid)}
+              policies={this.state.policies}
             />
           )}
       </Fragment>
@@ -258,7 +271,8 @@ const mapStateToProps = state => ({
   family: state.insuree.family,
   submittingMutation: state.policy.submittingMutation,
   mutation: state.policy.mutation,
+  policies: state.policy.policies,
 })
 
-export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
+export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, {fetchFamilyOrInsureePolicies, fetchPolicyFull, fetchPolicyValues, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
 
