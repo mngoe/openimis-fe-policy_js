@@ -12,7 +12,7 @@ import {
   ProgressOrError, Form, Helmet,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchFamilyOrInsureePolicies } from "../actions";
+import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchPolicySummaries, fetchFamilyOrInsureePolicies} from "../actions";
 import { policyLabel } from "../utils/utils";
 import { POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STATUS_IDLE, RIGHT_POLICY, RIGHT_POLICY_EDIT } from "../constants";
 
@@ -36,21 +36,30 @@ class PolicyForm extends Component {
   };
 
   async initialFamilyFetch() {
-  await this.props.fetchFamily(
-      this.props.modulesManager,
-      this.props.family_uuid
-    );
-  await this.props.fetchFamilyOrInsureePolicies(
-    this.props.modulesManager,
-    [`chfId: "${this.props.family.headInsuree.chfId}"`]
-  )
+    await this.props.fetchFamily(this.props.modulesManager, this.props.family_uuid);
+    await this.props.fetchFamilyOrInsureePolicies(this.props.modulesManager, [
+      `chfId: "${this.props.family.headInsuree.chfId}"`,
+    ]);
+    let policies = this.props.policies;
+    let fetchedPolicies = [];
+    for (let i = 0; i <  policies.length; i++) {
+      let id = policies[i].policyUuid
+      let response = await this.props.fetchPolicySummaries(this.props.modulesManager, [
+        `uuid: "${id}"`,
+      ]);
+      let policy = response.payload.data.policies.edges[0].node;
+      fetchedPolicies.push(policy);
+    }
+
     this.setState(() => ({
       policy: this._newPolicy(),
       email: this.props.family.headInsuree.email,
       family: this.props.family,
-      policies: this.props.policies
+      policies: fetchedPolicies
     }));
   }
+
+
 
   _newPolicy() {
     let policy = {};
@@ -174,15 +183,16 @@ class PolicyForm extends Component {
       if (this.state.policy.product.program.nameProgram == "VIH") return false;
     }
 
-    //check policy number if is cs product
+    // check policy number if is cs product
     if ((this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
       if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
     }
+    //check one active policy for a program
     if(this.state.policies && this.state.policy.product){
       let policies = this.state.policies
       for(let i=0; i<policies.length; i++){
-        if(this.state?.policy.product.code == policies[i].productCode && policies[i].status == 2) return false
+        if(this.state.policy.product.program.nameProgram == policies[i].product.program.nameProgram && policies[i].status == 2) return false
       }
     }
 
@@ -271,8 +281,8 @@ const mapStateToProps = state => ({
   family: state.insuree.family,
   submittingMutation: state.policy.submittingMutation,
   mutation: state.policy.mutation,
-  policies: state.policy.policies,
+  policies: state.policy.policies
 })
 
-export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, {fetchFamilyOrInsureePolicies, fetchPolicyFull, fetchPolicyValues, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
+export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
 
