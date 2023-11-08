@@ -65,7 +65,7 @@ class PolicyNumberInput extends Component {
   render() {
     const { intl, readOnly, required, error, policyNumber, fetching, withLabel, label} = this.props;
     const isInvalid = !fetching && policyNumber && policyNumber.chequeImportLineStatus === "used" || !fetching && policyNumber === undefined;
-
+    const isNotExit = !fetching && policyNumber === undefined;
     return (
       <TextInput
         readOnly={readOnly}
@@ -75,7 +75,7 @@ class PolicyNumberInput extends Component {
         value={this.state.search}
         onChange={(v) => this.debouncedSearch(v)}
         required={required}
-        error={error || isInvalid ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : null}
+        error={error || isNotExit ?  formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : isInvalid ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.invalid") : null}
         endAdornment={
           <InputAdornment position="end">
             <>
