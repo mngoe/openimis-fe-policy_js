@@ -12,7 +12,7 @@ import {
   ProgressOrError, Form, Helmet, coreConfirm,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchPolicySummaries, fetchFamilyOrInsureePolicies } from "../actions";
+import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchPolicySummaries, fetchFamilyOrInsureePolicies, suspendPolicy} from "../actions";
 import { policyLabel } from "../utils/utils";
 import { POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STATUS_IDLE, RIGHT_POLICY, RIGHT_POLICY_EDIT } from "../constants";
 
@@ -121,7 +121,7 @@ class PolicyForm extends Component {
       );
     } else if (!_.isEqual(prevState.policy.product, this.state.policy.product) || !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)) {
       if (!this.props.readOnly && !!this.state.policy.product) {
-        this.props.fetchPolicyValues(this.state.policy)
+        this.props.fetchPolicyValues(this.state?.policy)
       }
     } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues) {
       this.setState(state => (
@@ -209,11 +209,21 @@ class PolicyForm extends Component {
 
   _save = (policy) => {
     let policies = this.state.policies
-
-
     for (let i = 0; i < policies.length; i++) {
-      if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status == 2) {
-        this.confirmActivePolicy(policy)
+      if(this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status == 2){
+        policies[i].status = 1
+        console.log('policiies de  i ', policies[i])
+      this.props.updatePolicy(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(
+          this.props.intl,
+          "policy",
+          "UpdatePolicy.mutationLabel",
+          { policy: policyLabel(this.props.modulesManager, policies[i]) }
+        )
+      );
+      this.confirmActivePolicy(policy)
       }
       else {
         this.setState(
@@ -322,5 +332,5 @@ const mapStateToProps = state => ({
   confirmed: state.core.confirmed,
 })
 
-export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, coreConfirm, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
+export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, coreConfirm, suspendPolicy, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
 
