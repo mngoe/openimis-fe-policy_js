@@ -2,5 +2,7 @@
     "policy.policy.PolicyNumber": "Numéro de chèque",
     "policy.policySummaries.policyNumber": "Numero de chèque",
     "policy.PolicyNumberInput.invalid": "Chèque déjà utilisé",
-    "policy.PolicyNumberInput.error": "Chèque invalide"
+    "policy.PolicyNumberInput.error": "Chèque invalide",
+    "policy.confirmActivePolicy.title": "Confirmation d'activation de police ",
+    "policy.confirmActivePolicy.message": "Vous avez deja une police active pour ce programe voulez vous la desactiver ? {label}?"
 }

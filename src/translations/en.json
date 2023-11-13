@@ -116,6 +116,8 @@
   "policy.SuspendPolicy.mutationLabel": "Suspend Policy {policy}",
   "policy.suspendPolicyDialog.title": "Suspend policy?",
   "policy.suspendPolicyDialog.message": "Are you sure you want to suspend policy {label}?",
+  "policy.confirmActivePolicy.title": "Confirm Activate Policy ",
+  "policy.confirmActivePolicy.message": "Vous avez deja une police active pour ce programe voulez vous la desactiver ? {label}?",
   "policy.DeletePolicy.mutationLabel": "Delete Policy {policy}",
   "policy.deletePolicyDialog.title": "Delete policy?",
   "policy.deletePolicyDialog.message": "Are you sure you want to delete policy {label}? Related contributions will be deleted (but not payments).",

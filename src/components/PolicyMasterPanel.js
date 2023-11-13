@@ -50,7 +50,9 @@ const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
 class PolicyMasterPanel extends FormPanel {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.confirmed && this.props.confirmed) {
-      this.state.confirmedAction();
+      if (this.state.confirmedAction){
+        this.state.confirmedAction();
+      }
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: this.state.reset + 1 });
@@ -158,6 +160,8 @@ class PolicyMasterPanel extends FormPanel {
       errorPolicyValues,
       title = "Policy.details.title",
     } = this.props;
+    console.log('this props : ', this.props)
+    console.log('this.state ', this.state)
 
     let actions = [];
     if (this.canRenew(edited)) {
