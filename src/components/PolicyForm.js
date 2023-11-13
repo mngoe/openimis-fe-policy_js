@@ -12,7 +12,7 @@ import {
   ProgressOrError, Form, Helmet, coreConfirm,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchPolicySummaries, fetchFamilyOrInsureePolicies, suspendPolicy} from "../actions";
+import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchPolicySummaries, fetchFamilyOrInsureePolicies, updatePolicy, suspendPolicy } from "../actions";
 import { policyLabel } from "../utils/utils";
 import { POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STATUS_IDLE, RIGHT_POLICY, RIGHT_POLICY_EDIT } from "../constants";
 
@@ -177,76 +177,75 @@ class PolicyForm extends Component {
   }
 
   canSave = () => {
-    // if (!this.state.policy.family) return false;
-    // if (!this.state.policy.product) return false;
+    if (!this.state.policy.family) return false;
+    if (!this.state.policy.product) return false;
 
-    // //check if vih insuree have vih policy
-    // if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
-    //   if (this.state.policy.product.program.nameProgram != "VIH") return false;
-    // } else {
-    //   if (this.state.policy.product.program.nameProgram == "VIH") return false;
-    // }
+    //check if vih insuree have vih policy
+    if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
+      if (this.state.policy.product.program.nameProgram != "VIH") return false;
+    } else {
+      if (this.state.policy.product.program.nameProgram == "VIH") return false;
+    }
 
-    // //check policy number if is cs product
-    // if ((this.state.policy.product.program.nameProgram) == "Chèque Santé") {
-    //   if (!this.state.policy.policyNumber) return false;
-    //   if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
-    // }
-    // if(this.state.policies && this.state.policy.product){
-    //   let policies = this.state.policies
-    //   for(let i=0; i<policies.length; i++){
-    //     if(this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status == 2) return false
-    //   }
-    // }
-
-    // if (!this.state.policy.enrollDate) return false;
-    // if (!this.state.policy.startDate) return false;
-    // if (!this.state.policy.expiryDate) return false;
-    // //if (!this.state.policy.value) return false;
-    // if (!this.state.policy.officer) return false;
+    //check policy number if is cs product
+    if ((this.state.policy.product.program.nameProgram) == "Chèque Santé") {
+      if (!this.state.policy.policyNumber) return false;
+      if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+    }
+    if (!this.state.policy.enrollDate) return false;
+    if (!this.state.policy.startDate) return false;
+    if (!this.state.policy.expiryDate) return false;
+    //if (!this.state.policy.value) return false;
+    if (!this.state.policy.officer) return false;
     return true;
   }
 
   _save = (policy) => {
     let policies = this.state.policies
-    for (let i = 0; i < policies.length; i++) {
-      if(this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status == 2){
-        policies[i].status = 1
-        console.log('policiies de  i ', policies[i])
-      this.props.updatePolicy(
-        this.props.modulesManager,
-        policy,
-        formatMessageWithValues(
-          this.props.intl,
-          "policy",
-          "UpdatePolicy.mutationLabel",
-          { policy: policyLabel(this.props.modulesManager, policies[i]) }
-        )
-      );
-      this.confirmActivePolicy(policy)
+    let previousPolicy = null;
+    if (!!policies && policies.length > 0) {
+      for (let i = 0; i < policies.length; i++) {
+        if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
+          previousPolicy  = policies[i]
+        }
       }
-      else {
+      if (previousPolicy !=null){
+        this.confirmActivePolicy(policy, previousPolicy)
+      }else {
         this.setState(
           { lockNew: !policy.uuid }, // avoid duplicates
           e => this.props.save(policy))
       }
     }
-
-    // this.setState(
-    //   { lockNew: !policy.uuid }, // avoid duplicates
-    //   e => this.props.save(policy))
+    else {
+      this.setState(
+        { lockNew: !policy.uuid }, // avoid duplicates
+        e => this.props.save(policy))
+    }
   }
 
-  confirmActivePolicy = (policy) => {
-    let confirmedAction = () => this.setState(
-      { lockNew: !policy.uuid }, // avoid duplicates
-      e => this.props.save(policy))
+  confirmActivePolicy = (policy, previousPolicy) => {
+    let confirmedAction = () => {
+      if (previousPolicy != undefined){
+        this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
+          this.props.intl,
+          "policy",
+          "SuspendPolicy.mutationLabel",
+          { policy: policyLabel(this.props.modulesManager, previousPolicy) }
+      ))
+      }
+
+      this.setState(
+        { lockNew: !policy.uuid }, // avoid duplicates
+        e => this.props.save(policy))
+
+    }
 
     let confirm = e => this.props.coreConfirm(
-      formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.title", { label: policyLabel(this.props.modulesManager, policy) }),
+      formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.title", { label: policyLabel(this.props.modulesManager, previousPolicy) }),
       formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.message",
         {
-          label: policyLabel(this.props.modulesManager, policy),
+          label: policyLabel(this.props.modulesManager, previousPolicy),
         }),
     );
     this.setState(
@@ -332,5 +331,5 @@ const mapStateToProps = state => ({
   confirmed: state.core.confirmed,
 })
 
-export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, coreConfirm, suspendPolicy, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
+export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, updatePolicy, suspendPolicy, coreConfirm, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
 
