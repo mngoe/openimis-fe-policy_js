@@ -32,7 +32,8 @@ class PolicyForm extends Component {
     renew: false,
     confirmProduct: false,
     email: "",
-    policies: []
+    policies: [],
+    saving: null
   };
 
   async initialFamilyFetch() {
@@ -177,30 +178,31 @@ class PolicyForm extends Component {
   }
 
   canSave = () => {
-    if (!this.state.policy.family) return false;
-    if (!this.state.policy.product) return false;
+    // if (!this.state.policy.family) return false;
+    // if (!this.state.policy.product) return false;
 
-    //check if vih insuree have vih policy
-    if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
-      if (this.state.policy.product.program.nameProgram != "VIH") return false;
-    } else {
-      if (this.state.policy.product.program.nameProgram == "VIH") return false;
-    }
+    // //check if vih insuree have vih policy
+    // if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
+    //   if (this.state.policy.product.program.nameProgram != "VIH") return false;
+    // } else {
+    //   if (this.state.policy.product.program.nameProgram == "VIH") return false;
+    // }
 
-    //check policy number if is cs product
-    if ((this.state.policy.product.program.nameProgram) == "Chèque Santé") {
-      if (!this.state.policy.policyNumber) return false;
-      if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
-    }
-    if (!this.state.policy.enrollDate) return false;
-    if (!this.state.policy.startDate) return false;
-    if (!this.state.policy.expiryDate) return false;
-    //if (!this.state.policy.value) return false;
-    if (!this.state.policy.officer) return false;
+    // //check policy number if is cs product
+    // if ((this.state.policy.product.program.nameProgram) == "Chèque Santé") {
+    //   if (!this.state.policy.policyNumber) return false;
+    //   if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+    // }
+    // if (!this.state.policy.enrollDate) return false;
+    // if (!this.state.policy.startDate) return false;
+    // if (!this.state.policy.expiryDate) return false;
+    // //if (!this.state.policy.value) return false;
+    // if (!this.state.policy.officer) return false;
     return true;
   }
 
   _save = (policy) => {
+
     let policies = this.state.policies
     let previousPolicy = null;
     if (!!policies && policies.length > 0) {
@@ -210,7 +212,11 @@ class PolicyForm extends Component {
         }
       }
       if (previousPolicy !=null){
+        this.setState({
+          saving: false
+        })
         this.confirmActivePolicy(policy, previousPolicy)
+
       }else {
         this.setState(
           { lockNew: !policy.uuid }, // avoid duplicates
@@ -238,8 +244,8 @@ class PolicyForm extends Component {
       this.setState(
         { lockNew: !policy.uuid }, // avoid duplicates
         e => this.props.save(policy))
-
     }
+
 
     let confirm = e => this.props.coreConfirm(
       formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.title", { label: policyLabel(this.props.modulesManager, previousPolicy) }),
@@ -306,6 +312,7 @@ class PolicyForm extends Component {
               onEditedChanged={this.onEditedChanged}
               forcedDirty={!ro && (!!this.props.renew || !policy_uuid)}
               policies={this.state.policies}
+              saving={this.state.saving}
 
             />
           )}
