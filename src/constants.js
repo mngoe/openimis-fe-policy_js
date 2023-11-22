@@ -7,7 +7,7 @@ export const POLICY_STATUS = [POLICY_STATUS_IDLE, POLICY_STATUS_READY, POLICY_ST
 export const POLICY_STAGE_NEW = 'N';
 export const POLICY_STAGE_RENEW = 'R';
 export const POLICY_STAGE = [POLICY_STAGE_NEW, POLICY_STAGE_RENEW]
-
+export const HIV_EMAIL = "newhivuser_XM7dw70J0M3N@gmail.com"
 export const RIGHT_POLICY = 101201 // supposed to be 101200 ... but in practice
 export const RIGHT_POLICY_SEARCH = 101201
 export const RIGHT_POLICY_ADD = 101202
