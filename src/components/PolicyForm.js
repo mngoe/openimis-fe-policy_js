@@ -270,7 +270,6 @@ class PolicyForm extends Component {
       family,
       policies
     } = this.props;
-    console.log('state ', this.state)
     const { policy, lockNew } = this.state;
     if (!rights.includes(RIGHT_POLICY)) return null;
     let ro = policy.clientMutationId ||
