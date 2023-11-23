@@ -181,11 +181,13 @@ class PolicyForm extends Component {
     if (!this.state.policy.family) return false;
     if (!this.state.policy.product) return false;
 
-    //check if vih insuree have vih policy
 
-    if (this.state.family && this.state.policy.product){
-      if((this.state.family.headInsuree.email != HIV_EMAIL) && this.state.policy.product.program.nameProgram == "VIH") return false
-    }
+   //check if vih insuree have vih policy
+    if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
+  if (this.state.policy.product.program.nameProgram != "VIH") return false;
+    } else {
+  if (this.state.policy.product.program.nameProgram == "VIH") return false;
+  }
 
 
     //check policy number if is cs product
@@ -268,7 +270,7 @@ class PolicyForm extends Component {
       family,
       policies
     } = this.props;
-
+    console.log('state ', this.state)
     const { policy, lockNew } = this.state;
     if (!rights.includes(RIGHT_POLICY)) return null;
     let ro = policy.clientMutationId ||
