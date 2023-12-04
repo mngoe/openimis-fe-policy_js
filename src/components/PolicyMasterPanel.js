@@ -302,7 +302,7 @@ class PolicyMasterPanel extends FormPanel {
                   canFetch={this.props.edited.family ? true : false}
                 />
               </Grid>
-              {!!edited.product && (edited.product?.program?.nameProgram) == "Chèque Santé" &&
+              {!!edited.product && ((edited.product?.program?.nameProgram) == "Chèque Santé" || (edited.product?.program?.nameProgram) == "Cheque Santé"  ) &&
                 (
                   <Grid item xs={3} className={classes.item}>
                     <PublishedComponent

@@ -191,7 +191,7 @@ class PolicyForm extends Component {
 
 
     //check policy number if is cs product
-    if ((this.state.policy.product.program.nameProgram) == "Chèque Santé") {
+    if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
       if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
     }
@@ -270,6 +270,7 @@ class PolicyForm extends Component {
       family,
       policies
     } = this.props;
+    console.log('ptops ', this.props)
     const { policy, lockNew } = this.state;
     if (!rights.includes(RIGHT_POLICY)) return null;
     let ro = policy.clientMutationId ||
