@@ -161,7 +161,6 @@ class PolicyMasterPanel extends FormPanel {
       errorPolicyValues,
       title = "Policy.details.title",
     } = this.props;
-
     let actions = [];
     if (this.canRenew(edited)) {
       actions.push({
@@ -302,7 +301,7 @@ class PolicyMasterPanel extends FormPanel {
                   canFetch={this.props.edited.family ? true : false}
                 />
               </Grid>
-              {!!edited.product && ((edited.product?.program?.nameProgram) == "Chèque Santé" || (edited.product?.program?.nameProgram) == "Cheque Santé"  ) &&
+              {!!edited.product && ((edited.product?.program?.nameProgram) == "Chèque Santé" || "Cheque Santé"  ) &&
                 (
                   <Grid item xs={3} className={classes.item}>
                     <PublishedComponent

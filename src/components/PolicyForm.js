@@ -268,9 +268,8 @@ class PolicyForm extends Component {
       fetchingPolicy, fetchedPolicy, errorPolicy,
       readOnly, renew,
       family,
-      policies
+      policies  
     } = this.props;
-    console.log('ptops ', this.props)
     const { policy, lockNew } = this.state;
     if (!rights.includes(RIGHT_POLICY)) return null;
     let ro = policy.clientMutationId ||
