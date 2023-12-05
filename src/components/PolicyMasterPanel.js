@@ -301,7 +301,7 @@ class PolicyMasterPanel extends FormPanel {
                   canFetch={this.props.edited.family ? true : false}
                 />
               </Grid>
-              {(!!edited.product && (edited.product?.program?.nameProgram === "Chèque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
+              {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
                 <Grid item xs={3} className={classes.item}>
                   <PublishedComponent
                     pubRef="policy.PolicyNumberInput"
@@ -314,7 +314,7 @@ class PolicyMasterPanel extends FormPanel {
                     onChange={(v) => this.updateAttribute("policyNumber", v)}
                   />
                 </Grid>
-              ) : null}
+              ) : null }
 
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
