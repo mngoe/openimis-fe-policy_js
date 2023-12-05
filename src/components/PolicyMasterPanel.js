@@ -301,22 +301,21 @@ class PolicyMasterPanel extends FormPanel {
                   canFetch={this.props.edited.family ? true : false}
                 />
               </Grid>
-              {!!edited.product && ((edited.product?.program?.nameProgram) == "Chèque Santé" || "Cheque Santé"  ) &&
-                (
-                  <Grid item xs={3} className={classes.item}>
-                    <PublishedComponent
-                      pubRef="policy.PolicyNumberInput"
-                      module="policy"
-                      label="policy.PolicyNumber"
-                      required={true}
-                      readOnly={!!edited_id || readOnly}
-                      value={!!edited && edited.policyNumber}
-                      new_policy={!edited?.id}
-                      onChange={(v) => this.updateAttribute("policyNumber", v)}
-                    />
-                  </Grid>
-                )
-              }
+              {(!!edited.product && (edited.product?.program?.nameProgram === "Chèque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
+                <Grid item xs={3} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="policy.PolicyNumberInput"
+                    module="policy"
+                    label="policy.PolicyNumber"
+                    required={true}
+                    readOnly={!!edited_id || readOnly}
+                    value={!!edited && edited.policyNumber}
+                    new_policy={!edited?.id}
+                    onChange={(v) => this.updateAttribute("policyNumber", v)}
+                  />
+                </Grid>
+              ) : null}
+
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyOfficerPicker"
