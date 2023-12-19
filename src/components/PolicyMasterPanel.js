@@ -48,9 +48,12 @@ const POLICY_POLICY_CONTRIBUTION_KEY = "policy.Policy";
 const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
 
 class PolicyMasterPanel extends FormPanel {
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.confirmed && this.props.confirmed) {
-      this.state.confirmedAction();
+      if (this.state.confirmedAction){
+        this.state.confirmedAction();
+      }
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: this.state.reset + 1 });
@@ -296,6 +299,7 @@ class PolicyMasterPanel extends FormPanel {
                   )}
                   onChange={this._onProductChange}
                   required={true}
+                  canFetch={this.props.edited.family ? true : false}
                 />
               </Grid>
               {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
