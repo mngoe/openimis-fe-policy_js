@@ -217,14 +217,14 @@ class PolicyForm extends Component {
       if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
         return false;
       }
-    } else if (this.state.policy.product.ageMinimal == null && this.state.policy.product.ageMaximal != null && Age <= this.state.policy.product.ageMaximal) {
+    } else if (this.state.policy.product.ageMinimal == null && this.state.policy.product.ageMaximal != null && Age >= this.state.policy.product.ageMaximal) {
       return false;
-    } else if (this.state.policy.product.ageMaximal == null && this.state.policy.product.ageMinimal != null && Age >= this.state.policy.product.ageMinimal) {
+    } else if (this.state.policy.product.ageMaximal == null && this.state.policy.product.ageMinimal != null && Age <= this.state.policy.product.ageMinimal) {
       return false;
     }
 
     }
-    
+
     //if (!this.state.policy.value) return false;
     if (!this.state.policy.officer) return false;
     return true;
