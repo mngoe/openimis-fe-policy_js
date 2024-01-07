@@ -117,16 +117,30 @@ class PolicyForm extends Component {
         policy = this._renewPolicy(policy)
       }
       policy.ext = !!policy.jsonExt ? JSON.parse(policy.jsonExt) : {};
-      let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
-      this.setState(
-        { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
-        e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
-      );
+      if ( this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
+        let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
+        this.setState(
+          { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
+          e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
+        );
+      }else{
+        this.setState(
+          { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
+          e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
+        );
+      }
+
     } else if (!_.isEqual(prevState.policy.product, this.state.policy.product) || !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)) {
+
       if (!this.props.readOnly && !!this.state.policy.product) {
+        if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
         let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
         this.props.fetchPolicyValues(this.state?.policy, years)
-      }
+        }else{
+          this.props.fetchPolicyValues(this.state?.policy)
+        }
+    }
+
     } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues) {
       this.setState(state => (
         { policy: { ...state.policy, ...this.props.policyValues.policy } }
@@ -181,12 +195,12 @@ class PolicyForm extends Component {
     this.setState(state => ({ policy: { ...state.policy, ...p } }))
   }
 
-  verifyAge = (age) =>{
+  verifyAge = (age) => {
     let birthDate = new Date(age)
     let today = new Date()
     let daysMs = today - birthDate
     let days = Math.round(daysMs / (1000 * 60 * 60 * 24));
-    let Age = Math.round(days/365,25)
+    let Age = Math.round(days / 365, 25)
     return Age
   }
 
@@ -211,17 +225,17 @@ class PolicyForm extends Component {
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
     if (!this.state.policy.expiryDate) return false;
-    if (this.state.dob && this.state.policy && this.state.policy.product){
-     let Age =  this.verifyAge(this.state.dob)
-     if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMinimal != null) {
-      if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
+    if (this.state.dob && this.state.policy && this.state.policy.product) {
+      let Age = this.verifyAge(this.state.dob)
+      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMinimal != null) {
+        if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
+          return false;
+        }
+      } else if (this.state.policy.product.ageMinimal == null && this.state.policy.product.ageMaximal != null && Age >= this.state.policy.product.ageMaximal) {
+        return false;
+      } else if (this.state.policy.product.ageMaximal == null && this.state.policy.product.ageMinimal != null && Age <= this.state.policy.product.ageMinimal) {
         return false;
       }
-    } else if (this.state.policy.product.ageMinimal == null && this.state.policy.product.ageMaximal != null && Age >= this.state.policy.product.ageMaximal) {
-      return false;
-    } else if (this.state.policy.product.ageMaximal == null && this.state.policy.product.ageMinimal != null && Age <= this.state.policy.product.ageMinimal) {
-      return false;
-    }
 
     }
 
@@ -250,26 +264,26 @@ class PolicyForm extends Component {
         this.setState(
           { lockNew: !policy.uuid }, // avoid duplicates
           e => this.props.save(policy))
-          this.dispatchExpiryDate(policy)
+        this.dispatchExpiryDate(policy)
       }
     }
     else {
       this.setState(
         { lockNew: !policy.uuid }, // avoid duplicates
         e => this.props.save(policy))
-        this.dispatchExpiryDate(policy)
+      this.dispatchExpiryDate(policy)
     }
 
   }
 
-  dispatchExpiryDate = (policy) =>{
+  dispatchExpiryDate = (policy) => {
     this.props.coreAlert(
       formatMessage(this.props.intl, "policy", "policy.dispatchExpiryDate.title"),
       formatMessageWithValues(this.props.intl, "policy", "dispatchExpiryDate.message",
-      {
-        label: policy.expiryDate,
-      })
-      )
+        {
+          label: policy.expiryDate,
+        })
+    )
 
   }
 
@@ -287,8 +301,8 @@ class PolicyForm extends Component {
       this.setState(
         { lockNew: !policy.uuid }, // avoid duplicates
         e => this.props.save(policy))
-        this.dispatchExpiryDate(policy)
-      }
+      this.dispatchExpiryDate(policy)
+    }
 
 
 
@@ -357,7 +371,7 @@ class PolicyForm extends Component {
               forcedDirty={!ro && (!!this.props.renew || !policy_uuid)}
               policies={this.state.policies}
               saving={this.state.saving}
-              insureeAge = {this.verifyAge(this.state.dob)}
+              insureeAge={this.verifyAge(this.state.dob)}
 
             />
           )}
