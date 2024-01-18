@@ -66,7 +66,7 @@ class PolicyForm extends Component {
     let policy = {};
     policy.status = POLICY_STATUS_IDLE;
     policy.stage = POLICY_STAGE_NEW;
-    policy.enrollDate = toISODate(moment().toDate());
+    //policy.enrollDate = toISODate(moment().toDate());
     policy.jsonExt = {};
     if (!!this.props.family && this.props.family.uuid === this.props.family_uuid) {
       policy.family = this.props.family;
@@ -79,7 +79,7 @@ class PolicyForm extends Component {
     policy.prevPolicy = from_policy;
     policy.status = POLICY_STATUS_IDLE;
     policy.stage = POLICY_STAGE_RENEW;
-    policy.enrollDate = toISODate(moment().toDate());
+    //policy.enrollDate = toISODate(moment().toDate());
     policy.family = from_policy.family;
     policy.product = from_policy.product;
     return policy;
