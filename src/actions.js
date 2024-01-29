@@ -153,7 +153,7 @@ export function fetchPolicySummaries(mm, filters) {
     "validityTo",
     "policyNumber"
   ];
-  const payload = formatPageQuery("policies", filters, projections);
+  const payload = formatPageQueryWithCount("policies", filters, projections);
   return graphql(payload, "POLICY_POLICIES");
 }
 
