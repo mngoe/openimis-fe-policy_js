@@ -117,13 +117,13 @@ class PolicyForm extends Component {
         policy = this._renewPolicy(policy)
       }
       policy.ext = !!policy.jsonExt ? JSON.parse(policy.jsonExt) : {};
-      if ( this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
+      if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
         let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
         this.setState(
           { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
           e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
         );
-      }else{
+      } else {
         this.setState(
           { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
           e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
@@ -134,12 +134,12 @@ class PolicyForm extends Component {
 
       if (!this.props.readOnly && !!this.state.policy.product) {
         if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
-        let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
-        this.props.fetchPolicyValues(this.state?.policy, years)
-        }else{
+          let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
+          this.props.fetchPolicyValues(this.state?.policy, years)
+        } else {
           this.props.fetchPolicyValues(this.state?.policy)
         }
-    }
+      }
 
     } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues) {
       this.setState(state => (
@@ -238,6 +238,21 @@ class PolicyForm extends Component {
       }
 
     }
+
+    //check female active cs policy
+    if (this.state.policy.product.program.code == "PAL") {
+      if (this.state.policy.family.headInsuree.gender.code == "F") {
+        let policies = this.state.policies;
+        if (!!policies && policies.length > 0) {
+          for (let i = 0; i < policies.length; i++) {
+            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
 
     //if (!this.state.policy.value) return false;
     if (!this.state.policy.officer) return false;
