@@ -263,10 +263,14 @@ class PolicyForm extends Component {
 
     let policies = this.state.policies
     let previousPolicy = null;
+    let existFagepPolicy = null;
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
         if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
           previousPolicy = policies[i]
+        }
+        if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
+          existFagepPolicy = policies[i]
         }
       }
       if (previousPolicy != null) {
@@ -276,10 +280,19 @@ class PolicyForm extends Component {
         this.confirmActivePolicy(policy, previousPolicy)
 
       } else {
-        this.setState(
-          { lockNew: !policy.uuid }, // avoid duplicates
-          e => this.props.save(policy))
-        this.dispatchExpiryDate(policy)
+        if (existFagepPolicy != null &&
+          (this.state.policy.product.program.nameProgram == "Cheque Santé" || this.state.policy.product.program.nameProgram == "Chèque Santé")
+        ) {
+          this.setState({
+            saving: false
+          })
+          this.confirmCancelFagepPolicy(policy, existFagepPolicy)
+        } else {
+          this.setState(
+            { lockNew: !policy.uuid }, // avoid duplicates
+            e => this.props.save(policy))
+          this.dispatchExpiryDate(policy)
+        }
       }
     }
     else {
@@ -326,6 +339,32 @@ class PolicyForm extends Component {
       formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.message",
         {
           label: policyLabel(this.props.modulesManager, previousPolicy),
+        }),
+    );
+    this.setState(
+      { confirmedAction },
+      confirm
+    )
+  }
+
+  //suspend fagep policy to add cs policy
+  confirmCancelFagepPolicy = (policy, existFagepPolicy) => {
+    let confirmedAction = () => {
+      this.props.suspendPolicy(this.props.modulesManager, existFagepPolicy, formatMessageWithValues(
+        this.props.intl,
+        "policy",
+        "SuspendPolicy.mutationLabel",
+        { policy: policyLabel(this.props.modulesManager, existFagepPolicy) }
+      ))
+      this.setState(
+        { lockNew: !policy.uuid }, // avoid duplicates
+        e => this.props.save(policy))
+    }
+    let confirm = e => this.props.coreConfirm(
+      formatMessageWithValues(this.props.intl, "policy", "ConfirmSuspendPolicyDialog.title", { label: policyLabel(this.props.modulesManager, existFagepPolicy) }),
+      formatMessageWithValues(this.props.intl, "policy", "ConfirmSuspendPolicyDialog.message",
+        {
+          label: policyLabel(this.props.modulesManager, existFagepPolicy),
         }),
     );
     this.setState(

@@ -3,7 +3,7 @@
   "policy.PolicyFilter.product.label": "Product",
   "policy.PolicyFilter.product.placeholder": "Search for a Product...",
   "policy.confirmActivePolicy.title": "Confirm Activate Policy ",
-  "policy.confirmActivePolicy.message": "Vous avez deja une police active pour ce programe voulez vous la desactiver ? {label}?",
+  "policy.confirmActivePolicy.message": "You already have an active police for this program, would you like to deactivate it? ? {label}?",
   "policy.policyValues.alert.test": "Policy Value test:",
   "policy.dialogActions.continue": "Continue",
   "policy.dialogActions.goBack": "Go back",
@@ -154,5 +154,7 @@
     "policy.PolicyRenewalsReport.sorting.null": "",
     "policy.PolicyRenewalsReport.sorting.D": "",
     "policy.PolicyRenewalsReport.sorting.R": "",
-    "policy.PolicyRenewalsReport.sorting.O": ""
+    "policy.PolicyRenewalsReport.sorting.O": "",
+    "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
+    "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?"
 }
