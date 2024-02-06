@@ -238,25 +238,24 @@ class PolicyForm extends Component {
         this.confirmActivePolicy(policy, previousPolicy)
 
       }else {
-        this.setState(
-          { lockNew: !policy.uuid }, // avoid duplicates
-          e => this.props.save(policy))
+        if (existFagepPolicy != null &&
+          (this.state.policy.product.program.nameProgram == "Cheque Santé" || this.state.policy.product.program.nameProgram == "Chèque Santé")
+        ) {
+          this.setState({
+            saving: false
+          })
+          this.confirmCancelFagepPolicy(policy, existFagepPolicy)
+        } else {
+          this.setState(
+            { lockNew: !policy.uuid }, // avoid duplicates
+            e => this.props.save(policy))
+        }
       }
     }
     else {
-      if (existFagepPolicy != null &&
-        (this.state.policy.product.program.nameProgram == "Cheque Santé" || this.state.policy.product.program.nameProgram == "Chèque Santé")
-      ) {
-        this.setState({
-          saving: false
-        })
-        this.confirmCancelFagepPolicy(policy, existFagepPolicy)
-      } else {
-        this.setState(
-          { lockNew: !policy.uuid }, // avoid duplicates
-          e => this.props.save(policy))
-        this.dispatchExpiryDate(policy)
-      }
+      this.setState(
+        { lockNew: !policy.uuid }, // avoid duplicates
+        e => this.props.save(policy))
     }
   }
 
