@@ -4,5 +4,7 @@
     "policy.PolicyNumberInput.invalid": "Chèque déjà utilisé",
     "policy.PolicyNumberInput.error": "Chèque invalide",
     "policy.confirmActivePolicy.title": "Confirmation d'activation de police ",
-    "policy.confirmActivePolicy.message": "Vous avez déja une police active pour ce programe voulez vous la desactiver ? {label}?"
+    "policy.confirmActivePolicy.message": "Vous avez déja une police active pour ce programe voulez vous la desactiver ? {label}?",
+    "policy.ConfirmSuspendPolicyDialog.title": "Confirmer la suspension de la police ",
+    "policy.ConfirmSuspendPolicyDialog.message": "Vous avez déja une police active pour le programme FAGEP. Voulez vous la désactiver ? {label}?"
 }

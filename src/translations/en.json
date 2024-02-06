@@ -127,5 +127,7 @@
   "policy.dialogActions.goBack": "Go back",
   "policy.policy.PolicyNumber": "Cheque number",
   "policy.PolicyNumberInput.invalid": "cheque already used",
-  "policy.PolicyNumberInput.error": "Invalid Cheque"
+  "policy.PolicyNumberInput.error": "Invalid Cheque",
+  "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
+  "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?"
 }
