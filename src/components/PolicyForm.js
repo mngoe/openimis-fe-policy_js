@@ -211,9 +211,11 @@ class PolicyForm extends Component {
 
     //check if vih insuree have vih policy
     if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
-      if (this.state.policy.product.program.code != "VIH") return false;
-    } else {
-      if (this.state.policy.product.program.code == "VIH") return false;
+      if (!!this.state.policy.product.program &&  this.state.policy.product.program.code != "VIH") return false;
+      if ((this.state.policy.product.program.code == "VIH") && (this.state.policy.product.code == "CSU-UF") ) return false
+    }
+    else {
+      if (!!this.state.policy.product.program && this.state.policy.product.program.code == "VIH" && this.state.policy.product.code != "CSU-UF" ) return false;
     }
 
 
