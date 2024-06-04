@@ -182,17 +182,18 @@ class PolicyForm extends Component {
     if (!this.state.policy.product) return false;
 
 
-   //check if vih insuree have vih policy
+    //check if vih insuree have vih policy
     if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
-      if (this.state.policy.product.program.code != "VIH") return false;
+      if (!!this.state.policy.product.program && this.state.policy.product.program.code != "VIH") return false;
+      if ((this.state.policy.product.program.code == "VIH") && (this.state.policy.product.code == "CSU-UF")) return false
     } else {
-      if (this.state.policy.product.program.code == "VIH") return false;
+      if (!!this.state.policy.product.program && this.state.policy.product.program.code == "VIH" && this.state.policy.product.code != "CSU-UF") return false;
     }
 
     //check policy number if is cs product
     if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
-      if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+      if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
     }
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
@@ -225,19 +226,19 @@ class PolicyForm extends Component {
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
         if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
-          previousPolicy  = policies[i]
+          previousPolicy = policies[i]
         }
         if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
           existFagepPolicy = policies[i]
         }
       }
-      if (previousPolicy !=null){
+      if (previousPolicy != null) {
         this.setState({
           saving: false
         })
         this.confirmActivePolicy(policy, previousPolicy)
 
-      }else {
+      } else {
         if (existFagepPolicy != null &&
           (this.state.policy.product.program.nameProgram == "Cheque Santé" || this.state.policy.product.program.nameProgram == "Chèque Santé")
         ) {
@@ -261,13 +262,13 @@ class PolicyForm extends Component {
 
   confirmActivePolicy = (policy, previousPolicy) => {
     let confirmedAction = () => {
-      if (previousPolicy != undefined){
+      if (previousPolicy != undefined) {
         this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
           this.props.intl,
           "policy",
           "SuspendPolicy.mutationLabel",
           { policy: policyLabel(this.props.modulesManager, previousPolicy) }
-      ))
+        ))
       }
 
       this.setState(
