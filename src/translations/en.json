@@ -44,7 +44,7 @@
   "policy.insureeEligibility.minDate": "Min Date",
   "policy.insureeEligibility.left": "Left",
   "policy.insureePolicies.deduction": "Deduction",
-    "policy.insureePolicies.ceiling": "Ceiling",
+  "policy.insureePolicies.ceiling": "Ceiling",
     "policy.insureePolicies.noActivePolicy": "No active Policy",
     "policy.policies.header": "{count} Policies",
     "policy.policiesOfInsuree.header": "{count} Policies of Insuree {chfId}",
@@ -157,4 +157,5 @@
     "policy.PolicyRenewalsReport.sorting.O": "",
     "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
     "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?"
+
 }

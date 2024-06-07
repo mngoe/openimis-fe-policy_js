@@ -67,7 +67,9 @@ class PolicyForm extends Component {
     let policy = {};
     policy.status = POLICY_STATUS_IDLE;
     policy.stage = POLICY_STAGE_NEW;
+
     // policy.enrollDate = toISODate(moment().toDate());
+
     policy.jsonExt = {};
     if (!!this.props.family && this.props.family.uuid === this.props.family_uuid) {
       policy.family = this.props.family;
@@ -218,7 +220,6 @@ class PolicyForm extends Component {
       if (!!this.state.policy.product.program && this.state.policy.product.program.code == "VIH" && this.state.policy.product.code != "CSU-UF" ) return false;
     }
 
-
     //check policy number if is cs product
     if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
@@ -227,6 +228,7 @@ class PolicyForm extends Component {
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
     if (!this.state.policy.expiryDate) return false;
+
     if (this.state.dob && this.state.policy && this.state.policy.product) {
       let Age = this.verifyAge(this.state.dob)
       if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMinimal != null) {
@@ -255,9 +257,22 @@ class PolicyForm extends Component {
       }
     }
 
-
     //if (!this.state.policy.value) return false;
     if (!this.state.policy.officer) return false;
+
+    //check female active cs policy
+    if (this.state.policy.product.program.code == "PAL") {
+      if (this.state.policy.family.headInsuree.gender.code == "F") {
+        let policies = this.state.policies;
+        if (!!policies && policies.length > 0) {
+          for (let i = 0; i < policies.length; i++) {
+            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
+              return false;
+            }
+          }
+        }
+      }
+    }
     return true;
   }
 
@@ -270,6 +285,9 @@ class PolicyForm extends Component {
       for (let i = 0; i < policies.length; i++) {
         if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
           previousPolicy = policies[i]
+        }
+        if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
+          existFagepPolicy = policies[i]
         }
         if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
           existFagepPolicy = policies[i]
