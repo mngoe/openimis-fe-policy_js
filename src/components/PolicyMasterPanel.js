@@ -161,7 +161,6 @@ class PolicyMasterPanel extends FormPanel {
       errorPolicyValues,
       title = "Policy.details.title",
     } = this.props;
-
     let actions = [];
     if (this.canRenew(edited)) {
       actions.push({
@@ -316,6 +315,7 @@ class PolicyMasterPanel extends FormPanel {
                   />
                 </Grid>
               ) : null }
+
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyOfficerPicker"

@@ -56,6 +56,7 @@ class PolicyForm extends Component {
       policy: this._newPolicy(),
       email: this.props.family.headInsuree.email,
       family: this.props.family,
+      dob: this.props.family.headInsuree.dob,
       policies: fetchedPolicies
     }));
   }
@@ -66,7 +67,9 @@ class PolicyForm extends Component {
     let policy = {};
     policy.status = POLICY_STATUS_IDLE;
     policy.stage = POLICY_STAGE_NEW;
-    //policy.enrollDate = toISODate(moment().toDate());
+
+    // policy.enrollDate = toISODate(moment().toDate());
+
     policy.jsonExt = {};
     if (!!this.props.family && this.props.family.uuid === this.props.family_uuid) {
       policy.family = this.props.family;
@@ -79,7 +82,7 @@ class PolicyForm extends Component {
     policy.prevPolicy = from_policy;
     policy.status = POLICY_STATUS_IDLE;
     policy.stage = POLICY_STAGE_RENEW;
-    //policy.enrollDate = toISODate(moment().toDate());
+    // policy.enrollDate = toISODate(moment().toDate());
     policy.family = from_policy.family;
     policy.product = from_policy.product;
     return policy;
@@ -116,14 +119,30 @@ class PolicyForm extends Component {
         policy = this._renewPolicy(policy)
       }
       policy.ext = !!policy.jsonExt ? JSON.parse(policy.jsonExt) : {};
-      this.setState(
-        { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
-        e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
-      );
-    } else if (!_.isEqual(prevState.policy.product, this.state.policy.product) || !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)) {
-      if (!this.props.readOnly && !!this.state.policy.product) {
-        this.props.fetchPolicyValues(this.state?.policy)
+      if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
+        let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
+        this.setState(
+          { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
+          e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
+        );
+      } else {
+        this.setState(
+          { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
+          e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
+        );
       }
+
+    } else if (!_.isEqual(prevState.policy.product, this.state.policy.product) || !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)) {
+
+      if (!this.props.readOnly && !!this.state.policy.product) {
+        if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
+          let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
+          this.props.fetchPolicyValues(this.state?.policy, years)
+        } else {
+          this.props.fetchPolicyValues(this.state?.policy)
+        }
+      }
+
     } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues) {
       this.setState(state => (
         { policy: { ...state.policy, ...this.props.policyValues.policy } }
@@ -143,12 +162,13 @@ class PolicyForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: this.state.reset + 1 });
     } else if (!prevProps.renew && !!this.props.renew) {
+      let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
       this.setState(
         (state, props) => ({
           renew: this.props.renew,
           policy: this._renewPolicy(state.policy)
         }),
-        e => this.props.fetchPolicyValues(this.state.policy)
+        e => this.props.fetchPolicyValues(this.state.policy, years)
       )
     }
 
@@ -177,26 +197,65 @@ class PolicyForm extends Component {
     this.setState(state => ({ policy: { ...state.policy, ...p } }))
   }
 
+  verifyAge = (age) => {
+    let birthDate = new Date(age)
+    let today = new Date()
+    let daysMs = today - birthDate
+    let days = Math.round(daysMs / (1000 * 60 * 60 * 24));
+    let Age = Math.round(days / 365, 25)
+    return Age
+  }
+
   canSave = () => {
     if (!this.state.policy.family) return false;
     if (!this.state.policy.product) return false;
 
 
-   //check if vih insuree have vih policy
+    //check if vih insuree have vih policy
     if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
-      if (this.state.policy.product.program.code != "VIH") return false;
-    } else {
-      if (this.state.policy.product.program.code == "VIH") return false;
+      if (!!this.state.policy.product.program &&  this.state.policy.product.program.code != "VIH") return false;
+      if ((this.state.policy.product.program.code == "VIH") && (this.state.policy.product.code == "CSU-UF") ) return false
+    }
+    else {
+      if (!!this.state.policy.product.program && this.state.policy.product.program.code == "VIH" && this.state.policy.product.code != "CSU-UF" ) return false;
     }
 
     //check policy number if is cs product
     if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
-      if(this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+      if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
     }
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
     if (!this.state.policy.expiryDate) return false;
+
+    if (this.state.dob && this.state.policy && this.state.policy.product) {
+      let Age = this.verifyAge(this.state.dob)
+      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMinimal != null) {
+        if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
+          return false;
+        }
+      } else if (this.state.policy.product.ageMinimal == null && this.state.policy.product.ageMaximal != null && Age >= this.state.policy.product.ageMaximal) {
+        return false;
+      } else if (this.state.policy.product.ageMaximal == null && this.state.policy.product.ageMinimal != null && Age <= this.state.policy.product.ageMinimal) {
+        return false;
+      }
+
+    }
+
+    //check female active cs policy
+    if (this.state.policy.product.program.code == "PAL") {
+      if (this.state.policy.family.headInsuree.gender.code == "F") {
+        let policies = this.state.policies;
+        if (!!policies && policies.length > 0) {
+          for (let i = 0; i < policies.length; i++) {
+            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
+              return false;
+            }
+          }
+        }
+      }
+    }
 
     //if (!this.state.policy.value) return false;
     if (!this.state.policy.officer) return false;
@@ -225,19 +284,22 @@ class PolicyForm extends Component {
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
         if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
-          previousPolicy  = policies[i]
+          previousPolicy = policies[i]
+        }
+        if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
+          existFagepPolicy = policies[i]
         }
         if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
           existFagepPolicy = policies[i]
         }
       }
-      if (previousPolicy !=null){
+      if (previousPolicy != null) {
         this.setState({
           saving: false
         })
         this.confirmActivePolicy(policy, previousPolicy)
 
-      }else {
+      } else {
         if (existFagepPolicy != null &&
           (this.state.policy.product.program.nameProgram == "Cheque Santé" || this.state.policy.product.program.nameProgram == "Chèque Santé")
         ) {
@@ -249,6 +311,7 @@ class PolicyForm extends Component {
           this.setState(
             { lockNew: !policy.uuid }, // avoid duplicates
             e => this.props.save(policy))
+          this.dispatchExpiryDate(policy)
         }
       }
     }
@@ -256,24 +319,39 @@ class PolicyForm extends Component {
       this.setState(
         { lockNew: !policy.uuid }, // avoid duplicates
         e => this.props.save(policy))
+      this.dispatchExpiryDate(policy)
     }
+
+  }
+
+  dispatchExpiryDate = (policy) => {
+    this.props.coreAlert(
+      formatMessage(this.props.intl, "policy", "policy.dispatchExpiryDate.title"),
+      formatMessageWithValues(this.props.intl, "policy", "dispatchExpiryDate.message",
+        {
+          label: policy.expiryDate,
+        })
+    )
+
   }
 
   confirmActivePolicy = (policy, previousPolicy) => {
     let confirmedAction = () => {
-      if (previousPolicy != undefined){
+      if (previousPolicy != undefined) {
         this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
           this.props.intl,
           "policy",
           "SuspendPolicy.mutationLabel",
           { policy: policyLabel(this.props.modulesManager, previousPolicy) }
-      ))
+        ))
       }
 
       this.setState(
         { lockNew: !policy.uuid }, // avoid duplicates
         e => this.props.save(policy))
+      this.dispatchExpiryDate(policy)
     }
+
 
 
     let confirm = e => this.props.coreConfirm(
@@ -367,6 +445,7 @@ class PolicyForm extends Component {
               forcedDirty={!ro && (!!this.props.renew || !policy_uuid)}
               policies={this.state.policies}
               saving={this.state.saving}
+              insureeAge={this.verifyAge(this.state.dob)}
 
             />
           )}
@@ -392,5 +471,7 @@ const mapStateToProps = state => ({
   confirmed: state.core.confirmed,
 })
 
-export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps, { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, updatePolicy, suspendPolicy, coreConfirm, journalize, coreAlert, fetchFamily })(withTheme(withStyles(styles)(PolicyForm))))));
+export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps,
+  { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, updatePolicy, suspendPolicy, coreConfirm, journalize, coreAlert, fetchFamily })
+  (withTheme(withStyles(styles)(PolicyForm))))));
 
