@@ -30,6 +30,20 @@ const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "ceilingInPatient",
   "ceilingOutPatient",
 ];
+const CONTRIBUTIONPLAN_FULL_PROJECTION = (modulesManager) => [
+  "id",
+  "code",
+  "name",
+  "calculation",
+  "jsonExt",
+  "benefitPlan",
+  "benefitPlanType",
+  "benefitPlanTypeName",
+  "periodicity",
+  "dateValidFrom",
+  "dateValidTo",
+  "isDeleted",
+];
 
 const FAMILY_FULL_PROJECTION = (mm) => [
   "id",
@@ -171,8 +185,17 @@ export function fetchPolicyFull(mm, policy_uuid) {
   );
   return graphql(payload, "POLICY_POLICY");
 }
+export function fetchContributionPlans(modulesManager, params) {
+  const payload = formatPageQueryWithCount(
+    "contributionPlan",
+    params,
+    CONTRIBUTIONPLAN_FULL_PROJECTION(modulesManager)
+  );
+  return graphql(payload, "CONTRIBUTIONPLAN_CONTRIBUTIONPLANS");
+}
 
 export function fetchPolicyValues(policy) {
+  console.log(' start feching policy value ', policy.contributionPlans.id)
   var exp_date = new Date(
     policy.prevPolicy == undefined
       ? policy.enrollDate
@@ -185,7 +208,8 @@ export function fetchPolicyValues(policy) {
     `enrollDate: "${
       policy.stage == "R" ? toISODate(exp_date) : policy.enrollDate
     }T00:00:00"`,
-    `productId: ${decodeId(policy.product.id)}`,
+    // `productId: ${1}`,
+    `contributionPlanUuid:"${decodeId(policy.contributionPlans.id)}"`,
     `familyId: ${decodeId(policy.family.id)}`,
   ];
   if (!!policy.prevPolicy) {

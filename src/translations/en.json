@@ -53,6 +53,7 @@
   "policy.PolicyOfficerPicker.null": "Any",
   "policy.PolicyOfficer.none": "None",
   "policy.PolicyFilter.product.label": "Product",
+  "contributionPlan.ContributionPlan": "Contribution Plan",
   "policy.PolicyFilter.product.placeholder": "Search for a Product...",
   "policy.PolicyFilter.enrollDateFrom": "Enrolment From",
   "policy.PolicyFilter.enrollDateTo": "Enrolment To",
