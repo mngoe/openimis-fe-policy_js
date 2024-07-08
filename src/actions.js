@@ -14,8 +14,8 @@ const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "policyUuid",
   "productCode",
   "productName",
-  // "contributionPlanCode",
-  // "contributionPlanName",
+  "contributionPlanCode",
+  "contributionPlanName",
   "officerCode",
   "officerName",
   "enrollDate",
@@ -133,6 +133,18 @@ export function serviceEligibilityClear() {
     dispatch({ type: `POLICY_INSUREE_SERVICE_ELIGIBILITY_CLEAR` });
   };
 }
+export function print(id) {
+  return async (dispatch) => {
+    try {
+      const url = '../../api/report/carte_amg/pdf/?insureeids=' + id;
+      const response = window.open(url, "_blank");
+      return response;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}
+
 
 export function fetchPolicySummaries(mm, filters) {
   let projections = [
@@ -200,7 +212,6 @@ export function fetchContributionPlans(modulesManager, params) {
 }
 
 export function fetchPolicyValues(policy) {
-  console.log('policy obtenu ', policy)
   var exp_date = new Date(
     policy.prevPolicy == undefined
       ? policy.enrollDate
@@ -247,7 +258,6 @@ function formatPolicyGQL(mm, policy) {
 }
 
 export function createPolicy(mm, policy, clientMutationLabel) {
-  console.log("product obtenu ", policy)
   let mutation = formatMutation(
     "createPolicy",
     formatPolicyGQL(mm, policy),

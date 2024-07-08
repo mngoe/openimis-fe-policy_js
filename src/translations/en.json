@@ -3,7 +3,9 @@
   "policy.policies.header": "{count} Policies",
   "policy.policiesOfInsuree.header": "{count} Policies of Insuree {chfId}",
   "policy.policies.productCode": "Product Code",
+  "policy.policies.contributionPlanCode": "Contribution Plan Code",
   "policy.policies.productName": "Name",
+  "policy.policies.contributionPlanName": "Name",
   "policy.policies.enrollDate": "Enroll Date",
   "policy.policies.effectiveDate": "Effective Date",
   "policy.policies.expiryDate": "Expiry Date",
@@ -138,5 +140,6 @@
   "policy.PolicyRenewalsReport.sorting.null": "Any",
   "policy.PolicyRenewalsReport.sorting.D": "By renewal date",
   "policy.PolicyRenewalsReport.sorting.R": "By receipt number",
-  "policy.PolicyRenewalsReport.sorting.O": "By enrollment officer"
+  "policy.PolicyRenewalsReport.sorting.O": "By enrollment officer",
+  "policy.printSelected":"Print  AMG card "
 }
