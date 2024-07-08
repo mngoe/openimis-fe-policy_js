@@ -221,7 +221,7 @@ class PolicyForm extends Component {
     }
 
     //check policy number if is cs product
-    if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
+    if ((this.state.policy.product?.program?.nameProgram) == "Chèque Santé" || (this.state.policy.product?.program?.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
       if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
     }
@@ -244,12 +244,12 @@ class PolicyForm extends Component {
     }
 
     //check female active cs policy
-    if (this.state.policy.product.program.code == "PAL") {
-      if (this.state.policy.family.headInsuree.gender.code == "F") {
+    if (this.state.policy?.product?.program?.code == "PAL") {
+      if (this.state.policy.family?.headInsuree?.gender?.code == "F") {
         let policies = this.state.policies;
         if (!!policies && policies.length > 0) {
           for (let i = 0; i < policies.length; i++) {
-            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
+            if ((policies[i].product?.program?.nameProgram == "Cheque Santé" || policies[i].product?.program?.nameProgram == "Chèque Santé") && policies[i].status === 2) {
               return false;
             }
           }
@@ -261,12 +261,12 @@ class PolicyForm extends Component {
     if (!this.state.policy.officer) return false;
 
     //check female active cs policy
-    if (this.state.policy.product.program.code == "PAL") {
+    if (this.state.policy?.product?.program?.code == "PAL") {
       if (this.state.policy.family.headInsuree.gender.code == "F") {
         let policies = this.state.policies;
         if (!!policies && policies.length > 0) {
           for (let i = 0; i < policies.length; i++) {
-            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
+            if ((policies[i].product?.program?.nameProgram == "Cheque Santé" || policies[i].product?.program?.nameProgram == "Chèque Santé") && policies[i].status === 2) {
               return false;
             }
           }
