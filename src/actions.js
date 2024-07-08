@@ -14,6 +14,8 @@ const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "policyUuid",
   "productCode",
   "productName",
+  // "contributionPlanCode",
+  // "contributionPlanName",
   "officerCode",
   "officerName",
   "enrollDate",
@@ -37,6 +39,7 @@ const CONTRIBUTIONPLAN_FULL_PROJECTION = (modulesManager) => [
   "calculation",
   "jsonExt",
   "benefitPlan",
+  "benefitPlanType",
   "benefitPlanType",
   "benefitPlanTypeName",
   "periodicity",
@@ -141,6 +144,7 @@ export function fetchPolicySummaries(mm, filters) {
       .concat([
         `location{${mm.getRef("location.Location.FlatProjection")}}`,
       ])}}`,
+    "contributionPlan{id,code,name,calculation,jsonExt,benefitPlanId,benefitPlan,benefitPlanType,benefitPlanType,benefitPlanTypeName,periodicity,dateValidFrom,dateValidTo,isDeleted,}",
     "enrollDate",
     "effectiveDate",
     "startDate",
@@ -166,6 +170,7 @@ export function fetchPolicyFull(mm, policy_uuid) {
       .concat([
         `location{${mm.getRef("location.Location.FlatProjection")}}`,
       ])}}`,
+    "contributionPlan{id,code,name,calculation,jsonExt,benefitPlanId,benefitPlan,benefitPlanType,benefitPlanType,benefitPlanTypeName,periodicity,dateValidFrom,dateValidTo,isDeleted,}",
     "enrollDate",
     "effectiveDate",
     "startDate",
@@ -195,7 +200,7 @@ export function fetchContributionPlans(modulesManager, params) {
 }
 
 export function fetchPolicyValues(policy) {
-  console.log(' start feching policy value ', policy.contributionPlans.id)
+  console.log('policy obtenu ', policy)
   var exp_date = new Date(
     policy.prevPolicy == undefined
       ? policy.enrollDate
@@ -208,8 +213,8 @@ export function fetchPolicyValues(policy) {
     `enrollDate: "${
       policy.stage == "R" ? toISODate(exp_date) : policy.enrollDate
     }T00:00:00"`,
-    // `productId: ${1}`,
-    `contributionPlanUuid:"${decodeId(policy.contributionPlans.id)}"`,
+    `productId: ${parseInt(policy.contributionPlan.benefitPlanId)}`,
+    `contributionPlanUuid:"${decodeId(policy.contributionPlan.id)}"`,
     `familyId: ${decodeId(policy.family.id)}`,
   ];
   if (!!policy.prevPolicy) {
@@ -233,14 +238,16 @@ function formatPolicyGQL(mm, policy) {
   enrollDate: "${policy.enrollDate}"
   startDate: "${policy.startDate}"
   expiryDate: "${policy.expiryDate}"
+  productId: ${parseInt(policy.contributionPlan.benefitPlanId)}
   value: "${_.round(policy.value, 2).toFixed(2)}"
-  productId: ${decodeId(policy.product.id)}
+  contributionPlanId: "${decodeId(policy.contributionPlan.id)}"
   familyId: ${decodeId(policy.family.id)}
   officerId: ${decodeId(policy.officer.id)}
 `;
 }
 
 export function createPolicy(mm, policy, clientMutationLabel) {
+  console.log("product obtenu ", policy)
   let mutation = formatMutation(
     "createPolicy",
     formatPolicyGQL(mm, policy),

@@ -20,7 +20,7 @@ const PolicyContributionPlanPicker = (props) => {
   } = props;
   const modulesManager = useModulesManager();
   const [filters, setFilters] = useState({ location: locationId });
-  const { formatMessage } = useTranslations("product", modulesManager);
+  const { formatMessage } = useTranslations("policy", modulesManager);
   const { isLoading, error, data } = useContributionPlanQuery({ filters }, { skip: true });
 
   const onOpen = () => {
@@ -32,11 +32,11 @@ const PolicyContributionPlanPicker = (props) => {
       required={required}
       error={error}
       placeholder={placeholder ?? formatMessage("ProductPicker.placeholder")}
-      label={label ?? formatMessage("Product")}
+      label={label ?? formatMessage("ContributionPlan")}
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={ !!data.contributionPlans ? data.contributionPlans : [] }
+      options={ !!data.contributionPlan ? data.contributionPlan : [] }
       isLoading={isLoading}
       value={value}
       getOptionLabel={(option) => `${option.code} ${option.name}`}

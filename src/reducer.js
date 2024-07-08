@@ -37,7 +37,7 @@ export const reducer = (
         fetchingContributionPlans: false,
         errorContributionPlans: null,
         fetchedContributionPlans: false,
-        contributionPlans: [],
+        contributionPlan: [],
         contributionPlansPageInfo: {},
         contributionPlansTotalCount: 0,
     },
@@ -261,7 +261,7 @@ export const reducer = (
                   ...state,
                   fetchingContributionPlans: true,
                   fetchedContributionPlans: false,
-                  contributionPlans: [],
+                  contributionPlan: [],
                   contributionPlansPageInfo: {},
                   contributionPlansTotalCount: 0,
                   errorContributionPlans: null,
@@ -271,7 +271,7 @@ export const reducer = (
                   ...state,
                   fetchingContributionPlans: false,
                   fetchedContributionPlans: true,
-                  contributionPlans: parseData(action.payload.data.contributionPlan)?.map((contributionPlan) => ({
+                  contributionPlan: parseData(action.payload.data.contributionPlan)?.map((contributionPlan) => ({
                     ...contributionPlan,
                     benefitPlan: JSON.parse(JSON.parse(contributionPlan.benefitPlan)),
                   })),

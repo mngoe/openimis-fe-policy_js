@@ -31,6 +31,7 @@ export const useContributionPlanQuery = (filters, config) => {
             jsonExt
             benefitPlan
             benefitPlanType
+            benefitPlanId
             benefitPlanTypeName
             periodicity
             dateValidFrom
@@ -45,11 +46,11 @@ export const useContributionPlanQuery = (filters, config) => {
     config,
   );
 
-  const contributionPlans = useMemo(() => (data ? _.map(data.contributionPlan?.edges, "node") : []), [data]);
+  const contributionPlan = useMemo(() => (data ? _.map(data.contributionPlan?.edges, "node") : []), [data]);
   const pageInfo = useMemo(
     () => (data ? Object.assign({ totalCount: data.contributionPlan?.totalCount }, data.contributionPlan?.pageInfo) : {}),
     [data],
   );
 
-  return { isLoading, error, data: { contributionPlans, pageInfo }, refetch };
+  return { isLoading, error, data: { contributionPlan, pageInfo }, refetch };
 };

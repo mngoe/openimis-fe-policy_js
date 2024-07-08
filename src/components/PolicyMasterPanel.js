@@ -84,7 +84,7 @@ class PolicyMasterPanel extends FormPanel {
           expiryDate: null,
           value: null,
         })
-      : this.updateAttribute("contributionPlans", contributionPlan);
+      : this.updateAttribute("contributionPlan", contributionPlan);
   };
 
   renewPolicy = () =>
@@ -307,7 +307,7 @@ class PolicyMasterPanel extends FormPanel {
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyContributionPlanPicker"
-                  value={!!edited && edited.contributionPlans}
+                  value={!!edited && edited.contributionPlan}
                   module="policy"
                   readOnly={!!edited_id || readOnly}
                   withNull={true}

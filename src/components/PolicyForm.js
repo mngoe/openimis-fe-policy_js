@@ -44,7 +44,7 @@ class PolicyForm extends Component {
     newInsuree: true,
     renew: false,
     confirmProduct: false,
-    contributionPlans:{},
+    contributionPlan:{},
   };
 
   _newPolicy() {
@@ -82,7 +82,7 @@ class PolicyForm extends Component {
     policy.enrollDate = toISODate(moment().toDate());
     policy.family = from_policy.family;
     policy.product = from_policy.product;
-    policy.contributionPlans= from_policy.contributionPlans
+    policy.contributionPlan= from_policy.contributionPlan
     return policy;
   }
 
@@ -139,10 +139,11 @@ class PolicyForm extends Component {
        
       );
     } else if (
-      !_.isEqual(prevState.policy.contributionPlans, this.state.policy.contributionPlans) ||
+      !_.isEqual(prevState.policy.contributionPlan, this.state.policy.contributionPlan) ||
       !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)
     ) {
-      if (!this.props.readOnly && !!this.state.policy.contributionPlans) {
+      if (!this.props.readOnly && !!this.state.policy.contributionPlan) {
+        console.log('fetc here ')
         this.props.fetchPolicyValues(this.state.policy);
       }
     } else if (
@@ -150,6 +151,7 @@ class PolicyForm extends Component {
       !this.props.fetchingPolicyValues &&
       !!this.props.fetchedPolicyValues
     ) {
+      console.log("no there")
       this.setState(
         (state) => ({
           policy: { ...state.policy, ...this.props.policyValues?.policy },
@@ -208,7 +210,7 @@ class PolicyForm extends Component {
       confirmProduct: false,
       policy: {
         ...state.policy,
-        contributionPlans: null,
+        contributionPlan: null,
         startDate: null,
         expiryDate: null,
         value: null,
@@ -218,10 +220,10 @@ class PolicyForm extends Component {
 
   canSave = () => {
     if (!this.state.policy.family) return false;
-    if (!this.state.policy.contributionPlans) return false;
+    if (!this.state.policy.contributionPlan) return false;
     if (!this.state.policy.enrollDate) return false;
-    // if (!this.state.policy.startDate) return false;
-    // if (!this.state.policy.expiryDate) return false;
+    if (!this.state.policy.startDate) return false;
+    if (!this.state.policy.expiryDate) return false;
     if (!this.state.policy.value) return false;
     if (!this.state.policy.officer) return false;
     return true;
@@ -316,7 +318,7 @@ const mapStateToProps = (state) => ({
   fetchedPolicyValues: state.policy.fetchedPolicyValues,
   errorPolicyValues: state.policy.errorPolicyValues,
   policyValues: state.policy.policyValues,
-  contributionPlans: state.policy.contributionPlans,
+  contributionPlan: state.policy.contributionPlan,
   family: state.insuree.family,
   submittingMutation: state.policy.submittingMutation,
   mutation: state.policy.mutation,
