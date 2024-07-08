@@ -143,7 +143,6 @@ class PolicyForm extends Component {
       !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)
     ) {
       if (!this.props.readOnly && !!this.state.policy.contributionPlan) {
-        console.log('fetc here ')
         this.props.fetchPolicyValues(this.state.policy);
       }
     } else if (
@@ -151,7 +150,6 @@ class PolicyForm extends Component {
       !this.props.fetchingPolicyValues &&
       !!this.props.fetchedPolicyValues
     ) {
-      console.log("no there")
       this.setState(
         (state) => ({
           policy: { ...state.policy, ...this.props.policyValues?.policy },

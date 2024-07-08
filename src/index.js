@@ -109,6 +109,8 @@ const DEFAULT_CONFIG = {
     { key: "policy.InsureePolicyEligibilitySummary", ref: InsureePolicyEligibilitySummary },
     { key: "policy.route.policies", ref: ROUTE_POLICY_POLICIES },
     { key: "policy.route.policy", ref: ROUTE_POLICY_POLICY },
+    { key: "policy.PolicyContributionPlanPicker.sort", ref: "contributionPlan__code" },
+
   ],
   "core.Router": [
     { path: ROUTE_POLICY_POLICIES, component: PoliciesPage },

@@ -205,7 +205,7 @@ class PolicySearcher extends Component {
       ["effectiveDate", false],
       ["startDate", false],
       ["expiryDate", false],
-      [this.props.modulesManager.getRef("product.ProductPicker.sort"), true],
+      [this.props.modulesManager.getRef("policy.contributionPlanPicker.sort"), true],
       [
         this.props.modulesManager.getRef("policy.PolicyOfficerPicker.sort"),
         true,
@@ -256,8 +256,8 @@ class PolicySearcher extends Component {
         ),
       (policy) => (
         <PublishedComponent
-          pubRef="product.ProductPicker"
-          value={policy.contributionPlans}
+          pubRef="policy.PolicyContributionPlanPicker"
+          value={policy.contributionPlan}
           readOnly={true}
           withLabel={false}
         />

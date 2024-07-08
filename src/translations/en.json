@@ -97,6 +97,7 @@
   "policy.policySummaries.validityFrom": "Valid From",
   "policy.policySummaries.validityTo": "Valid To",
   "policy.policySummaries.openFamily": " ",
+  "policy.policySummaries.contributionPlan": "Contribution Plan",
   "policySummaries.openFamilyButton.tooltip": "Open family",
   "policy.policySummaries.openNewTab": " ",
   "policy.policySummaries.openNewTabButton.tooltip": "Open in new tab",
