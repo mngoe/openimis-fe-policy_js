@@ -29,6 +29,16 @@ const styles = (theme) => ({
 const POLICY_FILTER_CONTRIBUTION_KEY = "policy.Filter";
 
 class PolicyFilter extends Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    document.addEventListener('keydown', this.props.handleEnter)
+    if (
+      prevProps.filters["showHistory"] !== this.props.filters["showHistory"] &&
+      !!this.props.filters["showHistory"] &&
+      this.state.showHistory !== this.props.filters["showHistory"]["value"]
+    ) {
+      this.setState((sate, props) => ({ showHistory: props.filters["showHistory"]["value"] }));
+    }
+  }
   debouncedOnChangeFilter = _debounce(
     this.props.onChangeFilters,
     this.props.modulesManager.getConf("fe-policy", "debounceTime", 200)
