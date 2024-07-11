@@ -153,5 +153,7 @@
     "policy.PolicyRenewalsReport.sorting.R": "",
     "policy.PolicyRenewalsReport.sorting.O": "",
     "policy.ConfirmSuspendPolicyDialog.title": "Confirmer la suspension de la police ",
-    "policy.ConfirmSuspendPolicyDialog.message": "Vous avez déja une police active pour le programme FAGEP. Voulez vous la désactiver ? {label}?"
+    "policy.ConfirmSuspendPolicyDialog.message": "Vous avez déja une police active pour le programme FAGEP. Voulez vous la désactiver ? {label}?",
+    "policy.PolicyNumberInput.cancel": "Chèque annulé"
+
 }
