@@ -224,6 +224,8 @@ class PolicyForm extends Component {
     if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
       if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+      if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
+      if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "cancel") return false;
     }
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
