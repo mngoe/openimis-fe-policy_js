@@ -258,6 +258,7 @@ class PolicySearcher extends Component {
                     rowDisabled={this.rowDisabled}
                     rowLocked={this.rowLocked}
                     onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
+                    canFetch={false}
                 />
             </Fragment>
         )
