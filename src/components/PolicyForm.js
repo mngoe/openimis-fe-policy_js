@@ -20,7 +20,7 @@ import {
   withModulesManager,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily } from "../actions";
+import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchContributionPlans} from "../actions";
 import {
   RIGHT_POLICY,
   RIGHT_POLICY_EDIT,
@@ -44,6 +44,7 @@ class PolicyForm extends Component {
     newInsuree: true,
     renew: false,
     confirmProduct: false,
+    contributionPlan:{},
   };
 
   _newPolicy() {
@@ -67,6 +68,7 @@ class PolicyForm extends Component {
       this.props.modulesManager,
       this.props.family_uuid
     );
+    await this.props.fetchContributionPlans();
     this.setState(() => ({
       policy: this._newPolicy(),
     }));
@@ -80,6 +82,7 @@ class PolicyForm extends Component {
     policy.enrollDate = toISODate(moment().toDate());
     policy.family = from_policy.family;
     policy.product = from_policy.product;
+    policy.contributionPlan= from_policy.contributionPlan
     return policy;
   }
 
@@ -103,9 +106,10 @@ class PolicyForm extends Component {
           this.props.fetchPolicyFull(
             this.props.modulesManager,
             this.props.policy_uuid
-          )
+          ),
       );
     } else if (!!this.props.renew) {
+
       this.setState((state, props) => ({
         renew: this.props.renew,
         policy: this._renewPolicy(state.policy),
@@ -135,10 +139,10 @@ class PolicyForm extends Component {
        
       );
     } else if (
-      !_.isEqual(prevState.policy.product, this.state.policy.product) ||
+      !_.isEqual(prevState.policy.contributionPlan, this.state.policy.contributionPlan) ||
       !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)
     ) {
-      if (!this.props.readOnly && !!this.state.policy.product) {
+      if (!this.props.readOnly && !!this.state.policy.contributionPlan) {
         this.props.fetchPolicyValues(this.state.policy);
       }
     } else if (
@@ -204,7 +208,7 @@ class PolicyForm extends Component {
       confirmProduct: false,
       policy: {
         ...state.policy,
-        product: null,
+        contributionPlan: null,
         startDate: null,
         expiryDate: null,
         value: null,
@@ -214,7 +218,7 @@ class PolicyForm extends Component {
 
   canSave = () => {
     if (!this.state.policy.family) return false;
-    if (!this.state.policy.product) return false;
+    if (!this.state.policy.contributionPlan) return false;
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
     if (!this.state.policy.expiryDate) return false;
@@ -312,6 +316,7 @@ const mapStateToProps = (state) => ({
   fetchedPolicyValues: state.policy.fetchedPolicyValues,
   errorPolicyValues: state.policy.errorPolicyValues,
   policyValues: state.policy.policyValues,
+  contributionPlan: state.policy.contributionPlan,
   family: state.insuree.family,
   submittingMutation: state.policy.submittingMutation,
   mutation: state.policy.mutation,
@@ -326,6 +331,7 @@ export default injectIntl(
         journalize,
         coreAlert,
         fetchFamily,
+        fetchContributionPlans,
       })(withTheme(withStyles(styles)(PolicyForm)))
     )
   )

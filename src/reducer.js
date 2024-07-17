@@ -34,6 +34,12 @@ export const reducer = (
         policyValues: null,
         submittingMutation: false,
         mutation: {},
+        fetchingContributionPlans: false,
+        errorContributionPlans: null,
+        fetchedContributionPlans: false,
+        contributionPlan: [],
+        contributionPlansPageInfo: {},
+        contributionPlansTotalCount: 0,
     },
     action) => {
     switch (action.type) {
@@ -250,6 +256,39 @@ export const reducer = (
                 fetchingPolicyValues: false,
                 errorPolicyValues: formatServerError(action.payload),
             }
+        case "CONTRIBUTIONPLAN_CONTRIBUTIONPLANS_REQ":
+            return {
+                  ...state,
+                  fetchingContributionPlans: true,
+                  fetchedContributionPlans: false,
+                  contributionPlan: [],
+                  contributionPlansPageInfo: {},
+                  contributionPlansTotalCount: 0,
+                  errorContributionPlans: null,
+            };
+        case "CONTRIBUTIONPLAN_CONTRIBUTIONPLANS_RESP":
+            return {
+                  ...state,
+                  fetchingContributionPlans: false,
+                  fetchedContributionPlans: true,
+                  contributionPlan: parseData(action.payload.data.contributionPlan)?.map((contributionPlan) => ({
+                    ...contributionPlan,
+                    benefitPlan: JSON.parse(JSON.parse(contributionPlan.benefitPlan)),
+                  })),
+                  contributionPlansPageInfo: pageInfo(
+                    action.payload.data.contributionPlan
+                  ),
+                  contributionPlansTotalCount: !!action.payload.data.contributionPlan
+                    ? action.payload.data.contributionPlan.totalCount
+                    : null,
+                  errorContributionPlans: formatGraphQLError(action.payload),
+            };
+        case "CONTRIBUTIONPLAN_CONTRIBUTIONPLANS_ERR":
+            return {
+                  ...state,
+                  fetchingContributionPlans: false,
+                  errorContributionPlans: formatServerError(action.payload),
+            };
         case 'POLICY_MUTATION_REQ':
             return dispatchMutationReq(state, action)
         case 'POLICY_MUTATION_ERR':

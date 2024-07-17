@@ -170,31 +170,33 @@ class PolicySearcher extends Component {
   canRenew = (policy) =>
     !this.props.renew && canRenewPolicy(this.props.rights, policy);
 
-  headers = (filters) => {
-    const h = [
-      "policy.policySummaries.enrollDate",
-      "policy.policySummaries.name",
-      "policy.policySummaries.effectiveDate",
-      "policy.policySummaries.startDate",
-      "policy.policySummaries.expiryDate",
-      "policy.policySummaries.product",
-      "policy.policySummaries.officer",
-      "policy.policySummaries.stage",
-      "policy.policySummaries.status",
-      "policy.policySummaries.value",
-      "policy.policySummaries.balance",
-      filters?.showHistory?.value
-        ? "policy.policySummaries.validityFrom"
-        : null,
-      filters?.showHistory?.value ? "policy.policySummaries.validityTo" : null,
-      "policy.policySummaries.openFamily",
-      "policy.policySummaries.openNewTab",
-      "policy.policySummaries.renew",
-      "policy.policySummaries.suspend",
-      "policy.policySummaries.delete",
-    ];
-    return h;
-  };
+    headers = (filters) => {
+        const h = [
+            "policy.policySummaries.enrollDate",
+            "policy.policySummaries.name",
+            "policy.policySummaries.effectiveDate",
+            "policy.policySummaries.startDate",
+            "policy.policySummaries.expiryDate",
+            "policy.policySummaries.contributionPlan",
+            "policy.policySummaries.officer",
+            "policy.policySummaries.stage",
+            "policy.policySummaries.status",
+            "policy.policySummaries.value",
+            "policy.policySummaries.balance",
+            filters?.showHistory?.value
+            ? "policy.policySummaries.validityFrom"
+            : null,
+          filters?.showHistory?.value
+            ? "policy.policySummaries.validityTo"
+            : null,
+            "policy.policySummaries.openFamily",
+            "policy.policySummaries.openNewTab",
+            "policy.policySummaries.renew",
+            "policy.policySummaries.suspend",
+            "policy.policySummaries.delete",
+        ];
+        return h;
+    }
 
   sorts = (filters) => {
     const results = [
@@ -203,7 +205,7 @@ class PolicySearcher extends Component {
       ["effectiveDate", false],
       ["startDate", false],
       ["expiryDate", false],
-      [this.props.modulesManager.getRef("product.ProductPicker.sort"), true],
+      [this.props.modulesManager.getRef("policy.contributionPlanPicker.sort"), true],
       [
         this.props.modulesManager.getRef("policy.PolicyOfficerPicker.sort"),
         true,
@@ -254,8 +256,8 @@ class PolicySearcher extends Component {
         ),
       (policy) => (
         <PublishedComponent
-          pubRef="product.ProductPicker"
-          value={policy.product}
+          pubRef="policy.PolicyContributionPlanPicker"
+          value={policy.contributionPlan}
           readOnly={true}
           withLabel={false}
         />

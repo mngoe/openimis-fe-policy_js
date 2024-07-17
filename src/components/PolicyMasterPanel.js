@@ -76,15 +76,15 @@ class PolicyMasterPanel extends FormPanel {
     }
   }
 
-  _onProductChange = (product) => {
-    !product
+  _onContributionPlanChange = (contributionPlan) => {
+    !contributionPlan
       ? this.updateAttributes({
-          product: null,
+        contributionPlan: null,
           startDate: null,
           expiryDate: null,
           value: null,
         })
-      : this.updateAttribute("product", product);
+      : this.updateAttribute("contributionPlan", contributionPlan);
   };
 
   renewPolicy = () =>
@@ -177,7 +177,6 @@ class PolicyMasterPanel extends FormPanel {
       errorPolicyValues,
       title = "Policy.details.title",
     } = this.props;
-
     let actions = [];
     if (this.canRenew(edited)) {
       actions.push({
@@ -307,12 +306,12 @@ class PolicyMasterPanel extends FormPanel {
                 ))}
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
-                  pubRef="product.ProductPicker"
-                  value={!!edited && edited.product}
+                  pubRef="policy.PolicyContributionPlanPicker"
+                  value={!!edited && edited.contributionPlan}
                   module="policy"
                   readOnly={!!edited_id || readOnly}
                   withNull={true}
-                  label={formatMessage(intl, "product", "Product")}
+                  label={formatMessage(intl, "contributionPlan", "ContributionPlan")}
                   withLabel={true}
                   nullLabel={formatMessage(intl, "product", "Product.none")}
                   withPlaceholder={true}
@@ -321,7 +320,7 @@ class PolicyMasterPanel extends FormPanel {
                     "product",
                     "ProductPicker.placeholder"
                   )}
-                  onChange={this._onProductChange}
+                  onChange={this._onContributionPlanChange}
                   required={true}
                   locationId={
                     !!edited.family
