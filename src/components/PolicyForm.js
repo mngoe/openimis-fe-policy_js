@@ -338,6 +338,7 @@ class PolicyForm extends Component {
   }
 
   confirmActivePolicy = (policy, previousPolicy) => {
+    console.log('confirm ', previousPolicy)
     let confirmedAction = () => {
       if (previousPolicy != undefined) {
         this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
@@ -345,7 +346,9 @@ class PolicyForm extends Component {
           "policy",
           "SuspendPolicy.mutationLabel",
           { policy: policyLabel(this.props.modulesManager, previousPolicy) }
-        ))
+        )
+        )
+        console.log('suspended')
       }
 
       this.setState(

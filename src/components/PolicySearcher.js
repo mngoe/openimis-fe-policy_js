@@ -118,7 +118,7 @@ class PolicySearcher extends Component {
     canRenew = (policy) => !this.props.renew && canRenewPolicy(this.props.rights, policy)
 
     headers = (filters) => {
-        var h = [
+        const h = [
             "policy.policySummaries.enrollDate",
             "policy.policySummaries.name",
             "policy.policySummaries.effectiveDate",
@@ -143,7 +143,7 @@ class PolicySearcher extends Component {
     }
 
     sorts = (filters) => {
-        var results = [
+        const results = [
             ['enrollDate', false],
             [this.props.modulesManager.getRef("insuree.FamilyPicker.sort"), true],
             ['effectiveDate', false],
@@ -155,15 +155,15 @@ class PolicySearcher extends Component {
             ['status', true],
             ['value', false],
             null,
-            ['validityFrom', false],
-            ['validityTo', false],
+            filters?.showHistory?.value ? ["validityFrom", false] : null,
+            filters?.showHistory?.value ? ["validityTo", false] : null,
         ];
 
         return results;
     }
 
     itemFormatters = (filters) => {
-        var formatters = [
+        const formatters = [
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.enrollDate),
             policy => <PublishedComponent pubRef="insuree.FamilyPicker" value={policy.family} readOnly={true} withLabel={false} />,
             policy => formatDateFromISO(this.props.modulesManager, this.props.intl, policy.effectiveDate),
@@ -231,6 +231,7 @@ class PolicySearcher extends Component {
         } = this.props;
 
         let count = policiesPageInfo.totalCount;
+        console.log('edited')
 
         return (
             <Fragment>
