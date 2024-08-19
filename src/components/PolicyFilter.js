@@ -146,6 +146,31 @@ class PolicyFilter extends Component {
         />
         <ControlledField
           module="policy"
+          id="PolicyFilter.ConfirmationType"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <PublishedComponent
+                pubRef="insuree.ConfirmationTypePicker"
+                withNull={true}
+                nullLabel={formatMessage(intl, "insuree", "Family.ConfirmationType.null")}
+                value={this._filterValue("confirmationType")}
+                onChange={(k) => {
+                  let filters = [
+                    {
+                      id: "confirmationType",
+                      value: k,
+                      filter: !k ? null : `confirmationType: "${k.code}"`,
+                    },
+                  ];
+                  this.props.onChangeFilters(filters);
+                }
+                }
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module="policy"
           id="PolicyFilter.officer"
           field={
             <Grid item xs={3} className={classes.item}>

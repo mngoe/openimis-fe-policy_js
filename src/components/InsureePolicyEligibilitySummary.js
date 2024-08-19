@@ -29,7 +29,10 @@ class InsureePolicyEligibilitySummary extends Component {
         if (this.props.insuree) {
             this.props.fetchFamilyOrInsureePolicies(
                 this.props.modulesManager,
-                [`chfId:"${this.props.insuree.chfId}"`]
+                [
+                  `chfId:"${this.props.insuree.chfId}"`,
+                  this.props?.targetDate ? `targetDate:"${this.props.targetDate}"` : ''
+                ]
             )
         } else {
             this.setState({ policies: [] })
@@ -53,11 +56,29 @@ class InsureePolicyEligibilitySummary extends Component {
                 e => {
                     this.props.fetchFamilyOrInsureePolicies(
                         this.props.modulesManager,
-                        [`chfId:"${this.props.insuree.chfId}"`]
+                      [
+                        `chfId:"${this.props.insuree.chfId}"`,
+                        this.props?.targetDate ? `targetDate:"${this.props.targetDate}"` : ''
+                      ]
                     )
                 }
             )
             return;
+        }
+        if (this.props?.insuree && prevProps.targetDate !== this.props.targetDate) {
+          this.setState(
+            { policies: [] },
+            e => {
+              this.props.fetchFamilyOrInsureePolicies(
+                this.props.modulesManager,
+                [
+                  `chfId:"${this.props.insuree.chfId}"`,
+                  this.props?.targetDate ? `targetDate:"${this.props.targetDate}"` : ''
+                ]
+              )
+            }
+          )
+          return;
         }
         if (!prevProps.fetchedPolicies && this.props.fetchedPolicies) {
             this.setState((state, props) => ({ policies: props.policies }))

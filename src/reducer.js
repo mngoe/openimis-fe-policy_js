@@ -27,7 +27,7 @@ export const reducer = (
         fetchingInsureeItemEligibility: false,
         fetchedInsureeServiceEligibility: false,
         errorInsureeServiceEligibility: null,
-        insureeInsureeServiceEligibility: null,
+        insureeServiceEligibility: null,
         fetchingPolicyValues: false,
         fetchedPolicyValues: false,
         errorPolicyValues: null,
