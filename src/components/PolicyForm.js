@@ -121,15 +121,19 @@ class PolicyForm extends Component {
       policy.ext = !!policy.jsonExt ? JSON.parse(policy.jsonExt) : {};
       if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
         let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
-        this.setState(
-          { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
-          e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
-        );
+        if(!!this.state.policy.enrollDate){
+          this.setState(
+            { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
+            e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
+          );
+        }
+      
       } else {
-        this.setState(
+        if(!!this.state.policy.enrollDate){        this.setState(
           { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
           e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
         );
+        }
       }
 
     } else if (!_.isEqual(prevState.policy.product, this.state.policy.product) || !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)) {
@@ -137,9 +141,14 @@ class PolicyForm extends Component {
       if (!this.props.readOnly && !!this.state.policy.product) {
         if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
           let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
+          if(!!this.state.policy.enrollDate ){
           this.props.fetchPolicyValues(this.state?.policy, years)
+          }
         } else {
-          this.props.fetchPolicyValues(this.state?.policy)
+          if(!!this.state.policy.enrollDate){
+            this.props.fetchPolicyValues(this.state?.policy)
+          }
+          
         }
       }
 
