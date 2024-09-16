@@ -295,6 +295,7 @@ class PolicyForm extends Component {
     let existFagepPolicy = null;
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
+        console.log("policy i ", policies[i])
         if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
           previousPolicy = policies[i]
         }
