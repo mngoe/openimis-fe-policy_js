@@ -129,11 +129,10 @@ class PolicyForm extends Component {
         }
       
       } else {
-        if(!!this.state.policy.enrollDate){        this.setState(
+        this.setState(
           { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
           e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
         );
-        }
       }
 
     } else if (!_.isEqual(prevState.policy.product, this.state.policy.product) || !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)) {
@@ -295,7 +294,6 @@ class PolicyForm extends Component {
     let existFagepPolicy = null;
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
-        console.log("policy i ", policies[i])
         if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
           previousPolicy = policies[i]
         }
