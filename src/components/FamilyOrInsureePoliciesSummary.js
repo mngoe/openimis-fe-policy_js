@@ -3,9 +3,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from "react-intl";
 import clsx from "clsx";
+
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Divider, Grid, Paper, Typography, FormControlLabel, Checkbox, IconButton } from "@material-ui/core";
 import { Add as AddIcon, Autorenew as RenewIcon, Delete as DeleteIcon, Pause as SuspendIcon } from "@material-ui/icons";
+
 import {
   Table,
   PagedDataHandler,
@@ -20,10 +22,11 @@ import {
   withHistory,
   coreConfirm,
   journalize,
+  AmountInput,
 } from "@openimis/fe-core";
 import { fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy } from "../actions";
-import { policyLabel, canDeletePolicy, canSuspendPolicy, canRenewPolicy } from "../utils/utils";
 import { RIGHT_POLICY_ADD } from "../constants";
+import { policyLabel, canDeletePolicy, canSuspendPolicy, canRenewPolicy } from "../utils/utils";
 
 const styles = (theme) => ({
   paper: {
@@ -47,6 +50,17 @@ const styles = (theme) => ({
 });
 
 class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
+  state = {
+    page: 0,
+    pageSize: this.props.modulesManager.getConf(
+      "fe-policy",
+      "familyOrInsureePoliciesSummary.defaultPageSize",
+      5
+    ),
+    afterCursor: null,
+    beforeCursor: null,
+  };
+
   constructor(props) {
     super(props);
     this.rowsPerPageOptions = props.modulesManager.getConf(
@@ -59,15 +73,29 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "familyOrInsureePoliciesSummary.defaultPageSize",
       5
     );
-    this.showBalance = props.modulesManager.getConf("fe-policy", "familyOrInsureePoliciesSummary.showBalance", false);
+    this.showBalance = props.modulesManager.getConf(
+      "fe-policy",
+      "familyOrInsureePoliciesSummary.showBalance",
+      false
+    );
+    this.onlyActiveOrLastExpired = props.modulesManager.getConf(
+      "fe-policy",
+      "familyOrInsureePoliciesSummary.onlyActiveOrLastExpired",
+      true
+    );
+    this.orderByExpiryDate = props.modulesManager.getConf(
+      "fe-policy",
+      "familyOrInsureePoliciesSummary.orderByExpiryDate",
+      "expiryDate"
+    );
   }
 
   componentDidMount() {
     this.setState(
       {
         confirmedAction: null,
-        onlyActiveOrLastExpired: true,
-        orderBy: "expiryDate",
+        onlyActiveOrLastExpired: this.onlyActiveOrLastExpired,
+        orderBy: this.orderByExpiryDate,
       },
       (e) => this.query()
     );
@@ -174,7 +202,13 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
   }
 
   onChangeSelection = (i) => {
-    this.props.selectPolicy(i[0] || null);
+    const { selectPolicy, disableSelection } = this.props;
+
+    if (disableSelection) {
+      return;
+    }
+
+    selectPolicy(i[0] || null);
   };
 
   toggleCheckbox = (key) => {
@@ -190,8 +224,17 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     let h = [
       "policies.productCode",
       "policies.productName",
+      "policies.effectiveDate",
+      "policies.enrolmentDate",
       "policies.expiryDate",
-      "policies.status"
+      "policies.status",
+      "policies.policyValue",
+      "policies.deduction",
+      "policies.hospitalDeduction",
+      "policies.nonHospitalDeduction",
+      "policies.ceiling",
+      "policies.hospitalCeiling",
+      "policies.nonHospitalCeiling",
     ];
     if (this.showBalance) {
       h.push("policies.balance");
@@ -213,8 +256,17 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     let a = [
       this.sorter("productCode"),
       this.sorter("productName"),
+      this.sorter("effectiveDate"),
+      this.sorter("enrolmentDate"),
       this.sorter("expiryDate"),
       this.sorter("status"),
+      this.sorter("policyValue"),
+      this.sorter("deduction"),
+      this.sorter("hospitalDeduction"),
+      this.sorter("nonHospitalDeduction"),
+      this.sorter("ceiling"),
+      this.sorter("hospitalCeiling"),
+      this.sorter("nonHospitalCeiling"),
     ];
     if (this.showBalance) {
       a.push(this.sorter("balance"));
@@ -231,8 +283,17 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     let f = [
       (i) => i.productCode,
       (i) => i.productName,
+      (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.effectiveDate),
+      (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.enrollDate),
       (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.expiryDate),
       (i) => formatMessage(this.props.intl, "policy", `policies.status.${i.status}`),
+      (i) => <AmountInput value={i.policyValue} readOnly />,
+      (i) => i.ded,
+      (i) => i.dedInPatient,
+      (i) => i.dedOutPatient,
+      (i) => i.ceiling,
+      (i) => i.ceilingInPatient,
+      (i) => i.ceilingOutPatient,
     ];
     if (this.showBalance) {
       f.push((i) => i.balance);
@@ -302,6 +363,8 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       insuree,
       readOnly,
       className,
+      hideAddPolicyButton = false,
+      disableSelection,
     } = this.props;
     if ((!family || !family.uuid) && (!insuree || !insuree.uuid)) {
       return null;
@@ -365,7 +428,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
           items={policies}
           fetching={fetchingPolicies}
           error={errorPolicies}
-          withSelection={"single"}
+          withSelection={disableSelection ? false : "single"}
           onChangeSelection={this.onChangeSelection}
           onDoubleClick={this.onDoubleClick}
           withPagination={true}

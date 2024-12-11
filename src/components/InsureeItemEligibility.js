@@ -57,7 +57,7 @@ class InsureeItemEligibility extends Component {
           </Grid>
           <ProgressOrError size={16} progress={isFetching} error={error} />
           <Box flexGrow={1}>
-            {isFetched && (
+            {isFetched && !error && (
               <Eligibility
                 minDate={eligibility.minServiceDate}
                 remaining={eligibility.itemLeft}

@@ -24,6 +24,8 @@
   "policy.insureePolicies.hospitalCeiling": "Hospital Ceiling",
   "policy.insureePolicies.nonHospitalCeiling": "Non Hospital Ceiling",
   "policy.insureePolicies.balance": "Balance",
+  "policy.policies.enrolmentDate": "Enrolment Date",
+  "policy.policies.policyValue": "Policy Value",
   "policy.insureeEligibility.service": "Service Eligibility",
   "policy.insureeEligibility.service.search": "Search service…",
   "policy.insureeEligibility.item": "Item Eligibility",
@@ -158,5 +160,4 @@
     "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
     "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?",
     "policy.PolicyNumberInput.cancel": "Cancelled cheque"
-
 }
