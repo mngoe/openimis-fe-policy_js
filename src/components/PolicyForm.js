@@ -68,7 +68,11 @@ class PolicyForm extends Component {
     policy.stage = POLICY_STAGE_NEW;
     //policy.enrollDate = toISODate(moment().toDate());
     policy.jsonExt = {};
-    if (!!this.props.family && this.props.family.uuid === this.props.family_uuid) {
+    policy.isPaid = false;
+    if (
+      !!this.props.family &&
+      this.props.family.uuid === this.props.family_uuid
+    ) {
       policy.family = this.props.family;
     }
     return policy;

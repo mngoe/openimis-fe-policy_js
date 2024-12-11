@@ -56,4 +56,7 @@ None
 * `state.insuree`, loading insuree policies (,eligibility,...)
 
 ## Configurations Options
-None
+- `familyOrInsureePoliciesSummary.orderByExpiryDate`: Allows to set whether you want to sort policies by expiry date in ascending or descending order. Default: __"expiryDate"__ which means ascending order.
+- `familyOrInsureePoliciesSummary.onlyActiveOrLastExpired`: Enables to choose whether you want to display only active and the last expired policies, or all. Default: __true__. 
+- `minimumPolicyEffectiveDate`: Set minimum allowed date for effective date of a policy. Sets minimum for x days before current day. If 0 nothing is changed. Default: 0. 
+- `isEligiblitySummaryEnabled`: Enables/disables remain counts/amounts in enquire. Enabled if true. Default true. 

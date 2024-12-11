@@ -47,7 +47,7 @@ class PolicyValuesPanel extends Component {
           </Grid>
           <Divider />
           <Grid container className={classes.item}>
-            <Grid container alignItems="center" justify="center">
+            <Grid container alignItems="center" justify="start">
               <Grid item xs={3} className={classes.item}>
                 <ProgressOrError
                   progress={fetchingPolicyValues}
@@ -83,7 +83,7 @@ class PolicyValuesPanel extends Component {
             </Grid>
             <Grid container alignItems="center">
               <Grid item xs={12}>
-                <Divider />
+                <Divider style={{ margin: "10px 0" }} />
               </Grid>
               <Grid item xs={3} />
               <Grid item xs={3} className={classes.itemcenter}>

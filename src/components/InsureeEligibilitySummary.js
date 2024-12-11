@@ -63,6 +63,10 @@ const amounts = insureeEligibility => (
 )
 
 class InsureeEligibilitySummary extends Component {
+    constructor(props){
+        super(props);
+        this.isEligiblitySummaryEnabled =  this.props.modulesManager.getConf("fe-policy", "isEligiblitySummaryEnabled", true);
+    }
 
     componentDidMount(){
         this.props?.insuree && this.props.fetchEligibility(this.props.insuree.chfId);
@@ -77,7 +81,7 @@ class InsureeEligibilitySummary extends Component {
     render() {
         const { classes, insuree, insureeEligibility } = this.props;
 
-        if (!insuree || !insureeEligibility) return null;
+        if (!insuree || !insureeEligibility || !this.isEligiblitySummaryEnabled) return null;
 
         return (
             <Grid container>
