@@ -13,10 +13,12 @@ import InsureeEligibilityEnquiry from "./components/InsureeEligibilityEnquiry";
 import InsureePolicyEligibilitySummary from "./components/InsureePolicyEligibilitySummary";
 import messages_en from "./translations/en.json";
 import messages_fr from "./translations/fr.json";
-import { FormattedMessage } from "@openimis/fe-core";
+import { FormattedMessage, decodeId } from "@openimis/fe-core";
 import { reducer } from "./reducer";
 import { RIGHT_POLICY } from "./constants";
 import { policyMutation } from "./utils/utils";
+import PolicyRenewalsReport from "./reports/PolicyRenewalsReport";
+import PolicyPrimaryOperationalIndicatorsReport from "./reports/PolicyPrimaryOperationalIndicatorsReport";
 const ROUTE_POLICY_POLICIES = "policy/policies";
 const ROUTE_POLICY_POLICY = "policy/policy";
 
@@ -26,10 +28,77 @@ const DEFAULT_CONFIG = {
     { key: 'fr', messages: messages_fr }
   ],
   "reducers": [{ key: 'policy', reducer }],
+  "reports": [
+    {
+      key: "policy_renewals",
+      component: PolicyRenewalsReport,
+      isValid: (values) => values.dateStart && values.dateEnd,
+      getParams: (values) => {
+        const params = {}
+        if (values.region) {
+          params.requested_region_id = decodeId(values.region.id);
+        }
+        if (values.district) {
+          params.requested_district_id = decodeId(values.district.id);
+        }
+        if (values.product) {
+          params.requested_product_id = decodeId(values.product.id);
+        }
+        if (values.officer) {
+          params.requested_officer_id = decodeId(values.officer.id);
+        }
+        if (values.sorting) {
+          params.requested_sorting = values.sorting;
+        }
+        params.date_start = values.dateStart;
+        params.date_end = values.dateEnd;
+        return params;
+      },
+    },
+    {
+      key: "policy_primary_operational_indicators",
+      component: PolicyPrimaryOperationalIndicatorsReport,
+      isValid: (values) => (values) => values.yearMonth,
+      getParams: (values) => {
+        const params = {yearMonth: values.yearMonth}
+        if (values.location) {
+          params.locationId = decodeId(values.location.id);
+        }
+        return params;
+      },
+    },
+  ],
   "refs": [
     { key: "policy.PolicyOfficerPicker", ref: PolicyOfficerPicker },
-    { key: "policy.PolicyOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
-    { key: "policy.PolicyPicker.projection", ref: ["id", "uuid", "startDate", "product{name, code}", "expiryDate", "value"] },
+    {
+      key: "policy.PolicyOfficerPicker.projection",
+      ref: ["id", "uuid", "code", "lastName", "otherNames"],
+    },
+    {
+      key: "policy.PolicyPicker.projection",
+      ref: [
+        "id",
+        "uuid",
+        "startDate",
+        "product{name, code, maxInstallments}",
+        "expiryDate",
+        "value",
+        "sumPremiums",
+      ],
+    },
+    {
+      key: "policy.PolicyPicker.projection.withFamily",
+      ref: [
+        "id",
+        "uuid",
+        "startDate",
+        "product{name, code, maxInstallments}",
+        "expiryDate",
+        "value",
+        "sumPremiums",
+        "family{id, uuid, headInsuree{chfId, lastName, otherNames, dob}}",
+      ],
+    },
     { key: "policy.PolicyOfficerPicker.sort", ref: 'officer__code' },
     { key: "policy.PolicyStatusPicker", ref: PolicyStatusPicker },
     { key: "policy.PolicyStatusPicker.projection", ref: null },
@@ -58,6 +127,7 @@ const DEFAULT_CONFIG = {
   ],
   "insuree.EnquiryDialog": [FamilyOrInsureePoliciesSummary, InsureeEligibilityEnquiry, InsureeEligibilitySummary],
   "insuree.FamilyOverview.panels": [FamilyOrInsureePoliciesSummary],
+  "insuree.ProfilePage.insureePolicies": [FamilyOrInsureePoliciesSummary],
   "insuree.FamilyOverview.mutations": [policyMutation]
 }
 

@@ -71,7 +71,11 @@ class PolicyForm extends Component {
     // policy.enrollDate = toISODate(moment().toDate());
 
     policy.jsonExt = {};
-    if (!!this.props.family && this.props.family.uuid === this.props.family_uuid) {
+    policy.isPaid = false;
+    if (
+      !!this.props.family &&
+      this.props.family.uuid === this.props.family_uuid
+    ) {
       policy.family = this.props.family;
     }
     return policy;
@@ -103,6 +107,66 @@ class PolicyForm extends Component {
         ),
       )
     } else if (!!this.props.renew) {
+      this.setState((state, props) => ({
+        renew: this.props.renew,
+        policy: this._renewPolicy(state.policy),
+      }));
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (
+      prevProps.fetchedPolicy !== this.props.fetchedPolicy &&
+      !!this.props.fetchedPolicy
+    ) {
+      var policy = this.props.policy || {};
+      if (!!this.state.renew) {
+        policy.startDate = policy.expiryDate;
+        policy = this._renewPolicy(policy);
+      }
+      policy.ext = !!policy.jsonExt ? JSON.parse(policy.jsonExt) : {};
+      this.setState(
+        {
+          policy,
+          policy_uuid: policy.uuid,
+          lockNew: false,
+          newPolicy: !this.props.renew,
+          renew: false,
+        }
+       
+      );
+    } else if (
+      !_.isEqual(prevState.policy.product, this.state.policy.product) ||
+      !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)
+    ) {
+      if (!this.props.readOnly && !!this.state.policy.product) {
+        this.props.fetchPolicyValues(this.state.policy);
+      }
+    } else if (
+      !!prevProps.fetchingPolicyValues &&
+      !this.props.fetchingPolicyValues &&
+      !!this.props.fetchedPolicyValues
+    ) {
+      this.setState(
+        (state) => ({
+          policy: { ...state.policy, ...this.props.policyValues?.policy },
+        }),
+        (e) => {
+          if (!_.isEmpty(this.props.policyValues?.warnings))
+            this.confirmProduct();
+        }
+      );
+    } else if (prevProps.policy_uuid && !this.props.policy_uuid) {
+      this.setState({
+        policy: this._newPolicy(),
+        newPolicy: true,
+        lockNew: false,
+        policy_uuid: null,
+      });
+    } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
+      this.props.journalize(this.props.mutation);
+      this.setState({ reset: this.state.reset + 1 });
+    } else if (!prevProps.renew && !!this.props.renew) {
       this.setState(
         (state, props) => ({
           renew: this.props.renew,
