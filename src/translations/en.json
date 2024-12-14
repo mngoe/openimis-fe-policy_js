@@ -18,7 +18,9 @@
   "policy.insureePolicies.productCode": "Code",
   "policy.insureePolicies.productName": "Name",
   "policy.insureePolicies.expiryDate": "Expire Date",
+  "policy.policies.enrolmentDate": "Enrolment Date",
   "policy.insureePolicies.status": "Status",
+  "policy.policies.policyValue": "Policy Value",
   "policy.insureePolicies.hospitalDeduction": "Hospital Deduction",
   "policy.insureePolicies.nonHospitalDeduction": "Non Hospital Deduction",
   "policy.insureePolicies.hospitalCeiling": "Hospital Ceiling",
@@ -160,4 +162,6 @@
     "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
     "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?",
     "policy.PolicyNumberInput.cancel": "Cancelled cheque"
+
+
 }

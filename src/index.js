@@ -127,7 +127,6 @@ const DEFAULT_CONFIG = {
   ],
   "insuree.EnquiryDialog": [FamilyOrInsureePoliciesSummary, InsureeEligibilityEnquiry, InsureeEligibilitySummary],
   "insuree.FamilyOverview.panels": [FamilyOrInsureePoliciesSummary],
-  "insuree.ProfilePage.insureePolicies": [FamilyOrInsureePoliciesSummary],
   "insuree.FamilyOverview.mutations": [policyMutation]
 }
 

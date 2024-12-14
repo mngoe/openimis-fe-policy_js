@@ -130,12 +130,9 @@ class PolicySearcher extends Component {
             "policy.policySummaries.status",
             "policy.policySummaries.value",
             "policy.policySummaries.balance",
-            filters?.showHistory?.value
-            ? "policy.policySummaries.validityFrom"
-            : null,
-          filters?.showHistory?.value
-            ? "policy.policySummaries.validityTo"
-            : null,
+            "policy.policySummaries.policyNumber",
+            "policy.policySummaries.validityFrom",
+            "policy.policySummaries.validityTo",
             "policy.policySummaries.openFamily",
             "policy.policySummaries.openNewTab",
             "policy.policySummaries.renew",
@@ -192,6 +189,8 @@ class PolicySearcher extends Component {
                 this.props.modulesManager,
                 this.props.intl,
                 policy.validityTo),
+<<<<<<< HEAD
+=======
             filters?.showHistory?.value
               ? (policy) =>
                   formatDateFromISO(
@@ -208,6 +207,7 @@ class PolicySearcher extends Component {
                     policy.validityTo
                   )
               : null,
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
             policy => {
                 if (!policy.family) return null
                 return (
@@ -250,6 +250,7 @@ class PolicySearcher extends Component {
         } = this.props;
 
         let count = policiesPageInfo.totalCount;
+        console.log('edited')
 
         return (
             <Fragment>
@@ -278,7 +279,10 @@ class PolicySearcher extends Component {
                     rowLocked={this.rowLocked}
                     onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
                     canFetch={false}
+<<<<<<< HEAD
+=======
 
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
                 />
             </Fragment>
         )

@@ -227,14 +227,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "policies.effectiveDate",
       "policies.enrolmentDate",
       "policies.expiryDate",
-      "policies.status",
-      "policies.policyValue",
-      "policies.deduction",
-      "policies.hospitalDeduction",
-      "policies.nonHospitalDeduction",
-      "policies.ceiling",
-      "policies.hospitalCeiling",
-      "policies.nonHospitalCeiling",
+      "policies.status"
     ];
     if (this.showBalance) {
       h.push("policies.balance");
@@ -260,13 +253,6 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       this.sorter("enrolmentDate"),
       this.sorter("expiryDate"),
       this.sorter("status"),
-      this.sorter("policyValue"),
-      this.sorter("deduction"),
-      this.sorter("hospitalDeduction"),
-      this.sorter("nonHospitalDeduction"),
-      this.sorter("ceiling"),
-      this.sorter("hospitalCeiling"),
-      this.sorter("nonHospitalCeiling"),
     ];
     if (this.showBalance) {
       a.push(this.sorter("balance"));
@@ -287,13 +273,6 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.enrollDate),
       (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.expiryDate),
       (i) => formatMessage(this.props.intl, "policy", `policies.status.${i.status}`),
-      (i) => <AmountInput value={i.policyValue} readOnly />,
-      (i) => i.ded,
-      (i) => i.dedInPatient,
-      (i) => i.dedOutPatient,
-      (i) => i.ceiling,
-      (i) => i.ceilingInPatient,
-      (i) => i.ceilingOutPatient,
     ];
     if (this.showBalance) {
       f.push((i) => i.balance);

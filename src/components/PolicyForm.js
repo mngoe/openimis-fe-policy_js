@@ -71,11 +71,7 @@ class PolicyForm extends Component {
     // policy.enrollDate = toISODate(moment().toDate());
 
     policy.jsonExt = {};
-    policy.isPaid = false;
-    if (
-      !!this.props.family &&
-      this.props.family.uuid === this.props.family_uuid
-    ) {
+    if (!!this.props.family && this.props.family.uuid === this.props.family_uuid) {
       policy.family = this.props.family;
     }
     return policy;
@@ -107,6 +103,8 @@ class PolicyForm extends Component {
         ),
       )
     } else if (!!this.props.renew) {
+<<<<<<< HEAD
+=======
       this.setState((state, props) => ({
         renew: this.props.renew,
         policy: this._renewPolicy(state.policy),
@@ -167,6 +165,7 @@ class PolicyForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: this.state.reset + 1 });
     } else if (!prevProps.renew && !!this.props.renew) {
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
       this.setState(
         (state, props) => ({
           renew: this.props.renew,
@@ -295,10 +294,16 @@ class PolicyForm extends Component {
     //check policy number if is cs product
     if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
       if (!this.state.policy.policyNumber) return false;
+<<<<<<< HEAD
+      if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+      if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
+      if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "cancel") return false;
+=======
       if (this.state.policy.policyNumber.chequeImportLineStatus){
         if ((this.state.policy.policyNumber?.chequeImportLineStatus).toLowerCase() === "used") return false;
         if ((this.state.policy.policyNumber?.chequeImportLineStatus).toLowerCase() === "cancel") return false;
       }
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
     }
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
@@ -411,6 +416,7 @@ class PolicyForm extends Component {
   }
 
   confirmActivePolicy = (policy, previousPolicy) => {
+    console.log('confirm ', previousPolicy)
     let confirmedAction = () => {
       if (previousPolicy != undefined) {
         this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
@@ -418,7 +424,9 @@ class PolicyForm extends Component {
           "policy",
           "SuspendPolicy.mutationLabel",
           { policy: policyLabel(this.props.modulesManager, previousPolicy) }
-        ))
+        )
+        )
+        console.log('suspended')
       }
 
       this.setState(
