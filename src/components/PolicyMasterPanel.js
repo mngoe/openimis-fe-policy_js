@@ -52,7 +52,6 @@ const POLICY_POLICY_CONTRIBUTION_KEY = "policy.Policy";
 const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
 
 class PolicyMasterPanel extends FormPanel {
-
   constructor(props) {
     super(props);
 
@@ -326,6 +325,14 @@ class PolicyMasterPanel extends FormPanel {
                   onChange={this._onProductChange}
                   required={true}
                   canFetch={this.props.edited.family ? true : false}
+<<<<<<< HEAD
+=======
+                  locationId={
+                    !!edited.family
+                      ? decodeId(edited.family?.location?.parent?.parent?.id)
+                      : 0
+                  }
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
                   enrollmentDate={edited?.enrollDate ?? null}
                 />
               </Grid>

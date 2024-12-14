@@ -189,6 +189,25 @@ class PolicySearcher extends Component {
                 this.props.modulesManager,
                 this.props.intl,
                 policy.validityTo),
+<<<<<<< HEAD
+=======
+            filters?.showHistory?.value
+              ? (policy) =>
+                  formatDateFromISO(
+                    this.props.modulesManager,
+                    this.props.intl,
+                    policy.validityFrom
+                  )
+              : null,
+            filters?.showHistory?.value
+              ? (policy) =>
+                  formatDateFromISO(
+                    this.props.modulesManager,
+                    this.props.intl,
+                    policy.validityTo
+                  )
+              : null,
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
             policy => {
                 if (!policy.family) return null
                 return (
@@ -260,6 +279,10 @@ class PolicySearcher extends Component {
                     rowLocked={this.rowLocked}
                     onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
                     canFetch={false}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 494c18713e02130c84178e18a742e93284b32c23
                 />
             </Fragment>
         )
