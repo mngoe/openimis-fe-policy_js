@@ -289,12 +289,13 @@ class PolicyForm extends Component {
     }
 
     //check policy number if is cs product
-    if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
+    if (!!this.state.policy.product.program && ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé")) {
+      console.log(this.state.policy.policyNumber);
       console.log(this.state.policy.policyNumber);
       if (!this.state.policy.policyNumber) return false;
-      if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
-      if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
-      if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "cancel") return false;
+      if (!!this.state.policy.policyNumber.chequeImportLineStatus && this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
+      if (!!this.state.policy.policyNumber.chequeImportLineStatus && (this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
+      if (!!this.state.policy.policyNumber.chequeImportLineStatus && (this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "cancel") return false;
     }
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
@@ -315,7 +316,7 @@ class PolicyForm extends Component {
     }
 
     //check female active cs policy
-    if (this.state.policy.product.program.code == "PAL") {
+    if (!!this.state.policy.product.program && (this.state.policy.product.program.code == "PAL")) {
       if (this.state.policy.family.headInsuree.gender.code == "F") {
         let policies = this.state.policies;
         if (!!policies && policies.length > 0) {
@@ -332,7 +333,7 @@ class PolicyForm extends Component {
     if (!this.state.policy.officer) return false;
 
     //check female active cs policy
-    if (this.state.policy.product.program.code == "PAL") {
+    if (!!this.state.policy.product.program && (this.state.policy.product.program.code == "PAL")) {
       if (this.state.policy.family.headInsuree.gender.code == "F") {
         let policies = this.state.policies;
         if (!!policies && policies.length > 0) {
