@@ -290,6 +290,7 @@ class PolicyForm extends Component {
 
     //check policy number if is cs product
     if ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé") {
+      console.log(this.state.policy.policyNumber);
       if (!this.state.policy.policyNumber) return false;
       if (this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
       if ((this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
