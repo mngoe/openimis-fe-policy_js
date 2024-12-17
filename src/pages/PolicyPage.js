@@ -21,7 +21,6 @@ const styles = (theme) => ({
 class PolicyPage extends Component {
   save = (policy) => {
     if (!policy.uuid && policy.stage === POLICY_STAGE_NEW) {
-      console.log('policy obtainu', policy)
       this.props.createPolicy(
         this.props.modulesManager,
         policy,

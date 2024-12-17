@@ -247,7 +247,6 @@ class PolicySearcher extends Component {
         } = this.props;
 
         let count = policiesPageInfo.totalCount;
-        console.log('edited')
 
         return (
             <Fragment>

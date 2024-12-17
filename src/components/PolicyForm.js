@@ -290,8 +290,6 @@ class PolicyForm extends Component {
 
     //check policy number if is cs product
     if (!!this.state.policy.product.program && ((this.state.policy.product.program.nameProgram) == "Chèque Santé" || (this.state.policy.product.program.nameProgram) == "Cheque Santé")) {
-      console.log(this.state.policy.policyNumber);
-      console.log(this.state.policy.policyNumber);
       if (!this.state.policy.policyNumber) return false;
       if (!!this.state.policy.policyNumber.chequeImportLineStatus && this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
       if (!!this.state.policy.policyNumber.chequeImportLineStatus && (this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
@@ -355,13 +353,13 @@ class PolicyForm extends Component {
     let existFagepPolicy = null;
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
-        if (this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
+        if (!!policies[i].product.program && this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
           previousPolicy = policies[i]
         }
-        if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
+        if (!!policies[i].product.program && policies[i].product.program.code == "PAL" && policies[i].status === 2) {
           existFagepPolicy = policies[i]
         }
-        if (policies[i].product.program.code == "PAL" && policies[i].status === 2) {
+        if (!!policies[i].product.program && policies[i].product.program.code == "PAL" && policies[i].status === 2) {
           existFagepPolicy = policies[i]
         }
       }
@@ -408,7 +406,6 @@ class PolicyForm extends Component {
   }
 
   confirmActivePolicy = (policy, previousPolicy) => {
-    console.log('confirm ', previousPolicy)
     let confirmedAction = () => {
       if (previousPolicy != undefined) {
         this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
@@ -418,7 +415,6 @@ class PolicyForm extends Component {
           { policy: policyLabel(this.props.modulesManager, previousPolicy) }
         )
         )
-        console.log('suspended')
       }
 
       this.setState(
