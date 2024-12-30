@@ -21,8 +21,11 @@ import PolicyFilter from "./PolicyFilter";
 
 const POLICY_SEARCHER_CONTRIBUTION_KEY = "policy.PolicySearcher";
 
-class PolicySearcher extends Component {
 
+class PolicySearcher extends Component {
+    state = {
+        searchInitiated: false,
+      };
     constructor(props) {
         super(props);
         this.rowsPerPageOptions = props.modulesManager.getConf("fe-policy", "policyFilter.rowsPerPageOptions", [10, 20, 50, 100]);
@@ -240,6 +243,13 @@ class PolicySearcher extends Component {
     rowDisabled = (selection, i) => !!i.validityTo
     rowLocked = (selection, i) => !!i.clientMutationId
 
+    onFiltersApplied = (filters) => {
+        this.setState({
+          searchInitiated: true,
+          filters, // Update the active filters
+        });
+      };
+
     render() {
         const { intl,
             policies, policiesPageInfo, fetchingPolicies, fetchedPolicies, errorPolicies,
@@ -247,6 +257,7 @@ class PolicySearcher extends Component {
         } = this.props;
 
         let count = policiesPageInfo.totalCount;
+        const { searchInitiated } = this.state;
 
         return (
             <Fragment>
@@ -265,7 +276,7 @@ class PolicySearcher extends Component {
                     rowsPerPageOptions={this.rowsPerPageOptions}
                     defaultPageSize={this.defaultPageSize}
                     defaultOrderBy="-enrollDate"
-                    fetch={this.fetch}
+                    fetch={searchInitiated ? this.fetch : () => {}}
                     rowIdentifier={this.rowIdentifier}
                     filtersToQueryParams={this.filtersToQueryParams}
                     headers={this.headers}
@@ -275,6 +286,7 @@ class PolicySearcher extends Component {
                     rowLocked={this.rowLocked}
                     onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
                     canFetch={false}
+                    onChangeFilters={this.onFiltersApplied}
                 />
             </Fragment>
         )
