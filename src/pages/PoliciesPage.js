@@ -16,6 +16,13 @@ const styles = (theme) => ({
 });
 
 class PoliciesPage extends Component {
+  constructor(props) {
+    super(props);
+    let defaultFilters = {};
+    this.state = {
+      defaultFilters,
+    };
+  }
   onDoubleClick = (p, newTab = false) => {
     historyPush(
       this.props.modulesManager,
@@ -39,6 +46,7 @@ class PoliciesPage extends Component {
         <PolicySearcher
           cacheFiltersKey="policyPoliciesPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
+          defaultFilters = {this.state.defaultFilters}
         />
       </div>
     );
