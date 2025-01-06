@@ -59,7 +59,7 @@ class PolicySearcher extends Component {
       4
     );
     this.isDefaultFetchPolicyActivated = this.props.modulesManager.getConf(
-      "fe-insuree",
+      "fe-policy",
       "isDefaultFetchPolicyActivated",
       true
     );
