@@ -58,6 +58,11 @@ class PolicySearcher extends Component {
       "location.Location.MaxLevels",
       4
     );
+    this.isDefaultFetchPolicyActivated = this.props.modulesManager.getConf(
+      "fe-insuree",
+      "isDefaultFetchPolicyActivated",
+      true
+    );
   }
 
   componentDidMount() {
@@ -503,7 +508,7 @@ class PolicySearcher extends Component {
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           defaultOrderBy="-enrollDate"
-          fetch={searchInitiated ? this.fetch : () => {}}
+          fetch={this.isDefaultFetchPolicyActivated == false  && searchInitiated ? this.fetch : this.isDefaultFetchPolicyActivated == true ? this.fetch : () => {}}
           rowIdentifier={this.rowIdentifier}
           filtersToQueryParams={this.filtersToQueryParams}
           headers={this.headers}
