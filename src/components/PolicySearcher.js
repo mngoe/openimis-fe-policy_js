@@ -34,7 +34,7 @@ class PolicySearcher extends Component {
         this.isDefaultFetchPolicyActivated = this.props.modulesManager.getConf(
             "fe-policy",
             "isDefaultFetchPolicyActivated",
-            false
+            true
           );
     }
 
