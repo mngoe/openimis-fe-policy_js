@@ -56,4 +56,4 @@ None
 * `state.insuree`, loading insuree policies (,eligibility,...)
 
 ## Configurations Options
-None
+- `isDefaultFetchPolicyActivated`, manage default fetch behavior of policy searcher ; default: true
