@@ -161,7 +161,8 @@
     "policy.PolicyRenewalsReport.sorting.O": "",
     "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
     "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?",
-    "policy.PolicyNumberInput.cancel": "Cancelled cheque"
+    "policy.PolicyNumberInput.cancel": "Cancelled cheque",
+    "policy.confirmWaitingPolicy.message": "You already have an waiting police for this program, would you like to deactivate it? ? {label}?"
 
 
 }
