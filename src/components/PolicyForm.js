@@ -319,7 +319,7 @@ class PolicyForm extends Component {
         let policies = this.state.policies;
         if (!!policies && policies.length > 0) {
           for (let i = 0; i < policies.length; i++) {
-            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
+            if (!!policies[i].product.program && (policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
               return false;
             }
           }
@@ -330,19 +330,6 @@ class PolicyForm extends Component {
     //if (!this.state.policy.value) return false;
     if (!this.state.policy.officer) return false;
 
-    //check female active cs policy
-    if (!!this.state.policy.product.program && (this.state.policy.product.program.code == "PAL")) {
-      if (this.state.policy.family.headInsuree.gender.code == "F") {
-        let policies = this.state.policies;
-        if (!!policies && policies.length > 0) {
-          for (let i = 0; i < policies.length; i++) {
-            if ((policies[i].product.program.nameProgram == "Cheque Santé" || policies[i].product.program.nameProgram == "Chèque Santé") && policies[i].status === 2) {
-              return false;
-            }
-          }
-        }
-      }
-    }
     return true;
   }
 
@@ -353,7 +340,7 @@ class PolicyForm extends Component {
     let existFagepPolicy = null;
     if (!!policies && policies.length > 0) {
       for (let i = 0; i < policies.length; i++) {
-        if (!!policies[i].product.program && this.state.policy.product.program.id == policies[i].product.program.id && policies[i].status === 2) {
+        if (!!policies[i].product.program && this.state.policy.product.program.id == policies[i].product.program.id && (policies[i].status === 2 || policies[i].status === 1)) {
           previousPolicy = policies[i]
         }
         if (!!policies[i].product.program && policies[i].product.program.code == "PAL" && policies[i].status === 2) {
@@ -364,11 +351,24 @@ class PolicyForm extends Component {
         }
       }
       if (previousPolicy != null) {
-        this.setState({
-          saving: false
-        })
-        this.confirmActivePolicy(policy, previousPolicy)
-
+        if(previousPolicy.status == 1 && 
+          previousPolicy.product.program.nameProgram != "Cheque Santé" && 
+          previousPolicy.product.program.nameProgram != "Chèque Santé"){
+            this.setState({
+              saving: false
+            })
+            this.confirmActivePolicy(policy, previousPolicy)
+        }else if(previousPolicy.status == 2){
+          this.setState({
+            saving: false
+          })
+          this.confirmActivePolicy(policy, previousPolicy)
+        }else{
+          this.setState(
+            { lockNew: !policy.uuid }, // avoid duplicates
+            e => this.props.save(policy))
+          this.dispatchExpiryDate(policy)
+        }
       } else {
         if (existFagepPolicy != null &&
           (this.state.policy.product.program.nameProgram == "Cheque Santé" || this.state.policy.product.program.nameProgram == "Chèque Santé")
@@ -423,15 +423,15 @@ class PolicyForm extends Component {
       this.dispatchExpiryDate(policy)
     }
 
-
-
-    let confirm = e => this.props.coreConfirm(
-      formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.title", { label: policyLabel(this.props.modulesManager, previousPolicy) }),
-      formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.message",
-        {
-          label: policyLabel(this.props.modulesManager, previousPolicy),
-        }),
-    );
+    let confirm = e => {
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.title", { label: policyLabel(this.props.modulesManager, previousPolicy) }),
+        formatMessageWithValues(this.props.intl, "policy",previousPolicy.status === 2 ? "confirmActivePolicy.message" : "confirmWaitingPolicy.message",
+          {
+            label: policyLabel(this.props.modulesManager, previousPolicy),
+          }),
+      );
+    }
     this.setState(
       { confirmedAction },
       confirm
