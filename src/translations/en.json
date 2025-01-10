@@ -3,7 +3,7 @@
   "policy.PolicyFilter.product.label": "Product",
   "policy.PolicyFilter.product.placeholder": "Search for a Product...",
   "policy.confirmActivePolicy.title": "Confirm Activate Policy ",
-  "policy.confirmActivePolicy.message": "You already have an active police for this program, would you like to deactivate it? ? {label}?",
+  "policy.confirmActivePolicy.message": "You already have an active police for this program, would you like to deactivate it? {label}?",
   "policy.policyValues.alert.test": "Policy Value test:",
   "policy.dialogActions.continue": "Continue",
   "policy.dialogActions.goBack": "Go back",
