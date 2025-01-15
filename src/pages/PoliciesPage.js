@@ -23,6 +23,7 @@ class PoliciesPage extends Component {
       defaultFilters,
     };
   }
+  
   onDoubleClick = (p, newTab = false) => {
     historyPush(
       this.props.modulesManager,
