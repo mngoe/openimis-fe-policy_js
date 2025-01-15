@@ -5,9 +5,9 @@ import {
   formatPageQueryWithCount,
   formatMutation,
   toISODate,
+  decodeId,
 } from "@openimis/fe-core";
 import _ from "lodash";
-import { decodeId } from "@openimis/fe-core";
 
 const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "policyUuid",
@@ -182,7 +182,7 @@ export function fetchPolicyFull(mm, policy_uuid) {
   ];
   const payload = formatPageQuery(
     "policies",
-    [`uuid: "${policy_uuid}"`, 'showHistory: true'],
+    [`uuid: "${policy_uuid}"`, "showHistory: true"],
     projections
   );
   return graphql(payload, "POLICY_POLICY");
@@ -337,6 +337,10 @@ export function fetchFamily(mm, familyUuid, headInsureeChfId) {
   } else {
     filters.push(`headInsuree_ChfId: "${headInsureeChfId}"`);
   }
-  const payload = formatPageQuery("families", filters, FAMILY_FULL_PROJECTION(mm));
+  const payload = formatPageQuery(
+    "families",
+    filters,
+    FAMILY_FULL_PROJECTION(mm)
+  );
   return graphql(payload, "INSUREE_FAMILY_OVERVIEW");
-};
+}

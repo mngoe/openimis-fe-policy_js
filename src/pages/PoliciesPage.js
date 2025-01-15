@@ -16,7 +16,6 @@ const styles = (theme) => ({
 });
 
 class PoliciesPage extends Component {
-
   constructor(props) {
     super(props);
     let defaultFilters = {};
@@ -24,7 +23,7 @@ class PoliciesPage extends Component {
       defaultFilters,
     };
   }
-
+  
   onDoubleClick = (p, newTab = false) => {
     historyPush(
       this.props.modulesManager,

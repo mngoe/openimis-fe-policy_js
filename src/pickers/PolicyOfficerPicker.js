@@ -62,6 +62,7 @@ const PolicyOfficerPicker = (props) => {
   return (
     <Autocomplete
       multiple={multiple}
+      required={required}
       error={error}
       readOnly={readOnly}
       options={data?.policyOfficers?.edges.map((edge) => edge.node) ?? []}

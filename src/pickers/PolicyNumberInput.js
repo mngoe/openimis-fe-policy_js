@@ -63,10 +63,11 @@ class PolicyNumberInput extends Component {
   debouncedSearch = _debounce(this.fetch, this.props.modulesManager.getConf("fe-insuree", "debounceTime", 800));
 
   render() {
-    const { intl, readOnly, required, error, policyNumber, fetching, withLabel, label } = this.props;
-    const isInvalid = !fetching && policyNumber && (policyNumber.chequeImportLineStatus).toLowerCase() === "used" || !fetching && policyNumber === undefined || !fetching && policyNumber && (policyNumber.chequeImportLineStatus).toLowerCase() === "cancel"
+    const { intl, readOnly, required, error, policyNumber, fetching, withLabel, label} = this.props;
+    const isInvalid = !fetching && policyNumber && (policyNumber.chequeImportLineStatus).toLowerCase() === "used" || !fetching && policyNumber === undefined || !fetching && policyNumber && (policyNumber.chequeImportLineStatus).toLowerCase() === "cancel" 
     const isNotExit = !fetching && policyNumber === undefined;
-    const status = !fetching && !!policyNumber ? policyNumber.chequeImportLineStatus : ""
+    const status = !fetching && !!policyNumber ? policyNumber.chequeImportLineStatus: ""
+    
     return (
       <TextInput
         readOnly={readOnly}
@@ -76,7 +77,7 @@ class PolicyNumberInput extends Component {
         value={this.state.search}
         onChange={(v) => this.debouncedSearch(v)}
         required={required}
-        error={error || isNotExit ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : isInvalid && status.toLowerCase() == "used" ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.invalid") : isInvalid && status.toLowerCase() == "cancel" ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.cancel") : null}
+        error={error || isNotExit ?  formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : isInvalid && status.toLowerCase()=="used" ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.invalid") : isInvalid && status.toLowerCase()=="cancel"? formatMessage(this.props.intl, "policy", "PolicyNumberInput.cancel")  : null}        
         endAdornment={
           <InputAdornment position="end">
             <>

@@ -9,6 +9,8 @@ import {
   Typography,
   Divider,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import {
   Autorenew as RenewIcon,
@@ -29,6 +31,8 @@ import {
   PublishedComponent,
   ProgressOrError,
   decodeId,
+  AmountInput,
+  TextInput,
 } from "@openimis/fe-core";
 import {
   policyLabel,
@@ -48,6 +52,20 @@ const POLICY_POLICY_CONTRIBUTION_KEY = "policy.Policy";
 const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
 
 class PolicyMasterPanel extends FormPanel {
+  constructor(props) {
+    super(props);
+
+    this.minimumPolicyEffectiveDate = this.props.modulesManager.getConf(
+      "fe-policy",
+      "minimumPolicyEffectiveDate",
+      0
+    );
+    this.defaultPaymentType = this.props.modulesManager.getConf(
+      "fe-policy",
+      "defaultPaymentTypeOfContribution",
+      "C"
+    );
+  }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.confirmed && this.props.confirmed) {
@@ -161,7 +179,6 @@ class PolicyMasterPanel extends FormPanel {
       errorPolicyValues,
       title = "Policy.details.title",
     } = this.props;
-
     let actions = [];
     if (this.canRenew(edited)) {
       actions.push({
@@ -241,6 +258,14 @@ class PolicyMasterPanel extends FormPanel {
                   value={!!edited ? edited.enrollDate : null}
                   module="policy"
                   label="Policy.enrollDate"
+                  minDate={
+                    !!this.minimumPolicyEffectiveDate
+                      ? new Date().setDate(
+                          new Date().getDate() - this.minimumPolicyEffectiveDate
+                        )
+                      : undefined
+                  }
+                  maxDate={new Date()}
                   readOnly={readOnly}
                   required={true}
                   onChange={(v) => this.updateAttribute("enrollDate", v)}
@@ -300,6 +325,12 @@ class PolicyMasterPanel extends FormPanel {
                   onChange={this._onProductChange}
                   required={true}
                   canFetch={this.props.edited.family ? true : false}
+                  locationId={
+                    !!edited.family
+                      ? decodeId(edited.family?.location?.parent?.parent?.id)
+                      : 0
+                  }
+                  enrollmentDate={edited?.enrollDate ?? null}
                 />
               </Grid>
               {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
@@ -316,6 +347,7 @@ class PolicyMasterPanel extends FormPanel {
                   />
                 </Grid>
               ) : null }
+
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyOfficerPicker"
@@ -324,7 +356,11 @@ class PolicyMasterPanel extends FormPanel {
                   readOnly={readOnly}
                   withPlaceholder={true}
                   withLabel={true}
-                  label={formatMessage(intl, "policy", "PolicyOfficerPicker.label")}
+                  label={formatMessage(
+                    intl,
+                    "policy",
+                    "PolicyOfficerPicker.label"
+                  )}
                   placeholder={formatMessage(
                     intl,
                     "policy",
@@ -346,11 +382,99 @@ class PolicyMasterPanel extends FormPanel {
                   value={!!edited && edited.status}
                   module="policy"
                   readOnly={true}
-                  withNull={true}
-                  nullLabel="PolicyStatus.none"
+                  withNull={false}
                   onChange={(v) => this.updateAttribute("status", v)}
                 />
               </Grid>
+              {!edited_id && (
+                <Grid xs={12}>
+                  <Grid item xs={3} className={classes.item}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          color="primary"
+                          checked={edited?.isPaid}
+                          onChange={(e) =>
+                            this.updateAttribute("isPaid", e.target.checked)
+                          }
+                        />
+                      }
+                      disabled={readOnly}
+                      label={formatMessage(
+                        intl,
+                        "policy",
+                        "Policy.payInOneInstallment"
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              )}
+              {edited?.isPaid && (
+                <>
+                  <Grid item xs={12} className={classes.item}>
+                    <Typography variant="subtitle1">
+                      <FormattedMessage
+                        module="policy"
+                        id="Policy.contribDetails"
+                      />
+                    </Typography>
+                    <i>
+                      <Typography variant="body2">
+                        <FormattedMessage
+                          module="policy"
+                          id="Policy.contribDetails.warning"
+                        />
+                      </Typography>
+                    </i>
+                  </Grid>
+                  <Grid item xs={3} className={classes.item}>
+                    <TextInput
+                      module="contribution"
+                      label="contribution.receipt"
+                      readOnly={readOnly}
+                      value={edited?.receipt}
+                      onChange={(receipt) =>
+                        this.updateAttribute("receipt", receipt)
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="payer.PayerPicker"
+                      withNull={true}
+                      readOnly={readOnly}
+                      value={edited?.payer}
+                      onChange={(p) => this.updateAttribute("payer", p)}
+                    />
+                  </Grid>
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="core.DatePicker"
+                      module="contribution"
+                      value={edited?.enrollDate}
+                      readOnly
+                      label="contribution.payDate"
+                    />
+                  </Grid>
+                  <Grid item xs={3} className={classes.item}>
+                    <AmountInput
+                      module="contribution"
+                      label="contribution.amount"
+                      readOnly
+                      value={edited?.value || 0}
+                      displayZero={true}
+                    />
+                  </Grid>
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="contribution.PremiumPaymentTypePicker"
+                      withNull={false}
+                      readOnly
+                      value={this.defaultPaymentType}
+                    />
+                  </Grid>
+                </>
+              )}
               <Contributions
                 {...this.props}
                 updateAttribute={this.updateAttribute}
