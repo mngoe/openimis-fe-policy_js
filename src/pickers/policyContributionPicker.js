@@ -19,12 +19,12 @@ const PolicyContributionPlanPicker = (props) => {
     locationId,
   } = props;
   const modulesManager = useModulesManager();
-  const [filters, setFilters] = useState({ location: locationId });
+  const [filters, setFilters] = useState({  applyDefaultValidityFilter: true});
   const { formatMessage } = useTranslations("policy", modulesManager);
   const { isLoading, error, data } = useContributionPlanQuery({ filters }, { skip: true });
 
   const onOpen = () => {
-    setFilters({ first: 15, location: locationId });
+    setFilters({ first: 15, applyDefaultValidityFilter: true  });
   };
   return (
     <Autocomplete
@@ -44,7 +44,7 @@ const PolicyContributionPlanPicker = (props) => {
       onOpen={onOpen}
       filterOptions={filter}
       filterSelectedOptions={filterSelectedOptions}
-      onInputChange={(search) => setFilters({ first: 15, search, location: locationId })}
+      onInputChange={(search) => setFilters({ first: 15, search, applyDefaultValidityFilter: true, isDeleted: false })}
     />
   );
 };

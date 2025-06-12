@@ -144,7 +144,8 @@ class PolicyForm extends Component {
       );
     } else if (
       !_.isEqual(prevState.policy.contributionPlan, this.state.policy.contributionPlan) ||
-      !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate)
+      !_.isEqual(prevState.policy.enrollDate, this.state.policy.enrollDate) ||
+      !_.isEqual(prevState.policy.periodicity, this.state.policy.periodicity)
     ) {
       if (!this.props.readOnly && !!this.state.policy.contributionPlan) {
         this.props.fetchPolicyValues(this.state.policy);
