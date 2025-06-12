@@ -42,7 +42,7 @@ export const useContributionPlanQuery = (filters, config) => {
       }
     }
     `,
-    filters,
+    filters.filters,
     config,
   );
 

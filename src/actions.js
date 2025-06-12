@@ -237,6 +237,7 @@ export function fetchPolicyValues(policy) {
     `productId: ${parseInt(policy.contributionPlan.benefitPlanId)}`,
     `contributionPlanUuid:"${decodeId(policy.contributionPlan.id)}"`,
     `familyId: ${decodeId(policy.family.id)}`,
+    `periodicity: "${policy.periodicity}"`
   ];
   if (!!policy.prevPolicy) {
     params.push(`prevUuid: "${policy.prevPolicy.uuid}"`);
