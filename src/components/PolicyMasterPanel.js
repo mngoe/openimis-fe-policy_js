@@ -398,6 +398,7 @@ class PolicyMasterPanel extends FormPanel {
                   readOnly={readOnly}
                   withNull={false}
                   required={!!edited.signatureDate ? true : false}
+                  contributionPlan={edited?.contributionPlan}
                   onChange={(v) => this.updateAttribute("periodicity", v)}
                 />
               </Grid>

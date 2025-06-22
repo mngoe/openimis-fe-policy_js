@@ -221,7 +221,6 @@ export function fetchContributionPlans(modulesManager, params) {
 }
 
 export function fetchPolicyValues(policy) {
-  console.log("policy fetched", )
   var exp_date = new Date(
     policy.prevPolicy == undefined
       ? policy.enrollDate

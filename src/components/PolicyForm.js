@@ -20,7 +20,7 @@ import {
   withModulesManager,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchContributionPlans} from "../actions";
+import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchContributionPlans } from "../actions";
 import {
   RIGHT_POLICY,
   RIGHT_POLICY_EDIT,
@@ -44,7 +44,8 @@ class PolicyForm extends Component {
     newInsuree: true,
     renew: false,
     confirmProduct: false,
-    contributionPlan:{},
+    contributionPlan: {},
+    isPeriodicityModified: false, // Ajoutez ce flag
   };
 
   _newPolicy() {
@@ -84,7 +85,7 @@ class PolicyForm extends Component {
     policy.enrollDate = toISODate(moment().toDate());
     policy.family = from_policy.family;
     policy.product = from_policy.product;
-    policy.contributionPlan= from_policy.contributionPlan
+    policy.contributionPlan = from_policy.contributionPlan
     policy.periodicity = "M"
     policy.paymentDay = 5
     return policy;
@@ -120,6 +121,12 @@ class PolicyForm extends Component {
       }));
     }
   }
+  getDefaultPeriodicity = (code) => {
+    if (!code) return "M";
+    if (["AMOS1", "AMOS2", "AMOS3", "AMOS4"].includes(code)) return "Q";
+    if (code === "AMS") return "Y";
+    return "M";
+  };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
@@ -140,7 +147,7 @@ class PolicyForm extends Component {
           newPolicy: !this.props.renew,
           renew: false,
         }
-       
+
       );
     } else if (
       !_.isEqual(prevState.policy.contributionPlan, this.state.policy.contributionPlan) ||
@@ -183,6 +190,29 @@ class PolicyForm extends Component {
         (e) => this.props.fetchPolicyValues(this.state.policy)
       );
     }
+    if (prevState.policy.contributionPlan?.code !== this.state.policy.contributionPlan?.code) {
+      const newCode = this.state.policy.contributionPlan?.code;
+      const prevCode = prevState.policy.contributionPlan?.code;
+      const currentPeriodicity = this.state.policy.periodicity;
+      // Cas 1: Passage à AMS → force Y
+      if (newCode === "AMS") {
+        this.setState({
+          policy: {...this.state.policy, periodicity: "Y"},
+          isPeriodicityModified: false
+        });
+      }
+      // Cas 2: Retour de AMS vers AMOSx → conserve Y
+      else if (prevCode === "AMS" && ["AMOS1","AMOS2","AMOS3","AMOS4"].includes(newCode) && currentPeriodicity === "Y") {
+      }
+      // Cas 3: Nouvel AMOSx → met Q par défaut (sauf si déjà modifié)
+      else if (["AMOS1","AMOS2","AMOS3","AMOS4"].includes(newCode) && !this.state.isPeriodicityModified) {
+        this.setState({
+          policy: {...this.state.policy, periodicity: "Q"},
+          isPeriodicityModified: false
+        });
+      }
+    }
+  
   }
 
   back = (e) => {
@@ -197,7 +227,10 @@ class PolicyForm extends Component {
   };
 
   onEditedChanged = (p) => {
-    this.setState((state) => ({ policy: { ...state.policy, ...p } }));
+    this.setState((state) => ({
+      policy: { ...state.policy, ...p },
+      isPeriodicityModified: p.periodicity !== undefined ? true : state.isPeriodicityModified,
+    }));
   };
 
   onConfirmProductDialog = () => {
@@ -261,6 +294,7 @@ class PolicyForm extends Component {
       !rights.includes(RIGHT_POLICY_EDIT) ||
       (!!policy.status && policy.status !== POLICY_STATUS_IDLE) ||
       !!policy.validityTo;
+    let pol = this._newPolicy()
     return (
       <Fragment>
         <Helmet
@@ -285,26 +319,26 @@ class PolicyForm extends Component {
         {((!!fetchedPolicy && !!policy && policy.uuid === policy_uuid) ||
           !policy_uuid ||
           policy.stage === POLICY_STAGE_RENEW) && (
-          <Form
-            module="policy"
-            title="Policy.title"
-            titleParams={{
-              label: policyLabel(this.props.modulesManager, this.state.policy),
-            }}
-            edited_id={policy_uuid}
-            edited={this.state.policy}
-            reset={this.state.reset}
-            back={this.back}
-            save={this._save}
-            canSave={this.canSave}
-            readOnly={ro}
-            headPanelContributionsKey={POLICY_HEAD_PANEL_CONTRIBUTION_KEY}
-            family_uuid={!!policy.family ? policy.family.uuid : null}
-            Panels={[PolicyMasterPanel]}
-            onEditedChanged={this.onEditedChanged}
-            forcedDirty={!ro && (!!this.props.renew || !policy_uuid)}
-          />
-        )}
+            <Form
+              module="policy"
+              title="Policy.title"
+              titleParams={{
+                label: policyLabel(this.props.modulesManager, this.state.policy),
+              }}
+              edited_id={policy_uuid}
+              edited={this.state.policy}
+              reset={this.state.reset}
+              back={this.back}
+              save={this._save}
+              canSave={this.canSave}
+              readOnly={ro}
+              headPanelContributionsKey={POLICY_HEAD_PANEL_CONTRIBUTION_KEY}
+              family_uuid={!!policy.family ? policy.family.uuid : null}
+              Panels={[PolicyMasterPanel]}
+              onEditedChanged={this.onEditedChanged}
+              forcedDirty={!ro && (!!this.props.renew || !policy_uuid)}
+            />
+          )}
       </Fragment>
     );
   }
