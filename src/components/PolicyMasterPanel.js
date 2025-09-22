@@ -52,6 +52,10 @@ const POLICY_POLICY_CONTRIBUTION_KEY = "policy.Policy";
 const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
 
 class PolicyMasterPanel extends FormPanel {
+  state = {
+    productError: null
+  }
+
   constructor(props) {
     super(props);
 
@@ -78,7 +82,21 @@ class PolicyMasterPanel extends FormPanel {
     }
   }
 
+  _checkAge = (product, insureeAge) => {
+    this.updateAttribute("product", product)
+    if (!!product.ageMaximal || !!product.ageMinimal) {
+      if (!!product.ageMinimal && insureeAge < product.ageMinimal){
+        this.setState({ productError: formatMessage(this.props.intl, "policy", "product.invalidMinAge") })
+      } else if(!!product.ageMaximal && insureeAge > product.ageMaximal) {
+        this.setState({ productError: formatMessage(this.props.intl, "policy", "product.invalidMaxAge") })
+      } else {
+        this.setState({ productError: null });
+      }
+    } else this.setState({ productError: null });
+  }
+
   _onProductChange = (product) => {
+    const { insureeAge } = this.props;
     !product
       ? this.updateAttributes({
         product: null,
@@ -86,7 +104,7 @@ class PolicyMasterPanel extends FormPanel {
         expiryDate: null,
         value: null,
       })
-      : this.updateAttribute("product", product);
+      : this._checkAge(product, insureeAge);
   };
 
   renewPolicy = () =>
@@ -331,6 +349,7 @@ class PolicyMasterPanel extends FormPanel {
                       : 0
                   }
                   enrollmentDate={edited?.enrollDate ?? null}
+                  invalidAgeError={this.state.productError}
                 />
               </Grid>
               {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
