@@ -11,9 +11,7 @@ class PolicyPeriodicityPicker extends Component {
         // Logique de filtrage sans modifier la constante d'origine
         const isAmos = !!contributionPlan && ['AMOS1', 'AMOS2', 'AMOS3', 'AMOS4'].includes(contributionPlan.code);
         const isAms = !!contributionPlan && contributionPlan.code === "AMS";
-        const filteredPeriodicity = isAmos
-            ? PERIODICITY_VALUES.filter(p => p !== "M")
-            : isAms ? PERIODICITY_VALUES.filter(p => p!== "M" && p!== "Q" && p!== "S") : PERIODICITY_VALUES
+        const filteredPeriodicity = isAms ? PERIODICITY_VALUES.filter(p => p!== "M" && p!== "Q" && p!== "S") : PERIODICITY_VALUES
         return (
             <ConstantBasedPicker
                 module="policy"
