@@ -3,17 +3,17 @@ import { useGraphqlQuery } from "@openimis/fe-core"; // Assurez-vous d'importer 
 import { useModulesManager } from "@openimis/fe-core"; // Assurez-vous d'importer useModulesManager correctement
 import _ from "lodash"; // Assurez-vous d'avoir lodash installé et importé
 
-export const useContributionPlanQuery = (filters, config) => {
+export const useContributionPlanQuery = (filters, config,family_uuid="") => {
   const modulesManager = useModulesManager();
   const { isLoading, error, data, refetch } = useGraphqlQuery(
     `
     query (
       $first: Int, $last: Int, $before: String, $after: String, $isDeleted: Boolean, $showHistory: Boolean,
-      $applyDefaultValidityFilter: Boolean, $orderBy: [String]
+      $applyDefaultValidityFilter: Boolean, $orderBy: [String],$familyUuid:String
     ) {
       contributionPlan(
         first: $first, last: $last, before: $before, after: $after, isDeleted: $isDeleted, showHistory: $showHistory,
-        applyDefaultValidityFilter: $applyDefaultValidityFilter, orderBy: $orderBy
+        applyDefaultValidityFilter: $applyDefaultValidityFilter, orderBy: $orderBy,familyUuid:$familyUuid
       ) {
         totalCount
         pageInfo {
@@ -42,7 +42,10 @@ export const useContributionPlanQuery = (filters, config) => {
       }
     }
     `,
-    filters.filters,
+    {
+      ...filters.filters,     
+      familyUuid: family_uuid 
+    },
     config,
   );
 

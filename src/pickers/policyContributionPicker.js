@@ -17,11 +17,12 @@ const PolicyContributionPlanPicker = (props) => {
     filter,
     filterSelectedOptions,
     locationId,
+    family_uuid,
   } = props;
   const modulesManager = useModulesManager();
   const [filters, setFilters] = useState({  applyDefaultValidityFilter: true});
   const { formatMessage } = useTranslations("policy", modulesManager);
-  const { isLoading, error, data } = useContributionPlanQuery({ filters }, { skip: true });
+  const { isLoading, error, data } = useContributionPlanQuery({ filters }, { skip: true },family_uuid);
 
   const onOpen = () => {
     setFilters({ first: 15, applyDefaultValidityFilter: true  });
