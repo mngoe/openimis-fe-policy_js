@@ -190,7 +190,7 @@ class PolicyForm extends Component {
         (e) => this.props.fetchPolicyValues(this.state.policy)
       );
     }
-    if (prevState.policy.contributionPlan?.code !== this.state.policy.contributionPlan?.code) {
+    if (prevState.policy.contributionPlan?.code && prevState.policy.contributionPlan?.code !== this.state.policy.contributionPlan?.code) {
       const newCode = this.state.policy.contributionPlan?.code;
       const prevCode = prevState.policy.contributionPlan?.code;
       const currentPeriodicity = this.state.policy.periodicity;
