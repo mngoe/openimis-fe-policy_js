@@ -210,7 +210,6 @@ class PolicyForm extends Component {
   }
 
   canSave = () => {
-    console.log('policy: ',this.state.policy);
     if (!this.state.policy.family) return false;
     if (!this.state.policy.product) return false;
 
@@ -237,7 +236,10 @@ class PolicyForm extends Component {
 
     if (this.state.dob && this.state.policy && this.state.policy.product) {
       let Age = this.verifyAge(this.state.dob)
-      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMinimal != null) {
+      if (
+        this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMaximal != 0 && 
+        this.state.policy.product.ageMinimal != null && this.state.policy.product.ageMinimal != 0
+      ) {
         if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
           return false;
         }
