@@ -210,6 +210,7 @@ class PolicyForm extends Component {
   }
 
   canSave = () => {
+    console.log('policy: ',this.state.policy);
     if (!this.state.policy.family) return false;
     if (!this.state.policy.product) return false;
 
