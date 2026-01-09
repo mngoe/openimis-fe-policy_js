@@ -353,20 +353,33 @@ class PolicyMasterPanel extends FormPanel {
                 />
               </Grid>
               {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
-                <Grid item xs={3} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="policy.PolicyNumberInput"
-                    module="policy"
-                    label="policy.PolicyNumber"
-                    required={true}
-                    readOnly={!!edited_id || readOnly}
-                    value={!!edited && edited.policyNumber}
-                    new_policy={!edited?.id}
-                    onChange={(v) => this.updateAttribute("policyNumber", v)}
-                  />
-                </Grid>
-              ) : null }
-
+                <>
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="policy.PolicyNumberInput"
+                      module="policy"
+                      label="policy.PolicyNumber"
+                      required={true}
+                      readOnly={!!edited_id || readOnly}
+                      value={!!edited && edited.policyNumber}
+                      new_policy={!edited?.id}
+                      onChange={(v) => this.updateAttribute("policyNumber", v)}
+                    />
+                  </Grid>
+                  <Grid item xs={2} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="policy.PregnancyAgePicker"
+                      required={true}
+                      readOnly={readOnly}
+                      value={!!edited && edited.pregnancyAge}
+                      label="policy.PregnancyAge"
+                      withPlaceholder={true}
+                      withNull={false}
+                      onChange={(v) => this.updateAttribute("pregnancyAge", v)}
+                    />
+                  </Grid>
+                </>
+              ) : null}
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyOfficerPicker"
