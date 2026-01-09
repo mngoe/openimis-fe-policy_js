@@ -3,6 +3,7 @@ import { ListAlt } from "@material-ui/icons";
 import PolicyOfficerPicker from "./pickers/PolicyOfficerPicker";
 import PolicyStagePicker from "./pickers/PolicyStagePicker";
 import PolicyStatusPicker from "./pickers/PolicyStatusPicker";
+import PregnancyAgePicker from "./pickers/PregnancyAgePicker";
 import PoliciesPage from "./pages/PoliciesPage";
 import PolicyPage from "./pages/PolicyPage";
 import PolicyNumberInput from "./pickers/PolicyNumberInput";
@@ -111,6 +112,7 @@ const DEFAULT_CONFIG = {
     { key: "policy.route.policies", ref: ROUTE_POLICY_POLICIES },
     { key: "policy.route.policy", ref: ROUTE_POLICY_POLICY },
     { key: "policy.PolicyNumberInput", ref: PolicyNumberInput },
+    { key: "policy.PregnancyAgePicker", ref: PregnancyAgePicker},
   ],
   "core.Router": [
     { path: ROUTE_POLICY_POLICIES, component: PoliciesPage },
