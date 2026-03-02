@@ -183,20 +183,20 @@ class PolicyMasterPanel extends FormPanel {
       title = "Policy.details.title",
     } = this.props;
     let actions = [];
-    if (this.canRenew(edited)) {
-      actions.push({
-        button: (
-          <IconButton onClick={(e) => this.renewPolicy()}>
-            <RenewIcon />
-          </IconButton>
-        ),
-        tooltip: formatMessage(
-          this.props.intl,
-          "policy",
-          "action.RenewPolicy.tooltip"
-        ),
-      });
-    }
+    // if (this.canRenew(edited)) {
+    //   actions.push({
+    //     button: (
+    //       <IconButton onClick={(e) => this.renewPolicy()}>
+    //         <RenewIcon />
+    //       </IconButton>
+    //     ),
+    //     tooltip: formatMessage(
+    //       this.props.intl,
+    //       "policy",
+    //       "action.RenewPolicy.tooltip"
+    //     ),
+    //   });
+    // }
     if (this.canSuspend(edited)) {
       actions.push({
         button: (
@@ -332,6 +332,7 @@ class PolicyMasterPanel extends FormPanel {
                       ? decodeId(edited.family?.location?.parent?.parent?.id)
                       : 0
                   }
+                  family_uuid={edited?.family?.uuid}
                   enrollmentDate={edited?.enrollDate ?? null}
                 />
               </Grid>

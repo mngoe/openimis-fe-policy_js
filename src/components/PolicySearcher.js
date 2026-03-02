@@ -191,7 +191,7 @@ class PolicySearcher extends Component {
             : null,
             "policy.policySummaries.openFamily",
             "policy.policySummaries.openNewTab",
-            "policy.policySummaries.renew",
+            // "policy.policySummaries.renew",
             "policy.policySummaries.suspend",
             "policy.policySummaries.delete",
         ];
@@ -347,24 +347,24 @@ class PolicySearcher extends Component {
           </IconButton>
         </Tooltip>
       ),
-      (policy) =>
-        this.canRenew(policy) && (
-          <Tooltip
-            title={formatMessage(
-              this.props.intl,
-              "policy",
-              "action.RenewPolicy.tooltip"
-            )}
-          >
-            <IconButton
-              onClick={(e) =>
-                !policy.clientMutationId && this.renewPolicy(policy)
-              }
-            >
-              <RenewIcon />
-            </IconButton>
-          </Tooltip>
-        ),
+      // (policy) =>
+      //   this.canRenew(policy) && (
+      //     <Tooltip
+      //       title={formatMessage(
+      //         this.props.intl,
+      //         "policy",
+      //         "action.RenewPolicy.tooltip"
+      //       )}
+      //     >
+      //       <IconButton
+      //         onClick={(e) =>
+      //           !policy.clientMutationId && this.renewPolicy(policy)
+      //         }
+      //       >
+      //         <RenewIcon />
+      //       </IconButton>
+      //     </Tooltip>
+      //   ),
       (policy) =>
         this.canSuspend(policy) && (
           <Tooltip

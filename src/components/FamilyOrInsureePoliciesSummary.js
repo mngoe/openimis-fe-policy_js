@@ -298,16 +298,16 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     if (this.showBalance) {
       f.push((i) => i.balance);
     }
-    f.push((i) =>
-      !this.props.readOnly && this.canRenew(i)
-        ? withTooltip(
-            <IconButton onClick={(e) => this.renewPolicy(i)}>
-              <RenewIcon />
-            </IconButton>,
-            formatMessage(this.props.intl, "policy", "action.RenewPolicy.tooltip")
-          )
-        : null
-    );
+    // f.push((i) =>
+    //   !this.props.readOnly && this.canRenew(i)
+    //     ? withTooltip(
+    //         <IconButton onClick={(e) => this.renewPolicy(i)}>
+    //           <RenewIcon />
+    //         </IconButton>,
+    //         formatMessage(this.props.intl, "policy", "action.RenewPolicy.tooltip")
+    //       )
+    //     : null
+    // );
     f.push((i) =>
       !this.props.readOnly && this.canSuspend(i)
         ? withTooltip(
