@@ -21,6 +21,7 @@ import { RIGHT_POLICY } from "./constants";
 import { policyMutation } from "./utils/utils";
 import PolicyRenewalsReport from "./reports/PolicyRenewalsReport";
 import PolicyPrimaryOperationalIndicatorsReport from "./reports/PolicyPrimaryOperationalIndicatorsReport";
+import CotisationReport from "./components/CotisationReport";
 const ROUTE_POLICY_POLICIES = "policy/policies";
 const ROUTE_POLICY_POLICY = "policy/policy";
 
@@ -28,6 +29,19 @@ const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en },{ key: 'fr', messages: messages_fr } ],
   "reducers": [{ key: 'policy', reducer }],
   "reports": [
+    {
+      key: "cotisation_report",
+      component: CotisationReport,
+      isValid: (values) => 
+        values.dateStart && 
+        values.dateEnd ,
+      getParams: (values) => {
+        const params = {}
+        params.date_start = values.dateStart;
+        params.date_end = values.dateEnd;  
+        return params;
+      },
+    },
     {
       key: "policy_renewals",
       component: PolicyRenewalsReport,
