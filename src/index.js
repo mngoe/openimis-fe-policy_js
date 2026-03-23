@@ -19,6 +19,7 @@ import { RIGHT_POLICY } from "./constants";
 import { policyMutation } from "./utils/utils";
 import PolicyRenewalsReport from "./reports/PolicyRenewalsReport";
 import PolicyPrimaryOperationalIndicatorsReport from "./reports/PolicyPrimaryOperationalIndicatorsReport";
+import PregnancyAgePicker from "./pickers/PregnancyAgePicker";
 const ROUTE_POLICY_POLICIES = "policy/policies";
 const ROUTE_POLICY_POLICY = "policy/policy";
 
@@ -111,6 +112,7 @@ const DEFAULT_CONFIG = {
     { key: "policy.route.policies", ref: ROUTE_POLICY_POLICIES },
     { key: "policy.route.policy", ref: ROUTE_POLICY_POLICY },
     { key: "policy.PolicyNumberInput", ref: PolicyNumberInput },
+    { key: "policy.PregnancyAgePicker", ref: PregnancyAgePicker},
   ],
   "core.Router": [
     { path: ROUTE_POLICY_POLICIES, component: PoliciesPage },

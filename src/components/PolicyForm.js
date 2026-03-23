@@ -232,6 +232,7 @@ class PolicyForm extends Component {
       if (!!this.state.policy.policyNumber.chequeImportLineStatus && this.state.policy.policyNumber.chequeImportLineStatus === "used") return false;
       if (!!this.state.policy.policyNumber.chequeImportLineStatus && (this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "used") return false;
       if (!!this.state.policy.policyNumber.chequeImportLineStatus && (this.state.policy.policyNumber.chequeImportLineStatus).toLowerCase() === "cancel") return false;
+      if (!this.state.policy.pregnancyAge) return false;
     }
     if (!this.state.policy.enrollDate) return false;
     if (!this.state.policy.startDate) return false;
@@ -239,7 +240,8 @@ class PolicyForm extends Component {
 
     if (this.state.dob && this.state.policy && this.state.policy.product) {
       let Age = this.verifyAge(this.state.dob)
-      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMinimal != null) {
+      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMaximal != 0  && 
+        this.state.policy.product.ageMinimal != null && this.state.policy.product.ageMinimal != 0) {
         if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
           return false;
         }
