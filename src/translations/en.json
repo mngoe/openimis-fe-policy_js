@@ -2,6 +2,7 @@
   "policy.PolicyOfficerPicker.placeholder": "Search for an Officer...",
   "policy.PolicyFilter.product.label": "Product",
   "policy.PolicyFilter.product.placeholder": "Search for a Product...",
+  "policy.ProductPicker.enrollmentDateRequired": "Select enrollment date first",
   "policy.confirmActivePolicy.title": "Confirm Activate Policy ",
   "policy.confirmActivePolicy.message": "You already have an active police for this program, would you like to deactivate it? {label}?",
   "policy.policyValues.alert.test": "Policy Value test:",
