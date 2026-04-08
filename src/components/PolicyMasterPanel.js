@@ -198,6 +198,10 @@ class PolicyMasterPanel extends FormPanel {
       errorPolicyValues,
       title = "Policy.details.title",
     } = this.props;
+    const enrollmentDateRequiredError =
+      !!edited?.family && !edited?.enrollDate
+        ? formatMessage(intl, "policy", "ProductPicker.enrollmentDateRequired")
+        : null;
     let actions = [];
     if (this.canRenew(edited)) {
       actions.push({
@@ -343,14 +347,14 @@ class PolicyMasterPanel extends FormPanel {
                   )}
                   onChange={this._onProductChange}
                   required={true}
-                  canFetch={this.props.edited.family ? true : false}
+                  canFetch={Boolean(edited?.family && edited?.enrollDate)}
                   locationId={
                     !!edited.family
                       ? decodeId(edited.family?.location?.parent?.parent?.id)
                       : 0
                   }
                   enrollmentDate={edited?.enrollDate ?? null}
-                  invalidAgeError={this.state.productError}
+                  invalidAgeError={this.state.productError || enrollmentDateRequiredError}
                 />
               </Grid>
               {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
