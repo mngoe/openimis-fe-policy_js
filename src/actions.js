@@ -148,6 +148,18 @@ export function print(id) {
   }
 }
 
+export function printVerso(id) {
+  return async (dispatch) => {
+    try {
+      const url = '../../api/report/carte_amg_verso/pdf/?insureeids=' + id;
+      const response = window.open(url, "_blank");
+      return response;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}
+
 
 export function fetchPolicySummaries(mm, filters) {
   let projections = [

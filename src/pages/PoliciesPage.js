@@ -12,7 +12,7 @@ import {
 } from "@openimis/fe-core";
 import PolicySearcher from "../components/PolicySearcher";
 import PrintIcon from "@material-ui/icons/ListAlt";
-import { print } from "../actions";
+import { print, printVerso } from "../actions";
 const styles = (theme) => ({
   page: theme.page,
 });
@@ -30,6 +30,7 @@ class PoliciesPage extends Component {
   constructor(props) {
     super(props);
     this.printSelected = this.printSelected.bind(this);
+    this.printVersoSelected = this.printVersoSelected(this);
   }
 
   componentDidMount = () => {
@@ -51,6 +52,19 @@ class PoliciesPage extends Component {
     });
   }
 
+  printVersoSelected(selection) {
+    let idList = [];
+    selection.forEach((selected) => {
+      let id = selected.family.headInsuree.id;
+      if (id != null) {
+        idList.push(id)
+      }
+    });
+    idList.forEach(id => {
+      this.props.printVerso(decodeId(id))
+    });
+  }
+
   canPrintSelected = (selection) =>
   !!selection && selection.length;
 
@@ -60,6 +74,13 @@ class PoliciesPage extends Component {
     actions.push({
       label: "policy.printSelected",
       action: this.printSelected,
+      enabled: this.canPrintSelected,
+      icon: <PrintIcon />,
+    });
+
+    actions.push({
+      label: "policy.printVersoSelected",
+      action: this.printVersoSelected,
       enabled: this.canPrintSelected,
       icon: <PrintIcon />,
     });
@@ -83,7 +104,7 @@ const mapStateToProps = (state) => ({
   module: state.core?.savedPagination?.module,
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ clearCurrentPaginationPage, print }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ clearCurrentPaginationPage, print, printVerso }, dispatch);
 
 export default injectIntl(
   withModulesManager(
