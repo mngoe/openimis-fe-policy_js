@@ -143,6 +143,7 @@
   "policy.PolicyRenewalsReport.sorting.R": "By receipt number",
   "policy.PolicyRenewalsReport.sorting.O": "By enrollment officer",
   "policy.printSelected":"Print  AMG card ",
+  "policy.printVersoSelected": "Print AMG card verso",
   "policy.Periodicity": "Periodicity",
   "policy.Periodicity.null": "Any",
   "policy.Periodicity.M": "Monthly",
