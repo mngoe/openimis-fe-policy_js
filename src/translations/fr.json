@@ -1,5 +1,5 @@
 {
-    "policy.printSelected": "Imprimer la carte AMG ",
+    "policy.printSelected": "Imprimer la carte AMG recto",
     "policy.printVersoSelected": "Imprimer la carte AMG verso",
     "policy.PaymentDay": "Date de paiement",
     "policy.PaymentDay.5": "5",
