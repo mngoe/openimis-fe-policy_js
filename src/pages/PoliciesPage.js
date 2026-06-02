@@ -30,7 +30,7 @@ class PoliciesPage extends Component {
   constructor(props) {
     super(props);
     this.printSelected = this.printSelected.bind(this);
-    this.printVersoSelected = this.printVersoSelected(this);
+    this.printVersoSelected = this.printVersoSelected.bind(this);
   }
 
   componentDidMount = () => {
