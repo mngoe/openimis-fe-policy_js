@@ -13,8 +13,7 @@ import _debounce from "lodash/debounce";
 
 const INIT_STATE = {
   search: null,
-  selected: null,
-  error: null
+  selected: null
 };
 
 class PolicyNumberInput extends Component {
