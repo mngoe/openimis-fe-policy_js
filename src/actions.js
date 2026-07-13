@@ -309,6 +309,29 @@ export function suspendPolicy(mm, policy, clientMutationLabel) {
   );
 }
 
+export function forcePolicyExpiration(mm, policy, clientMutationLabel) {
+  let mutation = formatMutation(
+    "forcePoliciesExpiration",
+    `uuids: ["${policy.policyUuid || policy.uuid}"]`,
+    clientMutationLabel
+  );
+  var requestedDateTime = new Date();
+  policy.clientMutationId = mutation.clientMutationId;
+  return graphql(
+    mutation.payload,
+    [
+      "POLICY_MUTATION_REQ",
+      "POLICY_FORCE_EXPIRATION_POLICIES_RESP",
+      "POLICY_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
 export function deletePolicy(mm, policy, clientMutationLabel) {
   let mutation = formatMutation(
     "deletePolicies",
