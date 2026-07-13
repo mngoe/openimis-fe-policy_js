@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { RIGHT_POLICY_DELETE, RIGHT_POLICY_SUSPEND, RIGHT_POLICY_RENEW, POLICY_STATUS_ACTIVE } from "../constants";
+import { RIGHT_POLICY_DELETE, RIGHT_POLICY_SUSPEND, RIGHT_POLICY_RENEW, POLICY_STATUS_ACTIVE, RIGHT_POLICY_EXPIRE } from "../constants";
 
 export function policyLabel(mm, policy) {
     if (!policy) return "";
@@ -45,6 +45,9 @@ export function canRenewPolicy(rights, policy){
 }
 export function canSuspendPolicy(rights, policy){
     return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_SUSPEND) && policy.status === POLICY_STATUS_ACTIVE
+}
+export function canForcePolicyExpiration(rights, policy){
+    return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_EXPIRE) && policy.status === POLICY_STATUS_ACTIVE
 }
 
 export function policyMutation(state) {
