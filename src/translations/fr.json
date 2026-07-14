@@ -96,6 +96,7 @@
     "policy.PolicyStage.null": "Tout",
     "policy.PolicyStage.N": "Nouvelle police",
     "policy.PolicyStage.R": "Police renouvelée",
+    "policy.PolicyStage.F": "Expiration forcée",
     "policy.policySummaries": "{count} Polices trouvées",
     "policy.policySummaries.enrollDate": "Inscription",
     "policy.policySummaries.name": "Nom",
