@@ -447,6 +447,23 @@ class PolicySearcher extends Component {
           </Tooltip>
         ),
       (policy) =>
+        this.canForceExpiration(policy) && (
+          <Tooltip
+            title={formatMessage(
+              this.props.intl,
+              "policy",
+              "action.ForcePolicyExpiration.tooltip"
+            )}
+          >
+            <IconButton 
+            onClick={(e) => 
+              !policy.clientMutationId && this.confirmForceExpiration(policy)}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+        ),
+      (policy) =>
         this.canSuspend(policy) && (
           <Tooltip
             title={formatMessage(
@@ -461,20 +478,6 @@ class PolicySearcher extends Component {
               }
             >
               <SuspendIcon />
-            </IconButton>
-          </Tooltip>
-        ),
-      (policy) =>
-        this.canForceExpiration(policy) && (
-          <Tooltip
-            title={formatMessage(
-              this.props.intl,
-              "policy",
-              "action.ForcePolicyExpiration.tooltip"
-            )}
-          >
-            <IconButton onClick={(e) => this.confirmForceExpiration(i)}>
-              <CancelIcon />
             </IconButton>
           </Tooltip>
         ),
