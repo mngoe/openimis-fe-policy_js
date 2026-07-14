@@ -103,6 +103,7 @@
     "policy.PolicyStage.null": "Any",
     "policy.PolicyStage.N": "New policy",
     "policy.PolicyStage.R": "Renewed policy",
+    "policy.PolicyStage.F": "Forced expiration",
     "policy.policySummaries": "{count} Policies found",
     "policy.policySummaries.enrollDate": "Enrolment",
     "policy.policySummaries.name": "Name",
