@@ -23,13 +23,14 @@ import {
   PublishedComponent,
   AmountInput,
 } from "@openimis/fe-core";
-import { fetchPolicySummaries, deletePolicy, suspendPolicy } from "../actions";
+import { fetchPolicySummaries, deletePolicy, suspendPolicy, forcePolicyExpiration } from "../actions";
 import {
   policyLabel,
   policyBalance,
   canDeletePolicy,
   canSuspendPolicy,
   canRenewPolicy,
+  canForcePolicyExpiration,
 } from "../utils/utils";
 
 import PolicyFilter from "./PolicyFilter";
@@ -199,10 +200,34 @@ class PolicySearcher extends Component {
     this.setState({ confirmedAction }, confirm);
   };
 
+  confirmForceExpiration = (policy) => {
+    policy.family = this.props.family;
+    let confirmedAction = () =>
+      this.props.forcePolicyExpiration(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(this.props.intl, "policy", "ForcePolicyExpiration.mutationLabel", {
+          policy: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.title", {
+          label: policyLabel(this.props.modulesManager, policy),
+        }),
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.message", {
+          label: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    this.setState({ confirmedAction }, confirm);
+  }
+
   canDelete = (policy) => canDeletePolicy(this.props.rights, policy);
   canSuspend = (policy) => canSuspendPolicy(this.props.rights, policy);
   canRenew = (policy) =>
     !this.props.renew && canRenewPolicy(this.props.rights, policy);
+  canForceExpiration = (policy) => canForcePolicyExpiration(this.props.rights, policy);
 
   headers = (filters) => {
     const h = [
@@ -439,6 +464,20 @@ class PolicySearcher extends Component {
           </Tooltip>
         ),
       (policy) =>
+        this.canForceExpiration(policy) && (
+          <Tooltip
+            title={formatMessage(
+              this.props.intl,
+              "policy",
+              "action.ForcePolicyExpiration.tooltip"
+            )}
+          >
+            <IconButton onClick={(e) => this.confirmForceExpiration(i)}>
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+        ),
+      (policy) =>
         this.canDelete(policy) && (
           <Tooltip
             title={formatMessage(
@@ -546,6 +585,7 @@ const mapDispatchToProps = (dispatch) => {
       fetchPolicySummaries,
       deletePolicy,
       suspendPolicy,
+      forcePolicyExpiration,
       coreConfirm,
       journalize,
     },
