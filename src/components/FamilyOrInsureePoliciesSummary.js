@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Divider, Grid, Paper, Typography, FormControlLabel, Checkbox, IconButton } from "@material-ui/core";
-import { Add as AddIcon, Autorenew as RenewIcon, Delete as DeleteIcon, Pause as SuspendIcon } from "@material-ui/icons";
+import { Add as AddIcon, Autorenew as RenewIcon, Delete as DeleteIcon, Pause as SuspendIcon, Cancel as CancelIcon } from "@material-ui/icons";
 
 import {
   Table,
@@ -24,9 +24,9 @@ import {
   journalize,
   AmountInput,
 } from "@openimis/fe-core";
-import { fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy } from "../actions";
+import { fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy, forcePolicyExpiration } from "../actions";
 import { RIGHT_POLICY_ADD } from "../constants";
-import { policyLabel, canDeletePolicy, canSuspendPolicy, canRenewPolicy } from "../utils/utils";
+import { policyLabel, canDeletePolicy, canSuspendPolicy, canRenewPolicy, canForcePolicyExpiration } from "../utils/utils";
 
 const styles = (theme) => ({
   paper: {
@@ -168,6 +168,29 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     this.setState({ confirmedAction }, confirm);
   };
 
+  confirmForceExpiration = (policy) => {
+    policy.family = this.props.family;
+    let confirmedAction = () =>
+      this.props.forcePolicyExpiration(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(this.props.intl, "policy", "ForcePolicyExpiration.mutationLabel", {
+          policy: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.title", {
+          label: policyLabel(this.props.modulesManager, policy),
+        }),
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.message", {
+          label: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    this.setState({ confirmedAction }, confirm);
+  }
+
   onDoubleClick = (i, newTab = false) => {
     historyPush(this.props.modulesManager, this.props.history, "policy.route.policy", [
       i.policyUuid,
@@ -264,6 +287,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
   canDelete = (policy) => !this.props.readOnly && canDeletePolicy(this.props.rights, policy);
   canSuspend = (policy) => !this.props.readOnly && canSuspendPolicy(this.props.rights, policy);
   canRenew = (policy) => !this.props.readOnly && canRenewPolicy(this.props.rights, policy);
+  canForceExpiration = (policy) => !this.props.readOnly && canForcePolicyExpiration(this.props.rights, policy);
 
   itemFormatters = () => {
     let f = [
@@ -284,6 +308,16 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
             <RenewIcon />
           </IconButton>,
           formatMessage(this.props.intl, "policy", "action.RenewPolicy.tooltip")
+        )
+        : null
+    );
+    f.push((i) =>
+      !this.props.readOnly && this.canForceExpiration(i)
+        ? withTooltip(
+          <IconButton onClick={(e) => this.confirmForceExpiration(i)}>
+            <CancelIcon />
+          </IconButton>,
+          formatMessage(this.props.intl, "policy", "action.ForcePolicyExpiration.tooltip")
         )
         : null
     );
@@ -441,7 +475,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { fetch: fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy, coreConfirm, journalize },
+    { fetch: fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy, forcePolicyExpiration, coreConfirm, journalize },
     dispatch
   );
 };

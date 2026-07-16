@@ -16,6 +16,7 @@ import {
   Autorenew as RenewIcon,
   Delete as DeleteIcon,
   Pause as SuspendIcon,
+  Cancel as CancelIcon,
 } from "@material-ui/icons";
 import {
   formatMessage,
@@ -39,8 +40,9 @@ import {
   canDeletePolicy,
   canSuspendPolicy,
   canRenewPolicy,
+  canForcePolicyExpiration,
 } from "../utils/utils";
-import { deletePolicy, suspendPolicy } from "../actions";
+import { deletePolicy, suspendPolicy, forcePolicyExpiration } from "../actions";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -181,10 +183,34 @@ class PolicyMasterPanel extends FormPanel {
     this.setState({ confirmedAction }, confirm);
   };
 
+  confirmForceExpiration = () => {
+    let policy = this.props.edited;
+    let confirmedAction = () =>
+      this.props.forcePolicyExpiration(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(this.props.intl, "policy", "ForcePolicyExpiration.mutationLabel", {
+          policy: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.title", {
+          label: policyLabel(this.props.modulesManager, policy),
+        }),
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.message", {
+          label: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    this.setState({ confirmedAction }, confirm);
+  }
+
   canDelete = (policy) => canDeletePolicy(this.props.rights, policy);
   canSuspend = (policy) => canSuspendPolicy(this.props.rights, policy);
   canRenew = (policy) =>
     !this.props.renew && canRenewPolicy(this.props.rights, policy);
+  canForceExpiration = (policy) => canForcePolicyExpiration(this.props.rights, policy);
 
   render() {
     const {
@@ -209,6 +235,20 @@ class PolicyMasterPanel extends FormPanel {
           this.props.intl,
           "policy",
           "action.RenewPolicy.tooltip"
+        ),
+      });
+    }
+    if(this.canForceExpiration(edited)) {
+      actions.push({
+        button: (
+          <IconButton onClick={(e) => this.confirmForceExpiration()}>
+            <CancelIcon />
+          </IconButton>
+        ),
+        tooltip: formatMessage(
+          this.props.intl,
+          "policy",
+          "action.ForcePolicyExpiration.tooltip"
         ),
       });
     }
@@ -539,7 +579,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { deletePolicy, suspendPolicy, coreConfirm, journalize },
+    { deletePolicy, suspendPolicy, forcePolicyExpiration, coreConfirm, journalize },
     dispatch
   );
 };
