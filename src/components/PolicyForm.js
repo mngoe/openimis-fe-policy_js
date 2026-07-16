@@ -12,7 +12,16 @@ import {
   ProgressOrError, Form, Helmet, coreConfirm,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { fetchPolicyFull, fetchPolicyValues, fetchFamily, fetchPolicySummaries, fetchFamilyOrInsureePolicies, updatePolicy, suspendPolicy } from "../actions";
+import { 
+  fetchPolicyFull, 
+  fetchPolicyValues, 
+  fetchFamily, 
+  fetchPolicySummaries, 
+  fetchFamilyOrInsureePolicies, 
+  updatePolicy, 
+  suspendPolicy,
+  forcePolicyExpiration
+} from "../actions";
 import { policyLabel } from "../utils/utils";
 import { HIV_EMAIL, POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STATUS_IDLE, RIGHT_POLICY, RIGHT_POLICY_EDIT } from "../constants";
 
@@ -346,21 +355,22 @@ class PolicyForm extends Component {
   }
 
   confirmActivePolicy = (policy, previousPolicy) => {
-    let confirmedAction = () => {
+    let confirmedAction = async () => {
       if (previousPolicy != undefined) {
-        this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
+        const response = await this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
           this.props.intl,
           "policy",
           "SuspendPolicy.mutationLabel",
           { policy: policyLabel(this.props.modulesManager, previousPolicy) }
         )
-        )
+        );
+        if(!response.error){
+          this.setState(
+            { lockNew: !policy.uuid }, // avoid duplicates
+            e => this.props.save(policy))
+          this.dispatchExpiryDate(policy)
+        }
       }
-
-      this.setState(
-        { lockNew: !policy.uuid }, // avoid duplicates
-        e => this.props.save(policy))
-      this.dispatchExpiryDate(policy)
     }
 
     let confirm = e => {
@@ -483,6 +493,18 @@ const mapStateToProps = state => ({
 })
 
 export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps,
-  { fetchPolicyFull, fetchPolicyValues, fetchPolicySummaries, fetchFamilyOrInsureePolicies, updatePolicy, suspendPolicy, coreConfirm, journalize, coreAlert, fetchFamily })
+  { 
+    fetchPolicyFull, 
+    fetchPolicyValues, 
+    fetchPolicySummaries, 
+    fetchFamilyOrInsureePolicies, 
+    updatePolicy, 
+    suspendPolicy, 
+    coreConfirm, 
+    journalize, 
+    coreAlert, 
+    fetchFamily,
+    forcePolicyExpiration
+  })
   (withTheme(withStyles(styles)(PolicyForm))))));
 
