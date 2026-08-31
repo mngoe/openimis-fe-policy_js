@@ -27,15 +27,20 @@ const styles = (theme) => ({
 });
 
 const POLICY_FILTER_CONTRIBUTION_KEY = "policy.Filter";
-
 class PolicyFilter extends Component {
+  state = {
+    showHistory: false,
+  };
+
   componentDidUpdate(prevProps, prevState, snapshot) {
+    if (!!!this.state || !!!this.props.filters || !!!prevProps.filters) return;
+    const showHistoryFilter = this.props.filters["showHistory"];
+    const newShowHistory = !!showHistoryFilter ? showHistoryFilter["value"] : false;
     if (
       prevProps.filters["showHistory"] !== this.props.filters["showHistory"] &&
-      !!this.props.filters["showHistory"] &&
-      this.state.showHistory !== this.props.filters["showHistory"]["value"]
+      this.state.showHistory !== newShowHistory
     ) {
-      this.setState((sate, props) => ({ showHistory: props.filters["showHistory"]["value"] }));
+      this.setState({ showHistory: newShowHistory });
     }
   }
   debouncedOnChangeFilter = _debounce(
