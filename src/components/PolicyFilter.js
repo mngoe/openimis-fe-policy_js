@@ -29,13 +29,20 @@ const styles = (theme) => ({
 const POLICY_FILTER_CONTRIBUTION_KEY = "policy.Filter";
 
 class PolicyFilter extends Component {
+  state = {
+    showHistory: false,
+  };
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
+      !!this.state &&
+      !!this.props.filters &&
+      !!prevProps.filters &&
       prevProps.filters["showHistory"] !== this.props.filters["showHistory"] &&
       !!this.props.filters["showHistory"] &&
       this.state.showHistory !== this.props.filters["showHistory"]["value"]
     ) {
-      this.setState((sate, props) => ({ showHistory: props.filters["showHistory"]["value"] }));
+      this.setState((state, props) => ({ showHistory: props.filters["showHistory"]["value"] }));
     }
   }
   debouncedOnChangeFilter = _debounce(

@@ -244,15 +244,15 @@ class PolicySearcher extends Component {
       "policy.policySummaries.value",
       "policy.policySummaries.balance",
       "policy.policySummaries.policyNumber",
-      "policy.policySummaries.validityFrom",
-      "policy.policySummaries.validityTo",
+      filters?.showHistory?.value ? "policy.policySummaries.validityFrom" : null,
+      filters?.showHistory?.value ? "policy.policySummaries.validityTo" : null,
       "policy.policySummaries.openFamily",
       "policy.policySummaries.openNewTab",
       "policy.policySummaries.renew",
       "policy.policySummaries.suspend",
       "policy.policySummaries.delete",
     ];
-    return h;
+    return h.filter(Boolean);
   };
 
   sorts = (filters) => {
@@ -357,18 +357,6 @@ class PolicySearcher extends Component {
           />
         );
       },
-      (policy) =>
-        formatDateFromISO(
-          this.props.modulesManager,
-          this.props.intl,
-          policy.validityFrom
-        ),
-      (policy) =>
-        formatDateFromISO(
-          this.props.modulesManager,
-          this.props.intl,
-          policy.validityTo
-        ),
       filters?.showHistory?.value
         ? (policy) =>
             formatDateFromISO(
