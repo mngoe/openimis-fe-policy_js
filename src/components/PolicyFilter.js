@@ -27,7 +27,6 @@ const styles = (theme) => ({
 });
 
 const POLICY_FILTER_CONTRIBUTION_KEY = "policy.Filter";
-
 class PolicyFilter extends Component {
   state = {
     showHistory: false,
