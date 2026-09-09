@@ -149,7 +149,7 @@ class PolicyForm extends Component {
         }
       }
 
-    } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues) {
+    } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues && !!this.props.policyValues) {
       this.setState(state => (
         { policy: { ...state.policy, ...this.props.policyValues.policy } }
       ),
