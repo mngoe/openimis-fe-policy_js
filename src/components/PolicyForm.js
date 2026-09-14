@@ -149,7 +149,7 @@ class PolicyForm extends Component {
         }
       }
 
-    } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues) {
+    } else if (!!prevProps.fetchingPolicyValues && !this.props.fetchingPolicyValues && !!this.props.fetchedPolicyValues && !!this.props.policyValues) {
       this.setState(state => (
         { policy: { ...state.policy, ...this.props.policyValues.policy } }
       ),
@@ -240,8 +240,9 @@ class PolicyForm extends Component {
 
     if (this.state.dob && this.state.policy && this.state.policy.product) {
       let Age = this.verifyAge(this.state.dob)
-      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMaximal != 0  && 
-        this.state.policy.product.ageMinimal != null && this.state.policy.product.ageMinimal != 0) {
+      if (this.state.policy.product.ageMaximal != null && this.state.policy.product.ageMaximal != 0 && 
+        this.state.policy.product.ageMinimal != null && this.state.policy.product.ageMinimal != 0
+      ) {
         if (Age < this.state.policy.product.ageMinimal || Age > this.state.policy.product.ageMaximal) {
           return false;
         }
