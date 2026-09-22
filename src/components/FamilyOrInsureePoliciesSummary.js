@@ -98,7 +98,18 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     });
   }
 
-  isColumnVisible = (key) => this.columns?.[key] !== "H";
+  isColumnVisible = (key) => !!this.columns?.[key] && this.columns[key] !== "H";
+
+  configurableColumns = [
+    { key: "deduction", header: "policies.deduction", sorter: "deduction", format: (i) => i.ded },
+    { key: "hospitalDeduction", header: "policies.hospitalDeduction", sorter: "hospitalDeduction", format: (i) => i.dedInPatient },
+    { key: "nonHospitalDeduction", header: "policies.nonHospitalDeduction", sorter: "nonHospitalDeduction", format: (i) => i.dedOutPatient },
+    { key: "ceiling", header: "policies.ceiling", sorter: "ceiling", format: (i) => i.ceiling },
+    { key: "hospitalCeiling", header: "policies.hospitalCeiling", sorter: "hospitalCeiling", format: (i) => i.ceilingInPatient },
+    { key: "nonHospitalCeiling", header: "policies.nonHospitalCeiling", sorter: "nonHospitalCeiling", format: (i) => i.ceilingOutPatient },
+  ];
+
+  visibleConfigurableColumns = () => this.configurableColumns.filter((c) => this.isColumnVisible(c.key));
 
   componentDidMount() {
     this.setState(
@@ -240,24 +251,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "policies.status",
       "policies.policyValue",
     ];
-    if (this.isColumnVisible("deduction")) {
-      h.push("policies.deduction");
-    }
-    if (this.isColumnVisible("hospitalDeduction")) {
-      h.push("policies.hospitalDeduction");
-    }
-    if (this.isColumnVisible("nonHospitalDeduction")) {
-      h.push("policies.nonHospitalDeduction");
-    }
-    if (this.isColumnVisible("ceiling")) {
-      h.push("policies.ceiling");
-    }
-    if (this.isColumnVisible("hospitalCeiling")) {
-      h.push("policies.hospitalCeiling");
-    }
-    if (this.isColumnVisible("nonHospitalCeiling")) {
-      h.push("policies.nonHospitalCeiling");
-    }
+    this.visibleConfigurableColumns().forEach((c) => h.push(c.header));
     if (this.showBalance) {
       h.push("policies.balance");
     }
@@ -284,24 +278,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       this.sorter("status"),
       this.sorter("policyValue"),
     ];
-    if (this.isColumnVisible("deduction")) {
-      a.push(this.sorter("deduction"));
-    }
-    if (this.isColumnVisible("hospitalDeduction")) {
-      a.push(this.sorter("hospitalDeduction"));
-    }
-    if (this.isColumnVisible("nonHospitalDeduction")) {
-      a.push(this.sorter("nonHospitalDeduction"));
-    }
-    if (this.isColumnVisible("ceiling")) {
-      a.push(this.sorter("ceiling"));
-    }
-    if (this.isColumnVisible("hospitalCeiling")) {
-      a.push(this.sorter("hospitalCeiling"));
-    }
-    if (this.isColumnVisible("nonHospitalCeiling")) {
-      a.push(this.sorter("nonHospitalCeiling"));
-    }
+    this.visibleConfigurableColumns().forEach((c) => a.push(this.sorter(c.sorter)));
     if (this.showBalance) {
       a.push(this.sorter("balance"));
     }
@@ -323,24 +300,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       (i) => formatMessage(this.props.intl, "policy", `policies.status.${i.status}`),
       (i) => <AmountInput value={i.policyValue} readOnly />,
     ];
-    if (this.isColumnVisible("deduction")) {
-      f.push((i) => i.ded);
-    }
-    if (this.isColumnVisible("hospitalDeduction")) {
-      f.push((i) => i.dedInPatient);
-    }
-    if (this.isColumnVisible("nonHospitalDeduction")) {
-      f.push((i) => i.dedOutPatient);
-    }
-    if (this.isColumnVisible("ceiling")) {
-      f.push((i) => i.ceiling);
-    }
-    if (this.isColumnVisible("hospitalCeiling")) {
-      f.push((i) => i.ceilingInPatient);
-    }
-    if (this.isColumnVisible("nonHospitalCeiling")) {
-      f.push((i) => i.ceilingOutPatient);
-    }
+    this.visibleConfigurableColumns().forEach((c) => f.push(c.format));
     if (this.showBalance) {
       f.push((i) => i.balance);
     }
