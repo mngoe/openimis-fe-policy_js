@@ -88,7 +88,28 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "familyOrInsureePoliciesSummary.orderByExpiryDate",
       "expiryDate"
     );
+    this.columns = this.props.modulesManager.getConf("fe-policy", "columns", {
+      deduction: "H",
+      hospitalDeduction: "H",
+      nonHospitalDeduction: "H",
+      ceiling: "H",
+      hospitalCeiling: "H",
+      nonHospitalCeiling: "H",
+    });
   }
+
+  isColumnVisible = (key) => !!this.columns?.[key] && this.columns[key] !== "H";
+
+  configurableColumns = [
+    { key: "deduction", header: "policies.deduction", sorter: "deduction", format: (i) => i.ded },
+    { key: "hospitalDeduction", header: "policies.hospitalDeduction", sorter: "hospitalDeduction", format: (i) => i.dedInPatient },
+    { key: "nonHospitalDeduction", header: "policies.nonHospitalDeduction", sorter: "nonHospitalDeduction", format: (i) => i.dedOutPatient },
+    { key: "ceiling", header: "policies.ceiling", sorter: "ceiling", format: (i) => i.ceiling },
+    { key: "hospitalCeiling", header: "policies.hospitalCeiling", sorter: "hospitalCeiling", format: (i) => i.ceilingInPatient },
+    { key: "nonHospitalCeiling", header: "policies.nonHospitalCeiling", sorter: "nonHospitalCeiling", format: (i) => i.ceilingOutPatient },
+  ];
+
+  visibleConfigurableColumns = () => this.configurableColumns.filter((c) => this.isColumnVisible(c.key));
 
   componentDidMount() {
     this.setState(
@@ -229,13 +250,8 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "policies.expiryDate",
       "policies.status",
       "policies.policyValue",
-      "policies.deduction",
-      "policies.hospitalDeduction",
-      "policies.nonHospitalDeduction",
-      "policies.ceiling",
-      "policies.hospitalCeiling",
-      "policies.nonHospitalCeiling",
     ];
+    this.visibleConfigurableColumns().forEach((c) => h.push(c.header));
     if (this.showBalance) {
       h.push("policies.balance");
     }
@@ -261,13 +277,8 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       this.sorter("expiryDate"),
       this.sorter("status"),
       this.sorter("policyValue"),
-      this.sorter("deduction"),
-      this.sorter("hospitalDeduction"),
-      this.sorter("nonHospitalDeduction"),
-      this.sorter("ceiling"),
-      this.sorter("hospitalCeiling"),
-      this.sorter("nonHospitalCeiling"),
     ];
+    this.visibleConfigurableColumns().forEach((c) => a.push(this.sorter(c.sorter)));
     if (this.showBalance) {
       a.push(this.sorter("balance"));
     }
@@ -288,13 +299,8 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.expiryDate),
       (i) => formatMessage(this.props.intl, "policy", `policies.status.${i.status}`),
       (i) => <AmountInput value={i.policyValue} readOnly />,
-      (i) => i.ded,
-      (i) => i.dedInPatient,
-      (i) => i.dedOutPatient,
-      (i) => i.ceiling,
-      (i) => i.ceilingInPatient,
-      (i) => i.ceilingOutPatient,
     ];
+    this.visibleConfigurableColumns().forEach((c) => f.push(c.format));
     if (this.showBalance) {
       f.push((i) => i.balance);
     }
