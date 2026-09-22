@@ -88,7 +88,17 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "familyOrInsureePoliciesSummary.orderByExpiryDate",
       "expiryDate"
     );
+    this.columns = this.props.modulesManager.getConf("fe-policy", "columns", {
+      deduction: "H",
+      hospitalDeduction: "H",
+      nonHospitalDeduction: "H",
+      ceiling: "H",
+      hospitalCeiling: "H",
+      nonHospitalCeiling: "H",
+    });
   }
+
+  isColumnVisible = (key) => this.columns?.[key] !== "H";
 
   componentDidMount() {
     this.setState(
@@ -229,13 +239,25 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       "policies.expiryDate",
       "policies.status",
       "policies.policyValue",
-      "policies.deduction",
-      "policies.hospitalDeduction",
-      "policies.nonHospitalDeduction",
-      "policies.ceiling",
-      "policies.hospitalCeiling",
-      "policies.nonHospitalCeiling",
     ];
+    if (this.isColumnVisible("deduction")) {
+      h.push("policies.deduction");
+    }
+    if (this.isColumnVisible("hospitalDeduction")) {
+      h.push("policies.hospitalDeduction");
+    }
+    if (this.isColumnVisible("nonHospitalDeduction")) {
+      h.push("policies.nonHospitalDeduction");
+    }
+    if (this.isColumnVisible("ceiling")) {
+      h.push("policies.ceiling");
+    }
+    if (this.isColumnVisible("hospitalCeiling")) {
+      h.push("policies.hospitalCeiling");
+    }
+    if (this.isColumnVisible("nonHospitalCeiling")) {
+      h.push("policies.nonHospitalCeiling");
+    }
     if (this.showBalance) {
       h.push("policies.balance");
     }
@@ -261,13 +283,25 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       this.sorter("expiryDate"),
       this.sorter("status"),
       this.sorter("policyValue"),
-      this.sorter("deduction"),
-      this.sorter("hospitalDeduction"),
-      this.sorter("nonHospitalDeduction"),
-      this.sorter("ceiling"),
-      this.sorter("hospitalCeiling"),
-      this.sorter("nonHospitalCeiling"),
     ];
+    if (this.isColumnVisible("deduction")) {
+      a.push(this.sorter("deduction"));
+    }
+    if (this.isColumnVisible("hospitalDeduction")) {
+      a.push(this.sorter("hospitalDeduction"));
+    }
+    if (this.isColumnVisible("nonHospitalDeduction")) {
+      a.push(this.sorter("nonHospitalDeduction"));
+    }
+    if (this.isColumnVisible("ceiling")) {
+      a.push(this.sorter("ceiling"));
+    }
+    if (this.isColumnVisible("hospitalCeiling")) {
+      a.push(this.sorter("hospitalCeiling"));
+    }
+    if (this.isColumnVisible("nonHospitalCeiling")) {
+      a.push(this.sorter("nonHospitalCeiling"));
+    }
     if (this.showBalance) {
       a.push(this.sorter("balance"));
     }
@@ -288,13 +322,25 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       (i) => formatDateFromISO(this.props.modulesManager, this.props.intl, i.expiryDate),
       (i) => formatMessage(this.props.intl, "policy", `policies.status.${i.status}`),
       (i) => <AmountInput value={i.policyValue} readOnly />,
-      (i) => i.ded,
-      (i) => i.dedInPatient,
-      (i) => i.dedOutPatient,
-      (i) => i.ceiling,
-      (i) => i.ceilingInPatient,
-      (i) => i.ceilingOutPatient,
     ];
+    if (this.isColumnVisible("deduction")) {
+      f.push((i) => i.ded);
+    }
+    if (this.isColumnVisible("hospitalDeduction")) {
+      f.push((i) => i.dedInPatient);
+    }
+    if (this.isColumnVisible("nonHospitalDeduction")) {
+      f.push((i) => i.dedOutPatient);
+    }
+    if (this.isColumnVisible("ceiling")) {
+      f.push((i) => i.ceiling);
+    }
+    if (this.isColumnVisible("hospitalCeiling")) {
+      f.push((i) => i.ceilingInPatient);
+    }
+    if (this.isColumnVisible("nonHospitalCeiling")) {
+      f.push((i) => i.ceilingOutPatient);
+    }
     if (this.showBalance) {
       f.push((i) => i.balance);
     }
