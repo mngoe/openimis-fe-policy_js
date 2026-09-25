@@ -162,5 +162,9 @@
     "policy.PolicyNumberInput.cancel": "Cancelled cheque",
     "policy.confirmWaitingPolicy.message": "You already have an waiting police for this program, would you like to deactivate it? ? {label}?",
     "policy.product.invalidMinAge": "The beneficiary does not have the minimum required age",
-    "policy.product.invalidMaxAge": "The beneficiary has exceeded the maximum required age"
+    "policy.product.invalidMaxAge": "The beneficiary has exceeded the maximum required age",
+    "policy.action.ForcePolicyExpiration.tooltip": "Force Expiration",
+    "policy.forcePolicyExpirationDialog.title": "Force Policy Expiration",
+    "policy.forcePolicyExpirationDialog.message": "Are you sure you want to force policy expiration {label}?",
+    "policy.ForcePolicyExpiration.mutationLabel": "Force Policy Expiration {policy}"
 }
