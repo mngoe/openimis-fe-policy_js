@@ -288,6 +288,8 @@ export const reducer = (
             return dispatchMutationResp(state, "suspendPolicies", action);
         case 'POLICY_DELETE_POLICIES_RESP':
             return dispatchMutationResp(state, "deletePolicies", action);
+        case 'POLICY_FORCE_EXPIRATION_POLICIES_RESP':
+            return dispatchMutationResp(state, "forcePoliciesExpiration", action);
         default:
             return state;
     }

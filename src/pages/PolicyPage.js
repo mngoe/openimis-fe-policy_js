@@ -8,6 +8,7 @@ import {
   withModulesManager,
   withHistory,
   formatMessageWithValues,
+  selectUserRights,
 } from "@openimis/fe-core";
 import PolicyForm from "../components/PolicyForm";
 import { policyLabel } from "../utils/utils";
@@ -21,7 +22,6 @@ const styles = (theme) => ({
 class PolicyPage extends Component {
   save = (policy) => {
     if (!policy.uuid && policy.stage === POLICY_STAGE_NEW) {
-      console.log('policy obtainu', policy)
       this.props.createPolicy(
         this.props.modulesManager,
         policy,
@@ -77,10 +77,8 @@ class PolicyPage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  rights:
-    !!state.core && !!state.core.user && !!state.core.user.i_user
-      ? state.core.user.i_user.rights
-      : [],
+  rights: selectUserRights(state),
+  userBusinessAccesses: state.core?.userBusinessAccesses,
   policy_uuid: props.match.params.policy_uuid,
   family_uuid: props.match.params.family_uuid,
   renew: props.match.params.renew,

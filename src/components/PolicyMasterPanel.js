@@ -16,6 +16,7 @@ import {
   Autorenew as RenewIcon,
   Delete as DeleteIcon,
   Pause as SuspendIcon,
+  Cancel as CancelIcon,
 } from "@material-ui/icons";
 import {
   formatMessage,
@@ -33,14 +34,16 @@ import {
   decodeId,
   AmountInput,
   TextInput,
+  selectUserRights,
 } from "@openimis/fe-core";
 import {
   policyLabel,
   canDeletePolicy,
   canSuspendPolicy,
   canRenewPolicy,
+  canForcePolicyExpiration,
 } from "../utils/utils";
-import { deletePolicy, suspendPolicy } from "../actions";
+import { deletePolicy, suspendPolicy, forcePolicyExpiration } from "../actions";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -52,6 +55,10 @@ const POLICY_POLICY_CONTRIBUTION_KEY = "policy.Policy";
 const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
 
 class PolicyMasterPanel extends FormPanel {
+  state = {
+    productError: null
+  }
+
   constructor(props) {
     super(props);
 
@@ -78,7 +85,21 @@ class PolicyMasterPanel extends FormPanel {
     }
   }
 
+  _checkAge = (product, insureeAge) => {
+    this.updateAttribute("product", product)
+    if (!!product.ageMaximal || !!product.ageMinimal) {
+      if (!!product.ageMinimal && insureeAge < product.ageMinimal){
+        this.setState({ productError: formatMessage(this.props.intl, "policy", "product.invalidMinAge") })
+      } else if(!!product.ageMaximal && insureeAge > product.ageMaximal) {
+        this.setState({ productError: formatMessage(this.props.intl, "policy", "product.invalidMaxAge") })
+      } else {
+        this.setState({ productError: null });
+      }
+    } else this.setState({ productError: null });
+  }
+
   _onProductChange = (product) => {
+    const { insureeAge } = this.props;
     !product
       ? this.updateAttributes({
         product: null,
@@ -86,7 +107,7 @@ class PolicyMasterPanel extends FormPanel {
         expiryDate: null,
         value: null,
       })
-      : this.updateAttribute("product", product);
+      : this._checkAge(product, insureeAge);
   };
 
   renewPolicy = () =>
@@ -163,10 +184,34 @@ class PolicyMasterPanel extends FormPanel {
     this.setState({ confirmedAction }, confirm);
   };
 
+  confirmForceExpiration = () => {
+    let policy = this.props.edited;
+    let confirmedAction = () =>
+      this.props.forcePolicyExpiration(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(this.props.intl, "policy", "ForcePolicyExpiration.mutationLabel", {
+          policy: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.title", {
+          label: policyLabel(this.props.modulesManager, policy),
+        }),
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.message", {
+          label: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    this.setState({ confirmedAction }, confirm);
+  }
+
   canDelete = (policy) => canDeletePolicy(this.props.rights, policy);
   canSuspend = (policy) => canSuspendPolicy(this.props.rights, policy);
   canRenew = (policy) =>
     !this.props.renew && canRenewPolicy(this.props.rights, policy);
+  canForceExpiration = (policy) => canForcePolicyExpiration(this.props.rights, policy);
 
   render() {
     const {
@@ -191,6 +236,20 @@ class PolicyMasterPanel extends FormPanel {
           this.props.intl,
           "policy",
           "action.RenewPolicy.tooltip"
+        ),
+      });
+    }
+    if(this.canForceExpiration(edited)) {
+      actions.push({
+        button: (
+          <IconButton onClick={(e) => this.confirmForceExpiration()}>
+            <CancelIcon />
+          </IconButton>
+        ),
+        tooltip: formatMessage(
+          this.props.intl,
+          "policy",
+          "action.ForcePolicyExpiration.tooltip"
         ),
       });
     }
@@ -325,32 +384,46 @@ class PolicyMasterPanel extends FormPanel {
                   onChange={this._onProductChange}
                   required={true}
                   canFetch={this.props.edited.family ? true : false}
-<<<<<<< HEAD
-=======
+                  // the family's village: the backend widens it to its ancestors and adds the
+                  // national products (no location). The district (`parent.parent`) used to be
+                  // passed, which dropped the products of the village and of its ward.
                   locationId={
-                    !!edited.family
-                      ? decodeId(edited.family?.location?.parent?.parent?.id)
+                    !!edited.family?.location?.id
+                      ? decodeId(edited.family.location.id)
                       : 0
                   }
->>>>>>> 494c18713e02130c84178e18a742e93284b32c23
                   enrollmentDate={edited?.enrollDate ?? null}
+                  invalidAgeError={this.state.productError}
                 />
               </Grid>
               {(!!edited.product && (edited.product?.program?.nameProgram === "Cheque Santé" || edited.product?.program?.nameProgram === "Chèque Santé")) ? (
-                <Grid item xs={3} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="policy.PolicyNumberInput"
-                    module="policy"
-                    label="policy.PolicyNumber"
-                    required={true}
-                    readOnly={!!edited_id || readOnly}
-                    value={!!edited && edited.policyNumber}
-                    new_policy={!edited?.id}
-                    onChange={(v) => this.updateAttribute("policyNumber", v)}
-                  />
-                </Grid>
-              ) : null }
-
+                <>
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="policy.PolicyNumberInput"
+                      module="policy"
+                      label="policy.PolicyNumber"
+                      required={true}
+                      readOnly={!!edited_id || readOnly}
+                      value={!!edited && edited.policyNumber}
+                      new_policy={!edited?.id}
+                      onChange={(v) => this.updateAttribute("policyNumber", v)}
+                    />
+                  </Grid>
+                  <Grid item xs={2} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="policy.PregnancyAgePicker"
+                      required={true}
+                      readOnly={readOnly}
+                      value={!!edited && edited.pregnancyAge}
+                      label="policy.PregnancyAge"
+                      withPlaceholder={true}
+                      withNull={false}
+                      onChange={(v) => this.updateAttribute("pregnancyAge", v)}
+                    />
+                  </Grid>
+                </>
+              ) : null}
               <Grid item xs={3} className={classes.item}>
                 <PublishedComponent
                   pubRef="policy.PolicyOfficerPicker"
@@ -497,10 +570,8 @@ class PolicyMasterPanel extends FormPanel {
 }
 
 const mapStateToProps = (state) => ({
-  rights:
-    !!state.core && !!state.core.user && !!state.core.user.i_user
-      ? state.core.user.i_user.rights
-      : [],
+  rights: selectUserRights(state),
+  userBusinessAccesses: state.core?.userBusinessAccesses,
   fetchingPolicyValues: state.policy.fetchingPolicyValues,
   errorPolicyValues: state.policy.errorPolicyValues,
   confirmed: state.core.confirmed,
@@ -510,7 +581,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    { deletePolicy, suspendPolicy, coreConfirm, journalize },
+    { deletePolicy, suspendPolicy, forcePolicyExpiration, coreConfirm, journalize },
     dispatch
   );
 };

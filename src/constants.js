@@ -6,7 +6,8 @@ export const POLICY_STATUS_EXPIRED = 8;
 export const POLICY_STATUS = [POLICY_STATUS_IDLE, POLICY_STATUS_READY, POLICY_STATUS_ACTIVE, POLICY_STATUS_SUSPENDED, POLICY_STATUS_EXPIRED]
 export const POLICY_STAGE_NEW = 'N';
 export const POLICY_STAGE_RENEW = 'R';
-export const POLICY_STAGE = [POLICY_STAGE_NEW, POLICY_STAGE_RENEW]
+export const POLICY_STAGE_EXPIRE = 'F';
+export const POLICY_STAGE = [POLICY_STAGE_NEW, POLICY_STAGE_RENEW, POLICY_STAGE_EXPIRE]
 export const HIV_EMAIL = "newhivuser_XM7dw70J0M3N@gmail.com"
 export const RIGHT_POLICY = 101201 // supposed to be 101200 ... but in practice
 export const RIGHT_POLICY_SEARCH = 101201
@@ -15,6 +16,15 @@ export const RIGHT_POLICY_EDIT = 101203
 export const RIGHT_POLICY_DELETE = 101204
 export const RIGHT_POLICY_RENEW = 101205
 export const RIGHT_POLICY_SUSPEND = 101203
+export const RIGHT_POLICY_EXPIRE = 101208
+
+// The User Business Access credential of an enrolment officer, held on a village
+// (`location.location`) and registered by the location module in the backend registry
+// (`core.uba_link_types`). A policy belongs to a family, and a family to a village: the
+// policy rights an enrolment officer holds in their UBA bag apply to the policies of the
+// families of their villages. See `docs/rights.md` in the core module, and `utils/rights.js`.
+export const UBA_LINK_TYPE_ENROLMENT = "ENROLMENT"
+export const UBA_MODEL_LOCATION = "location.location"
 
 export const POLICY_RENEWALS_REPORT_SORTING_CRITERION_DATE = "D"
 export const POLICY_RENEWALS_REPORT_SORTING_CRITERION_RECEIPT = "R"
@@ -24,3 +34,4 @@ export const POLICY_RENEWALS_REPORT_SORTING_CRITERIA = [
     POLICY_RENEWALS_REPORT_SORTING_CRITERION_RECEIPT,
     POLICY_RENEWALS_REPORT_SORTING_CRITERION_OFFICER
 ]
+export const PREGNANCY_AGE = _.range(1, 43)

@@ -8,6 +8,7 @@ import {
   withModulesManager,
   withHistory,
   clearCurrentPaginationPage,
+  selectUserRights,
 } from "@openimis/fe-core";
 import PolicySearcher from "../components/PolicySearcher";
 
@@ -16,6 +17,14 @@ const styles = (theme) => ({
 });
 
 class PoliciesPage extends Component {
+  constructor(props) {
+    super(props);
+    let defaultFilters = {};
+    this.state = {
+      defaultFilters,
+    };
+  }
+  
   onDoubleClick = (p, newTab = false) => {
     historyPush(
       this.props.modulesManager,
@@ -39,6 +48,7 @@ class PoliciesPage extends Component {
         <PolicySearcher
           cacheFiltersKey="policyPoliciesPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
+          defaultFilters = {this.state.defaultFilters}
         />
       </div>
     );
@@ -46,10 +56,8 @@ class PoliciesPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  rights:
-    !!state.core && !!state.core.user && !!state.core.user.i_user
-      ? state.core.user.i_user.rights
-      : [],
+  rights: selectUserRights(state),
+  userBusinessAccesses: state.core?.userBusinessAccesses,
   module: state.core?.savedPagination?.module,
 });
 

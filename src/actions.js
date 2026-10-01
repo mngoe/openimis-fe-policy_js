@@ -178,7 +178,8 @@ export function fetchPolicyFull(mm, policy_uuid) {
     "claimDedRems{edges { node {dedG dedIp dedOp remG remIp remOp} } }",
     "validityFrom",
     "validityTo",
-    "policyNumber"
+    "policyNumber",
+    "pregnancyAge"
   ];
   const payload = formatPageQuery(
     "policies",
@@ -225,6 +226,7 @@ function formatPolicyGQL(mm, policy) {
   familyId: ${decodeId(policy.family.id)}
   officerId: ${decodeId(policy.officer.id)}
   ${!!policy.policyNumber ? `policyNumber: "${policy.policyNumber.chequeImportLineCode}"` : ""}
+  ${!!policy.pregnancyAge ? `pregnancyAge: ${policy.pregnancyAge}` : ""}
 `;
 }
 
@@ -297,6 +299,29 @@ export function suspendPolicy(mm, policy, clientMutationLabel) {
     [
       "POLICY_MUTATION_REQ",
       "POLICY_SUSPEND_POLICIES_RESP",
+      "POLICY_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+export function forcePolicyExpiration(mm, policy, clientMutationLabel) {
+  let mutation = formatMutation(
+    "forcePoliciesExpiration",
+    `uuids: ["${policy.policyUuid || policy.uuid}"]`,
+    clientMutationLabel
+  );
+  var requestedDateTime = new Date();
+  policy.clientMutationId = mutation.clientMutationId;
+  return graphql(
+    mutation.payload,
+    [
+      "POLICY_MUTATION_REQ",
+      "POLICY_FORCE_EXPIRATION_POLICIES_RESP",
       "POLICY_MUTATION_ERR",
     ],
     {

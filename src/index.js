@@ -13,12 +13,13 @@ import InsureeEligibilityEnquiry from "./components/InsureeEligibilityEnquiry";
 import InsureePolicyEligibilitySummary from "./components/InsureePolicyEligibilitySummary";
 import messages_en from "./translations/en.json";
 import messages_fr from "./translations/fr.json";
-import { FormattedMessage, decodeId } from "@openimis/fe-core";
+import { FormattedMessage, decodeId, hasPermsAnywhere } from "@openimis/fe-core";
 import { reducer } from "./reducer";
 import { RIGHT_POLICY } from "./constants";
 import { policyMutation } from "./utils/utils";
 import PolicyRenewalsReport from "./reports/PolicyRenewalsReport";
 import PolicyPrimaryOperationalIndicatorsReport from "./reports/PolicyPrimaryOperationalIndicatorsReport";
+import PregnancyAgePicker from "./pickers/PregnancyAgePicker";
 const ROUTE_POLICY_POLICIES = "policy/policies";
 const ROUTE_POLICY_POLICY = "policy/policy";
 
@@ -111,6 +112,7 @@ const DEFAULT_CONFIG = {
     { key: "policy.route.policies", ref: ROUTE_POLICY_POLICIES },
     { key: "policy.route.policy", ref: ROUTE_POLICY_POLICY },
     { key: "policy.PolicyNumberInput", ref: PolicyNumberInput },
+    { key: "policy.PregnancyAgePicker", ref: PregnancyAgePicker},
   ],
   "core.Router": [
     { path: ROUTE_POLICY_POLICIES, component: PoliciesPage },
@@ -122,7 +124,9 @@ const DEFAULT_CONFIG = {
       text: <FormattedMessage module="policy" id="menu.policies" />,
       icon: <ListAlt />,
       route: "/" + ROUTE_POLICY_POLICIES,
-      filter: rights => rights.includes(RIGHT_POLICY)
+      // navigation level gate: an enrolment officer may hold the policy rights only on the
+      // families of their villages (UBA bag), the pages then check each action
+      filter: rights => hasPermsAnywhere(RIGHT_POLICY, { rights })
     },
   ],
   "insuree.EnquiryDialog": [FamilyOrInsureePoliciesSummary, InsureeEligibilityEnquiry, InsureeEligibilitySummary],

@@ -3,7 +3,7 @@
   "policy.PolicyFilter.product.label": "Product",
   "policy.PolicyFilter.product.placeholder": "Search for a Product...",
   "policy.confirmActivePolicy.title": "Confirm Activate Policy ",
-  "policy.confirmActivePolicy.message": "You already have an active police for this program, would you like to deactivate it? ? {label}?",
+  "policy.confirmActivePolicy.message": "You already have an active police for this program, would you like to deactivate it? {label}?",
   "policy.policyValues.alert.test": "Policy Value test:",
   "policy.dialogActions.continue": "Continue",
   "policy.dialogActions.goBack": "Go back",
@@ -18,9 +18,7 @@
   "policy.insureePolicies.productCode": "Code",
   "policy.insureePolicies.productName": "Name",
   "policy.insureePolicies.expiryDate": "Expire Date",
-  "policy.policies.enrolmentDate": "Enrolment Date",
   "policy.insureePolicies.status": "Status",
-  "policy.policies.policyValue": "Policy Value",
   "policy.insureePolicies.hospitalDeduction": "Hospital Deduction",
   "policy.insureePolicies.nonHospitalDeduction": "Non Hospital Deduction",
   "policy.insureePolicies.hospitalCeiling": "Hospital Ceiling",
@@ -161,7 +159,12 @@
     "policy.PolicyRenewalsReport.sorting.O": "",
     "policy.ConfirmSuspendPolicyDialog.title": "Confirm Suspend Policy ",
     "policy.ConfirmSuspendPolicyDialog.message": "You already have an active policy for FAGEP Program. Would you like to cancel it ? {label}?",
-    "policy.PolicyNumberInput.cancel": "Cancelled cheque"
-
-
+    "policy.PolicyNumberInput.cancel": "Cancelled cheque",
+    "policy.confirmWaitingPolicy.message": "You already have an waiting police for this program, would you like to deactivate it? ? {label}?",
+    "policy.product.invalidMinAge": "The beneficiary does not have the minimum required age",
+    "policy.product.invalidMaxAge": "The beneficiary has exceeded the maximum required age",
+    "policy.action.ForcePolicyExpiration.tooltip": "Force Expiration",
+    "policy.forcePolicyExpirationDialog.title": "Force Policy Expiration",
+    "policy.forcePolicyExpirationDialog.message": "Are you sure you want to force policy expiration {label}?",
+    "policy.ForcePolicyExpiration.mutationLabel": "Force Policy Expiration {policy}"
 }

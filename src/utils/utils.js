@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { RIGHT_POLICY_DELETE, RIGHT_POLICY_SUSPEND, RIGHT_POLICY_RENEW, POLICY_STATUS_ACTIVE } from "../constants";
+import { RIGHT_POLICY_DELETE, RIGHT_POLICY_SUSPEND, RIGHT_POLICY_RENEW, POLICY_STATUS_ACTIVE, RIGHT_POLICY_EXPIRE } from "../constants";
+import { canOnPolicy } from "./rights";
 
 export function policyLabel(mm, policy) {
     if (!policy) return "";
@@ -37,14 +38,26 @@ export function policySumDedRems(policy) {
     return policy
 }
 
-export function canDeletePolicy(rights, policy){
-    return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_DELETE)
+/*
+ * The policy actions: `rights` is the global bag, the UBA one applying when an ENROLMENT
+ * link covers the village of the policy's family - `family` being that family when the
+ * policy row does not carry it (the family overview).
+ */
+const isActionable = (policy) =>
+    !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId
+
+export function canDeletePolicy(rights, policy, family = null){
+    return isActionable(policy) && canOnPolicy(RIGHT_POLICY_DELETE, policy, family, { rights })
 }
-export function canRenewPolicy(rights, policy){
-    return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_RENEW) //&& (policy.status === ??)
+export function canRenewPolicy(rights, policy, family = null){
+    return isActionable(policy) && canOnPolicy(RIGHT_POLICY_RENEW, policy, family, { rights }) //&& (policy.status === ??)
 }
-export function canSuspendPolicy(rights, policy){
-    return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_SUSPEND) && policy.status === POLICY_STATUS_ACTIVE
+export function canSuspendPolicy(rights, policy, family = null){
+    return isActionable(policy) && canOnPolicy(RIGHT_POLICY_SUSPEND, policy, family, { rights }) && policy.status === POLICY_STATUS_ACTIVE
+}
+
+export function canForcePolicyExpiration(rights, policy, family = null){
+    return isActionable(policy) && canOnPolicy(RIGHT_POLICY_EXPIRE, policy, family, { rights }) && policy.status === POLICY_STATUS_ACTIVE
 }
 
 export function policyMutation(state) {

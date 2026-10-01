@@ -8,6 +8,22 @@ It is dedicated to be deployed as a module of [openimis-fe_js](https://github.co
 ## Main Menu Contributions
 None
 
+## Access control
+
+A policy belongs to a family, and a family to a village: the policy rights (101201-101205)
+of an enrolment officer - a user holding the `ENROLMENT` credential on villages - may sit in
+the UBA bag only. `src/utils/rights.js`:
+
+- the main menu entry and the policy form gate use `hasPermsAnywhere`;
+- the policy actions (edit, add, renew, suspend, delete, force expiration) use
+  `canOnPolicy` / `canOnFamily`: `hasPerms(right, { accessRequirements: ["location.location",
+  village, "ENROLMENT"] })` on the village of the policy's family, falling back to the global
+  bag.
+
+The product picker of the policy form is given the family's *village* as `locationId`: the
+backend answers with the products of that location, of its ancestors and the national ones.
+It used to be given the district, which dropped the products of the village and its ward.
+
 ## Other Contributions
 * `core.Router`: registering `policy/policies` routes in openIMIS client-side router
 * `insuree.MainMenu`:
