@@ -25,7 +25,7 @@ import {
   AmountInput,
 } from "@openimis/fe-core";
 import { fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy, forcePolicyExpiration } from "../actions";
-import { POLICY_STATUS_EXPIRED, RIGHT_POLICY_ADD } from "../constants";
+import { RIGHT_POLICY_ADD } from "../constants";
 import { policyLabel, canDeletePolicy, canSuspendPolicy, canRenewPolicy, canForcePolicyExpiration } from "../utils/utils";
 
 const styles = (theme) => ({
@@ -190,6 +190,29 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       );
     this.setState({ confirmedAction }, confirm);
   };
+
+  confirmForceExpiration = (policy) => {
+    policy.family = this.props.family;
+    let confirmedAction = () =>
+      this.props.forcePolicyExpiration(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(this.props.intl, "policy", "ForcePolicyExpiration.mutationLabel", {
+          policy: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.title", {
+          label: policyLabel(this.props.modulesManager, policy),
+        }),
+        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.message", {
+          label: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    this.setState({ confirmedAction }, confirm);
+  }
 
   onDoubleClick = (i, newTab = false) => {
     historyPush(this.props.modulesManager, this.props.history, "policy.route.policy", [

@@ -107,7 +107,7 @@ class PolicyMasterPanel extends FormPanel {
         expiryDate: null,
         value: null,
       })
-      : this._checkAge(product, insureeAge)
+      : this._checkAge(product, insureeAge);
   };
 
   renewPolicy = () =>
