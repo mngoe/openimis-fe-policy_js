@@ -147,29 +147,6 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     this.setState({ confirmedAction }, confirm);
   };
 
-  confirmForceExpiration = (policy) => {
-    policy.family = this.props.family;
-    let confirmedAction = () =>
-      this.props.forcePolicyExpiration(
-        this.props.modulesManager,
-        policy,
-        formatMessageWithValues(this.props.intl, "policy", "ForcePolicyExpiration.mutationLabel", {
-          policy: policyLabel(this.props.modulesManager, policy),
-        })
-      );
-    
-    let confirm = (e) =>
-      this.props.coreConfirm(
-        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.title", {
-          label: policyLabel(this.props.modulesManager, policy),
-        }),
-        formatMessageWithValues(this.props.intl, "policy", "forcePolicyExpirationDialog.message", {
-          label: policyLabel(this.props.modulesManager, policy),
-        })
-      );
-    this.setState({ confirmedAction }, confirm);
-  }
-
   confirmDelete = (policy) => {
     let confirmedAction = () =>
       this.props.deletePolicy(

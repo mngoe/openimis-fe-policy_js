@@ -33,7 +33,7 @@ class PolicyFilter extends Component {
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (!!!this.state || !!!this.props.filters || !!!prevProps.filters) return;
+    if (!this.state || !this.props.filters || !prevProps.filters) return;
     const showHistoryFilter = this.props.filters["showHistory"];
     const newShowHistory = !!showHistoryFilter ? showHistoryFilter["value"] : false;
     if (
