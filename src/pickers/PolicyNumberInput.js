@@ -67,12 +67,13 @@ class PolicyNumberInput extends Component {
     const isInvalid = !fetching && policyNumber && (policyNumber.chequeImportLineStatus).toLowerCase() === "used" || !fetching && policyNumber === undefined || !fetching && policyNumber && (policyNumber.chequeImportLineStatus).toLowerCase() === "cancel" 
     const isNotExit = !fetching && policyNumber === undefined;
     const status = !fetching && !!policyNumber ? policyNumber.chequeImportLineStatus: ""
+    
     return (
       <TextInput
         readOnly={readOnly}
         autoFocus={true}
         module="policy"
-        label={withLabel==false ? '':  "policy.PolicyNumber"}
+        label={withLabel == false ? '' : "policy.PolicyNumber"}
         value={this.state.search}
         onChange={(v) => this.debouncedSearch(v)}
         required={required}
