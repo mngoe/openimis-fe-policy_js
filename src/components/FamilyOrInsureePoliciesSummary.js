@@ -427,7 +427,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
                       onChange={(e) => this.toggleCheckbox("showDeletedPolicies")}
                     />
                   }
-                  label={formatMessage(intl, "policy", "policies.showDeleted")}
+                  label={formatMessage(intl, null, "showDeleted")}
                 />
               </Grid>
               {actions.map((a, idx) => {
