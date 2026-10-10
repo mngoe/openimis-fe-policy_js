@@ -97,6 +97,47 @@ class PolicyMasterPanel extends FormPanel {
     } else this.setState({ productError: null });
   }
 
+  _onPregnancyAgeChange = (age) => {
+    const ageNum = Number(age);
+    const updates = { pregnancyAge: ageNum };
+    const currentProduct = this.props.edited?.product;
+
+    if (currentProduct && (currentProduct?.program?.nameProgram === "Cheque Santé" || currentProduct?.program?.nameProgram === "Chèque Santé")) {
+      let targetProduct = null;
+      if (ageNum >= 1 && ageNum <= 15) {
+        targetProduct = {
+          id: "UHJvZHVjdEdRTFR5cGU6MTg=",
+          uuid: "6a763bf1-614a-4a74-9eb7-86c0e6a810c6",
+          code: "CS-TRI1",
+          name: "Chèque Santé 1st Trimester",
+          program: currentProduct.program,
+        };
+      } else if (ageNum >= 16 && ageNum <= 27) {
+        targetProduct = {
+          id: "UHJvZHVjdEdRTFR5cGU6MTk=",
+          uuid: "55f9b80b-3c1c-493f-acc7-34e5cff2a19a",
+          code: "CS-TRI2",
+          name: "Chèque Santé 2nd Trimester",
+          program: currentProduct.program,
+        };
+      } else if (ageNum >= 28 && ageNum <= 42) {
+        targetProduct = {
+          id: "UHJvZHVjdEdRTFR5cGU6MjA=",
+          uuid: "913447b9-f55a-489b-9377-59cdf4ab3c88",
+          code: "CS-TRI3",
+          name: "Chèque Santé 3rd Trimester",
+          program: currentProduct.program,
+        };
+      }
+
+      if (targetProduct && currentProduct.code !== targetProduct.code) {
+        updates.product = { ...currentProduct, ...targetProduct };
+      }
+    }
+
+    this.updateAttributes(updates);
+  };
+
   _onProductChange = (product) => {
     const { insureeAge } = this.props;
     !product
@@ -415,7 +456,7 @@ class PolicyMasterPanel extends FormPanel {
                       label="policy.PregnancyAge"
                       withPlaceholder={true}
                       withNull={false}
-                      onChange={(v) => this.updateAttribute("pregnancyAge", v)}
+                      onChange={this._onPregnancyAgeChange}
                     />
                   </Grid>
                 </>
