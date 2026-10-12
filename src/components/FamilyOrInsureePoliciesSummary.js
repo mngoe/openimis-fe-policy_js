@@ -117,6 +117,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
         confirmedAction: null,
         onlyActiveOrLastExpired: this.onlyActiveOrLastExpired,
         orderBy: this.orderByExpiryDate,
+        showDeletedPolicies: false,
       },
       (e) => this.query()
     );
@@ -212,7 +213,13 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       (prevProps.family.uuid == null || prevProps.family.uuid !== this.props.family.uuid));
 
   queryPrms() {
-    let prms = [`orderBy: "${this.state.orderBy}"`, `activeOrLastExpiredOnly: ${!!this.state.onlyActiveOrLastExpired}`];
+    let prms = [
+      `orderBy: "${this.state.orderBy}"`, 
+      `activeOrLastExpiredOnly: ${this.state.showDeletedPolicies ? false : !!this.state.onlyActiveOrLastExpired}`
+    ];
+    if (this.state.showDeletedPolicies) {
+      prms.push("showDeleted: true");
+    }
     if (!!this.props.insuree && !!this.props.insuree.chfId) {
       prms.push(`chfId:"${this.props.insuree.chfId}"`);
       return prms;
@@ -409,6 +416,18 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
                     />
                   }
                   label={formatMessage(intl, "policy", "policies.onlyActiveOrLastExpired")}
+                />
+              </Grid>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="primary"
+                      checked={!!this.state.showDeletedPolicies}
+                      onChange={(e) => this.toggleCheckbox("showDeletedPolicies")}
+                    />
+                  }
+                  label={formatMessage(intl, null, "showDeleted")}
                 />
               </Grid>
               {actions.map((a, idx) => {
