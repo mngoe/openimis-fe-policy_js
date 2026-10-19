@@ -296,6 +296,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
   canDelete = (policy) => !this.props.readOnly && canDeletePolicy(this.props.rights, policy);
   canSuspend = (policy) => !this.props.readOnly && canSuspendPolicy(this.props.rights, policy);
   canRenew = (policy) => !this.props.readOnly && canRenewPolicy(this.props.rights, policy);
+  rowSecondaryHighlighted = (policy) => !!policy?.validityTo;
 
   itemFormatters = () => {
     let f = [
@@ -462,6 +463,7 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
           onChangePage={this.onChangePage}
           onChangeRowsPerPage={this.onChangeRowsPerPage}
           rowLocked={this.rowLocked}
+          rowSecondaryHighlighted={this.rowSecondaryHighlighted}
         />
       </Paper>
     );
