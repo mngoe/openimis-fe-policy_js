@@ -33,7 +33,8 @@ const POLICY_BY_FAMILY_OR_INSUREE_PROJECTION = [
   "ceilingOutPatient",
   "periodicity",
   "signatureDate",
-  "paymentDay"
+  "paymentDay",
+  "validityTo"
 ];
 const CONTRIBUTIONPLAN_FULL_PROJECTION = (modulesManager) => [
   "id",
