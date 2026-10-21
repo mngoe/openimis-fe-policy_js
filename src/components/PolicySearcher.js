@@ -9,7 +9,7 @@ import {
   Autorenew as RenewIcon,
   Delete as DeleteIcon,
   Pause as SuspendIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
 } from "@material-ui/icons";
 import {
   withModulesManager,

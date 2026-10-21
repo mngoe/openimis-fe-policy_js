@@ -25,7 +25,7 @@ import {
   AmountInput,
 } from "@openimis/fe-core";
 import { fetchFamilyOrInsureePolicies, selectPolicy, deletePolicy, suspendPolicy, forcePolicyExpiration } from "../actions";
-import { POLICY_STATUS_EXPIRED, RIGHT_POLICY_ADD } from "../constants";
+import { RIGHT_POLICY_ADD } from "../constants";
 import { policyLabel, canDeletePolicy, canSuspendPolicy, canRenewPolicy, canForcePolicyExpiration } from "../utils/utils";
 
 const styles = (theme) => ({
