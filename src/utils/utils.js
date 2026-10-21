@@ -46,6 +46,7 @@ export function canRenewPolicy(rights, policy){
 export function canSuspendPolicy(rights, policy){
     return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_SUSPEND) && policy.status === POLICY_STATUS_ACTIVE
 }
+
 export function canForcePolicyExpiration(rights, policy){
     return !policy.validityTo && (!!policy.uuid || !!policy.policyUuid) && !policy.clientMutationId && rights.includes(RIGHT_POLICY_EXPIRE) && policy.status === POLICY_STATUS_ACTIVE
 }
