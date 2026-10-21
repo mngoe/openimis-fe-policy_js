@@ -12,13 +12,13 @@ import {
   ProgressOrError, Form, Helmet, coreConfirm,
 } from "@openimis/fe-core";
 import PolicyMasterPanel from "./PolicyMasterPanel";
-import { 
-  fetchPolicyFull, 
-  fetchPolicyValues, 
-  fetchFamily, 
-  fetchPolicySummaries, 
-  fetchFamilyOrInsureePolicies, 
-  updatePolicy, 
+import {
+  fetchPolicyFull,
+  fetchPolicyValues,
+  fetchFamily,
+  fetchPolicySummaries,
+  fetchFamilyOrInsureePolicies,
+  updatePolicy,
   suspendPolicy,
   forcePolicyExpiration
 } from "../actions";
@@ -127,11 +127,10 @@ class PolicyForm extends Component {
       }
       policy.ext = !!policy.jsonExt ? JSON.parse(policy.jsonExt) : {};
       if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
-        let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
         if(!!this.state.policy.enrollDate){
           this.setState(
             { policy, policy_uuid: policy.uuid, lockNew: false, newPolicy: !this.props.renew, renew: false },
-            e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy, years) } }
+            e => { if (policy.stage === POLICY_STAGE_RENEW) { this.props.fetchPolicyValues(policy) } }
           );
         }
       
@@ -146,15 +145,14 @@ class PolicyForm extends Component {
 
       if (!this.props.readOnly && !!this.state.policy.product) {
         if (this.state.policy && this.state.policy.product && this.state.policy.product.ageMaximal != undefined) {
-          let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
           if(!!this.state.policy.enrollDate ){
-          this.props.fetchPolicyValues(this.state?.policy, years)
+          this.props.fetchPolicyValues(this.state?.policy)
           }
         } else {
           if(!!this.state.policy.enrollDate){
             this.props.fetchPolicyValues(this.state?.policy)
           }
-          
+
         }
       }
 
@@ -177,13 +175,12 @@ class PolicyForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: this.state.reset + 1 });
     } else if (!prevProps.renew && !!this.props.renew) {
-      let years = Math.abs(this.state.policy.product.ageMaximal - this.verifyAge(this.state.dob))
       this.setState(
         (state, props) => ({
           renew: this.props.renew,
           policy: this._renewPolicy(state.policy)
         }),
-        e => this.props.fetchPolicyValues(this.state.policy, years)
+        e => this.props.fetchPolicyValues(this.state.policy)
       )
     }
 
@@ -228,11 +225,11 @@ class PolicyForm extends Component {
 
     //check if vih insuree have vih policy
     if (this.state.policy.family.headInsuree.email == "newhivuser_XM7dw70J0M3N@gmail.com") {
-      if (!!this.state.policy.product.program &&  this.state.policy.product.program.code != "VIH") return false;
-      if ((this.state.policy.product.program.code == "VIH") && (this.state.policy.product.code == "CSU-UF") ) return false
+      if (!!this.state.policy.product.program && this.state.policy.product.program.code != "VIH") return false;
+      if ((this.state.policy.product.program.code == "VIH") && (this.state.policy.product.code == "CSU-UF")) return false
     }
     else {
-      if (!!this.state.policy.product.program && this.state.policy.product.program.code == "VIH" && this.state.policy.product.code != "CSU-UF" ) return false;
+      if (!!this.state.policy.product.program && this.state.policy.product.program.code == "VIH" && this.state.policy.product.code != "CSU-UF") return false;
     }
 
     //check policy number if is cs product
@@ -301,19 +298,19 @@ class PolicyForm extends Component {
         }
       }
       if (previousPolicy != null) {
-        if(previousPolicy.status == 1 && 
-          previousPolicy.product.program.nameProgram != "Cheque Santé" && 
-          previousPolicy.product.program.nameProgram != "Chèque Santé"){
-            this.setState({
-              saving: false
-            })
-            this.confirmActivePolicy(policy, previousPolicy)
-        }else if(previousPolicy.status == 2){
+        if (previousPolicy.status == 1 &&
+          previousPolicy.product.program.nameProgram != "Cheque Santé" &&
+          previousPolicy.product.program.nameProgram != "Chèque Santé") {
           this.setState({
             saving: false
           })
           this.confirmActivePolicy(policy, previousPolicy)
-        }else{
+        } else if (previousPolicy.status == 2) {
+          this.setState({
+            saving: false
+          })
+          this.confirmActivePolicy(policy, previousPolicy)
+        } else {
           this.setState(
             { lockNew: !policy.uuid }, // avoid duplicates
             e => this.props.save(policy))
@@ -358,17 +355,20 @@ class PolicyForm extends Component {
   confirmActivePolicy = (policy, previousPolicy) => {
     let confirmedAction = async () => {
       if (previousPolicy != undefined) {
-        const response = await this.props.suspendPolicy(this.props.modulesManager, previousPolicy, formatMessageWithValues(
-          this.props.intl,
-          "policy",
-          "SuspendPolicy.mutationLabel",
-          { policy: policyLabel(this.props.modulesManager, previousPolicy) }
-        )
+        const response = await this.props.forcePolicyExpiration(
+          this.props.modulesManager,
+          previousPolicy,
+          formatMessageWithValues(
+            this.props.intl,
+            "policy",
+            "ForcePolicyExpiration.mutationLabel",
+            { policy: policyLabel(this.props.modulesManager, previousPolicy) }
+          )
         );
-        if(!response.error){
+        if (!response.error) {
           this.setState(
             { lockNew: !policy.uuid }, // avoid duplicates
-            e => this.props.save(policy))
+            e => this.props.save(policy));
           this.dispatchExpiryDate(policy)
         }
       }
@@ -377,7 +377,7 @@ class PolicyForm extends Component {
     let confirm = e => {
       this.props.coreConfirm(
         formatMessageWithValues(this.props.intl, "policy", "confirmActivePolicy.title", { label: policyLabel(this.props.modulesManager, previousPolicy) }),
-        formatMessageWithValues(this.props.intl, "policy",previousPolicy.status === 2 ? "confirmActivePolicy.message" : "confirmWaitingPolicy.message",
+        formatMessageWithValues(this.props.intl, "policy", previousPolicy.status === 2 ? "confirmActivePolicy.message" : "confirmWaitingPolicy.message",
           {
             label: policyLabel(this.props.modulesManager, previousPolicy),
           }),
@@ -494,16 +494,16 @@ const mapStateToProps = state => ({
 })
 
 export default injectIntl(withModulesManager(withHistory(connect(mapStateToProps,
-  { 
-    fetchPolicyFull, 
-    fetchPolicyValues, 
-    fetchPolicySummaries, 
-    fetchFamilyOrInsureePolicies, 
-    updatePolicy, 
-    suspendPolicy, 
-    coreConfirm, 
-    journalize, 
-    coreAlert, 
+  {
+    fetchPolicyFull,
+    fetchPolicyValues,
+    fetchPolicySummaries,
+    fetchFamilyOrInsureePolicies,
+    updatePolicy,
+    suspendPolicy,
+    coreConfirm,
+    journalize,
+    coreAlert,
     fetchFamily,
     forcePolicyExpiration
   })

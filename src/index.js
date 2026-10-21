@@ -3,6 +3,7 @@ import { ListAlt } from "@material-ui/icons";
 import PolicyOfficerPicker from "./pickers/PolicyOfficerPicker";
 import PolicyStagePicker from "./pickers/PolicyStagePicker";
 import PolicyStatusPicker from "./pickers/PolicyStatusPicker";
+import PregnancyAgePicker from "./pickers/PregnancyAgePicker";
 import PoliciesPage from "./pages/PoliciesPage";
 import PolicyPage from "./pages/PolicyPage";
 import PolicyNumberInput from "./pickers/PolicyNumberInput";
@@ -19,7 +20,6 @@ import { RIGHT_POLICY } from "./constants";
 import { policyMutation } from "./utils/utils";
 import PolicyRenewalsReport from "./reports/PolicyRenewalsReport";
 import PolicyPrimaryOperationalIndicatorsReport from "./reports/PolicyPrimaryOperationalIndicatorsReport";
-import PregnancyAgePicker from "./pickers/PregnancyAgePicker";
 const ROUTE_POLICY_POLICIES = "policy/policies";
 const ROUTE_POLICY_POLICY = "policy/policy";
 

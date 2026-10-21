@@ -13,7 +13,7 @@ import _debounce from "lodash/debounce";
 
 const INIT_STATE = {
   search: null,
-  selected: null,
+  selected: null
 };
 
 class PolicyNumberInput extends Component {
@@ -77,7 +77,13 @@ class PolicyNumberInput extends Component {
         value={this.state.search}
         onChange={(v) => this.debouncedSearch(v)}
         required={required}
-        error={error || isNotExit ?  formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : isInvalid && status.toLowerCase()=="used" ? formatMessage(this.props.intl, "policy", "PolicyNumberInput.invalid") : isInvalid && status.toLowerCase()=="cancel"? formatMessage(this.props.intl, "policy", "PolicyNumberInput.cancel")  : null}        
+        error={error || isNotExit ?  
+          formatMessage(this.props.intl, "policy", "PolicyNumberInput.error") : 
+          isInvalid && status.toLowerCase()=="used" ? 
+          formatMessage(this.props.intl, "policy", "PolicyNumberInput.invalid") : 
+          isInvalid && status.toLowerCase()=="cancel"? 
+          formatMessage(this.props.intl, "policy", "PolicyNumberInput.cancel")  : null
+        }   
         endAdornment={
           <InputAdornment position="end">
             <>

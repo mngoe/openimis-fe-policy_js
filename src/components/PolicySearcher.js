@@ -31,7 +31,7 @@ import {
   canDeletePolicy,
   canSuspendPolicy,
   canRenewPolicy,
-  canForcePolicyExpiration
+  canForcePolicyExpiration,
 } from "../utils/utils";
 
 import PolicyFilter from "./PolicyFilter";

@@ -147,27 +147,6 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
     this.setState({ confirmedAction }, confirm);
   };
 
-  confirmDelete = (policy) => {
-    let confirmedAction = () =>
-      this.props.deletePolicy(
-        this.props.modulesManager,
-        policy,
-        formatMessageWithValues(this.props.intl, "policy", "DeletePolicy.mutationLabel", {
-          policy: policyLabel(this.props.modulesManager, policy),
-        })
-      );
-    let confirm = (e) =>
-      this.props.coreConfirm(
-        formatMessageWithValues(this.props.intl, "policy", "deletePolicyDialog.title", {
-          label: policyLabel(this.props.modulesManager, policy),
-        }),
-        formatMessageWithValues(this.props.intl, "policy", "deletePolicyDialog.message", {
-          label: policyLabel(this.props.modulesManager, policy),
-        })
-      );
-    this.setState({ confirmedAction }, confirm);
-  };
-
   confirmForceExpiration = (policy) => {
     policy.family = this.props.family;
     let confirmedAction = () =>
@@ -190,6 +169,27 @@ class FamilyOrInsureePoliciesSummary extends PagedDataHandler {
       );
     this.setState({ confirmedAction }, confirm);
   }
+
+  confirmDelete = (policy) => {
+    let confirmedAction = () =>
+      this.props.deletePolicy(
+        this.props.modulesManager,
+        policy,
+        formatMessageWithValues(this.props.intl, "policy", "DeletePolicy.mutationLabel", {
+          policy: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "policy", "deletePolicyDialog.title", {
+          label: policyLabel(this.props.modulesManager, policy),
+        }),
+        formatMessageWithValues(this.props.intl, "policy", "deletePolicyDialog.message", {
+          label: policyLabel(this.props.modulesManager, policy),
+        })
+      );
+    this.setState({ confirmedAction }, confirm);
+  };
 
   onDoubleClick = (i, newTab = false) => {
     historyPush(this.props.modulesManager, this.props.history, "policy.route.policy", [
