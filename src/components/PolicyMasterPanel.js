@@ -1,5 +1,5 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
@@ -34,7 +34,8 @@ import {
   decodeId,
   AmountInput,
   TextInput,
-  coreAlert
+  coreAlert,
+  graphqlWithVariables,
 } from "@openimis/fe-core";
 import {
   policyLabel,
@@ -53,6 +54,90 @@ const styles = (theme) => ({
 
 const POLICY_POLICY_CONTRIBUTION_KEY = "policy.Policy";
 const POLICY_POLICY_PANELS_CONTRIBUTION_KEY = "policy.Policy.panels";
+
+const CHEQUE_SANTE_PRODUCTS_QUERY = `
+  query ChequeSanteTrimesterProducts($location: Int, $enrollmentDate: DateTime) {
+    firstTrimester: products(code: "CS-TRI1", first: 1, location: $location, dateFrom_Lte: $enrollmentDate, dateTo_Gte: $enrollmentDate) {
+      edges { node { ...TrimesterProductFields } }
+    }
+    secondTrimester: products(code: "CS-TRI2", first: 1, location: $location, dateFrom_Lte: $enrollmentDate, dateTo_Gte: $enrollmentDate) {
+      edges { node { ...TrimesterProductFields } }
+    }
+    thirdTrimester: products(code: "CS-TRI3", first: 1, location: $location, dateFrom_Lte: $enrollmentDate, dateTo_Gte: $enrollmentDate) {
+      edges { node { ...TrimesterProductFields } }
+    }
+  }
+
+  fragment TrimesterProductFields on ProductGQLType {
+    id
+    uuid
+    code
+    name
+    maxMembers
+    dateFrom
+    dateTo
+    validityFrom
+    validityTo
+    location { id }
+    program { id code idProgram nameProgram validityDateFrom }
+    ageMinimal
+    ageMaximal
+  }
+`;
+
+const ChequeSantePregnancyAgePicker = ({ value, readOnly, onChange, locationId, enrollmentDate }) => {
+  const dispatch = useDispatch();
+  const [query, setQuery] = useState({ data: null, isLoading: true, error: null });
+  const numericLocationId = Number(locationId);
+  const location = Number.isInteger(numericLocationId) && numericLocationId > 0 ? numericLocationId : null;
+  const enrollmentDateTime = /^\d{4}-\d{2}-\d{2}$/.test(enrollmentDate)
+    ? `${enrollmentDate}T00:00:00`
+    : enrollmentDate || null;
+
+  useEffect(() => {
+    let active = true;
+    setQuery({ data: null, isLoading: true, error: null });
+    dispatch(graphqlWithVariables(
+      CHEQUE_SANTE_PRODUCTS_QUERY,
+      { location, enrollmentDate: enrollmentDateTime },
+      "POLICY_TRIMESTER_PRODUCTS",
+    )).then((action) => {
+      if (!active) return;
+      const error = action.error ? action.payload : action.payload?.errors?.[0];
+      setQuery({ data: error ? null : action.payload?.data, isLoading: false, error });
+    }).catch((error) => {
+      if (active) setQuery({ data: null, isLoading: false, error });
+    });
+    return () => { active = false; };
+  }, [dispatch, location, enrollmentDateTime]);
+
+  const { data, isLoading, error } = query;
+  const products = ["firstTrimester", "secondTrimester", "thirdTrimester"]
+    .map((key) => data?.[key]?.edges?.[0]?.node)
+    .filter(Boolean);
+  const productsAvailable = products.length === 3;
+
+  return (
+    <>
+      <PublishedComponent
+        pubRef="policy.PregnancyAgePicker"
+        required={true}
+        readOnly={readOnly || isLoading || !productsAvailable}
+        value={value}
+        label="policy.PregnancyAge"
+        withPlaceholder={true}
+        withNull={false}
+        onChange={(age) => onChange(age, products)}
+      />
+      {!readOnly && <ProgressOrError progress={isLoading} error={error} />}
+      {!readOnly && !isLoading && !error && !productsAvailable && (
+        <Typography color="error">
+          <FormattedMessage module="policy" id="PregnancyAge.productsUnavailable" />
+        </Typography>
+      )}
+    </>
+  );
+};
 
 class PolicyMasterPanel extends FormPanel {
   state = {
@@ -97,6 +182,30 @@ class PolicyMasterPanel extends FormPanel {
       }
     } else this.setState({ productError: null });
   }
+
+  _onPregnancyAgeChange = (age, products) => {
+    const ageNum = Number(age);
+    const updates = { pregnancyAge: ageNum };
+    const currentProduct = this.props.edited?.product;
+
+    if (currentProduct) {
+      let targetCode = null;
+      if (ageNum >= 1 && ageNum <= 15) {
+        targetCode = "CS-TRI1";
+      } else if (ageNum >= 16 && ageNum <= 27) {
+        targetCode = "CS-TRI2";
+      } else if (ageNum >= 28 && ageNum <= 42) {
+        targetCode = "CS-TRI3";
+      }
+
+      const targetProduct = products.find((product) => product.code === targetCode);
+      if (targetProduct && currentProduct.code !== targetProduct.code) {
+        updates.product = targetProduct;
+      }
+    }
+
+    this.updateAttributes(updates);
+  };
 
   _onProductChange = (product) => {
     const { insureeAge } = this.props;
@@ -412,15 +521,16 @@ class PolicyMasterPanel extends FormPanel {
                     />
                   </Grid>
                   <Grid item xs={2} className={classes.item}>
-                    <PublishedComponent
-                      pubRef="policy.PregnancyAgePicker"
-                      required={true}
+                    <ChequeSantePregnancyAgePicker
                       readOnly={readOnly}
                       value={!!edited && edited.pregnancyAge}
-                      label="policy.PregnancyAge"
-                      withPlaceholder={true}
-                      withNull={false}
-                      onChange={(v) => this.updateAttribute("pregnancyAge", v)}
+                      onChange={this._onPregnancyAgeChange}
+                      locationId={
+                        !!edited.family
+                          ? decodeId(edited.family?.location?.parent?.parent?.id)
+                          : 0
+                      }
+                      enrollmentDate={edited?.enrollDate ?? null}
                     />
                   </Grid>
                 </>
