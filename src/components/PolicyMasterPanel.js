@@ -87,13 +87,18 @@ const CHEQUE_SANTE_PRODUCTS_QUERY = `
 const ChequeSantePregnancyAgePicker = ({ value, readOnly, onChange, locationId, enrollmentDate }) => {
   const dispatch = useDispatch();
   const [query, setQuery] = useState({ data: null, isLoading: true, error: null });
+  const numericLocationId = Number(locationId);
+  const location = Number.isInteger(numericLocationId) && numericLocationId > 0 ? numericLocationId : null;
+  const enrollmentDateTime = /^\d{4}-\d{2}-\d{2}$/.test(enrollmentDate)
+    ? `${enrollmentDate}T00:00:00`
+    : enrollmentDate || null;
 
   useEffect(() => {
     let active = true;
     setQuery({ data: null, isLoading: true, error: null });
     dispatch(graphqlWithVariables(
       CHEQUE_SANTE_PRODUCTS_QUERY,
-      { location: locationId, enrollmentDate },
+      { location, enrollmentDate: enrollmentDateTime },
       "POLICY_TRIMESTER_PRODUCTS",
     )).then((action) => {
       if (!active) return;
@@ -103,7 +108,7 @@ const ChequeSantePregnancyAgePicker = ({ value, readOnly, onChange, locationId, 
       if (active) setQuery({ data: null, isLoading: false, error });
     });
     return () => { active = false; };
-  }, [dispatch, locationId, enrollmentDate]);
+  }, [dispatch, location, enrollmentDateTime]);
 
   const { data, isLoading, error } = query;
   const products = ["firstTrimester", "secondTrimester", "thirdTrimester"]
