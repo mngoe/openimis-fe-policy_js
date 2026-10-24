@@ -10,6 +10,7 @@
   "policy.policy.PolicyNumber": "Cheque number",
   "policy.PolicyNumberInput.invalid": "Cheque already used",
   "policy.PolicyNumberInput.error": "Invalid Cheque",
+  "policy.PregnancyAge.productsUnavailable": "Chèque Santé trimester products are unavailable for this policy.",
   "policy.dispatchExpiryDate.message": "Your policy has been registered with this expiry date: {label}",
   "policy.dispatchExpiryDate.title": "Policy expiry date ",
   "policy.menu.policies": "Policies",
