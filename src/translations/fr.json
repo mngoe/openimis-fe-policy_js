@@ -3,6 +3,7 @@
     "policy.policySummaries.policyNumber": "Numero de chèque",
     "policy.PolicyNumberInput.invalid": "Chèque déjà utilisé",
     "policy.PolicyNumberInput.error": "Chèque invalide",
+    "policy.PregnancyAge.productsUnavailable": "Les produits trimestriels Chèque Santé ne sont pas disponibles pour cette police.",
     "policy.confirmActivePolicy.title": "Confirmation d'activation de police ",
     "policy.confirmActivePolicy.message": "Vous avez déjà une police active pour ce programme voulez vous la desactiver ? {label}?",
     "policy.dispatchExpiryDate.message": "Votre police a bien été enregistrer avec cette date d'expiration: {label}",
